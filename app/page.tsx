@@ -269,7 +269,18 @@ export default function Home() {
                 progresivo, a tu ritmo.
               </p>
             </RevealOnScroll>
-            <div className="mt-14 grid gap-6 md:grid-cols-3">
+            <RevealOnScroll>
+              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-2xl border border-border">
+                <Image
+                  src="/images/accion-suspension.jpg"
+                  alt="Sesión de suspensión y tracción del método PRAVILO"
+                  fill
+                  sizes="(min-width: 1024px) 900px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </RevealOnScroll>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
               {METODO.map((step, i) => (
                 <RevealOnScroll
                   key={step.title}
