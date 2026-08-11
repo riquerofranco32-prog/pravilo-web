@@ -25,17 +25,20 @@ const NAV = [
 
 const GALERIA = [
   {
-    src: "/images/espacio-completo.png",
-    alt: "Espacio PRAVILO ARG en Plottier con el aparato de suspensión armado",
-    tall: true,
+    src: "/images/rig-completo.jpg",
+    alt: "Aparato de suspensión y tracción PRAVILO armado en Plottier",
   },
   {
-    src: "/images/rig-detalle.png",
-    alt: "Detalle del aparato de suspensión y tracción PRAVILO",
+    src: "/images/rig-anillas.jpg",
+    alt: "Detalle de las anillas del aparato PRAVILO",
   },
   {
-    src: "/images/pared-pravilo.png",
+    src: "/images/pared-pravilo.jpg",
     alt: "Sector de entrenamiento funcional del centro PRAVILO ARG",
+  },
+  {
+    src: "/images/rig-detalle.jpg",
+    alt: "Detalle de la estructura de madera del aparato PRAVILO",
   },
 ];
 
@@ -345,11 +348,8 @@ export default function Home() {
           </RevealOnScroll>
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {GALERIA.map((img) => (
-              <RevealOnScroll
-                key={img.src}
-                className={img.tall ? "sm:row-span-2" : ""}
-              >
-                <div className="relative h-full min-h-64 overflow-hidden rounded-2xl border border-border">
+              <RevealOnScroll key={img.src}>
+                <div className="relative aspect-4/3 h-full overflow-hidden rounded-2xl border border-border">
                   <Image
                     src={img.src}
                     alt={img.alt}

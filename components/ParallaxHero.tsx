@@ -52,7 +52,7 @@ export default function ParallaxHero({ children }: { children: ReactNode }) {
         className="pointer-events-none absolute inset-0 -z-20 opacity-25"
       >
         <Image
-          src="/images/espacio-completo.png"
+          src="/images/espacio-completo.jpg"
           alt=""
           fill
           priority
