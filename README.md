@@ -20,10 +20,10 @@ En producción (Vercel), configurá las mismas variables en **Project Settings �
 
 ## Contenido a completar
 
-- **Galería**: reemplazar los tiles de placeholder en `app/page.tsx` (sección `#galeria`) por fotos reales del centro.
+- **Foto del instructor**: la Galería y el hero ya usan fotos reales del espacio (`public/images/`), pero todavía no hay una foto de Juan — el avatar sigue con sus iniciales.
 - **Testimonios**: cuando haya clientes reales, agregar una sección con citas verdaderas (no se incluyeron testimonios inventados).
-- **Ubicación exacta**: hoy se pide por WhatsApp; se puede agregar dirección/mapa embebido cuando esté definida.
+- **Ubicación exacta**: hoy se pide por WhatsApp además del mapa embebido; falta la dirección puntual del local.
 
 ## Deploy
 
-Conectado a Vercel vía GitHub — cada push a `main` dispara un deploy de producción.
+Vercel (cuenta `xfranco199x-5648s-projects`), deploy manual vía `vercel --prod` — la conexión automática GitHub↔Vercel no está activa en esa cuenta.

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import ReserveButton from "@/components/ReserveButton";
 import Marquee from "@/components/Marquee";
@@ -16,9 +17,26 @@ const NAV = [
   { href: "#practica", label: "La práctica" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#instructor", label: "Instructor" },
+  { href: "#galeria", label: "Galería" },
   { href: "#precios", label: "Precios" },
   { href: "#faq", label: "FAQ" },
   { href: "#ubicacion", label: "Ubicación" },
+];
+
+const GALERIA = [
+  {
+    src: "/images/espacio-completo.png",
+    alt: "Espacio PRAVILO ARG en Plottier con el aparato de suspensión armado",
+    tall: true,
+  },
+  {
+    src: "/images/rig-detalle.png",
+    alt: "Detalle del aparato de suspensión y tracción PRAVILO",
+  },
+  {
+    src: "/images/pared-pravilo.png",
+    alt: "Sector de entrenamiento funcional del centro PRAVILO ARG",
+  },
 ];
 
 const METODO = [
@@ -151,8 +169,15 @@ export default function Home() {
 
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="text-lg font-semibold tracking-tight">
-            PRAVILO <span className="text-accent">ARG</span>
+          <span className="rounded-md bg-white px-2 py-1">
+            <Image
+              src="/images/logo.png"
+              alt="PRAVILO ARG"
+              width={140}
+              height={34}
+              priority
+              className="h-6 w-auto md:h-7"
+            />
           </span>
           <nav className="hidden gap-6 text-sm text-muted md:flex">
             {NAV.map((item) => (
@@ -311,6 +336,33 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Galería */}
+        <section id="galeria" className="mx-auto max-w-6xl px-6 py-24">
+          <RevealOnScroll>
+            <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
+              Galería
+            </h2>
+          </RevealOnScroll>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+            {GALERIA.map((img) => (
+              <RevealOnScroll
+                key={img.src}
+                className={img.tall ? "sm:row-span-2" : ""}
+              >
+                <div className="relative h-full min-h-64 overflow-hidden rounded-2xl border border-border">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </section>
+
         {/* Precios */}
         <section id="precios" className="mx-auto max-w-6xl px-6 py-24">
           <RevealOnScroll>
@@ -457,8 +509,14 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-border px-6 py-10 text-center text-sm text-muted">
-        <p className="font-semibold text-foreground">
-          PRAVILO <span className="text-accent">ARG</span>
+        <p className="inline-block rounded-md bg-white px-2 py-1">
+          <Image
+            src="/images/logo.png"
+            alt="PRAVILO ARG"
+            width={140}
+            height={34}
+            className="h-6 w-auto"
+          />
         </p>
         <p className="mt-2">{LOCATION}</p>
         <div className="mt-4 flex justify-center gap-6">

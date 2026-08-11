@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const LAYERS = [
   { selector: '[data-layer="glow"]', yPercent: 35 },
-  { selector: '[data-layer="wordmark"]', yPercent: 18 },
+  { selector: '[data-layer="photo"]', yPercent: 18 },
   { selector: '[data-layer="axis"]', yPercent: -45 },
   { selector: '[data-layer="content"]', yPercent: 6 },
 ];
@@ -46,11 +47,18 @@ export default function ParallaxHero({ children }: { children: ReactNode }) {
         className="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(circle_at_50%_0%,rgba(230,41,74,0.22),transparent_60%)]"
       />
       <div
-        data-layer="wordmark"
+        data-layer="photo"
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-10 -z-20 select-none text-center text-[22vw] leading-none font-black whitespace-nowrap text-foreground/[0.04]"
+        className="pointer-events-none absolute inset-0 -z-20 opacity-25"
       >
-        PRAVILO
+        <Image
+          src="/images/espacio-completo.png"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/70 to-background" />
       </div>
       <div
         data-layer="axis"
