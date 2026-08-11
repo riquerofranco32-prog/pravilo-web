@@ -1,6 +1,8 @@
 import Link from "next/link";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import ReserveButton from "@/components/ReserveButton";
+import Marquee from "@/components/Marquee";
+import SpotlightCard from "@/components/SpotlightCard";
 import {
   INSTAGRAM_URL,
   LOCATION,
@@ -174,7 +176,7 @@ export default function Home() {
             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-accent">
               1° Centro PRAVILO de Argentina · Plottier, Neuquén
             </p>
-            <h1 className="mx-auto max-w-3xl text-5xl font-bold tracking-tight text-balance md:text-7xl">
+            <h1 className="text-shimmer mx-auto max-w-3xl text-5xl font-bold tracking-tight text-balance md:text-7xl">
               Descubrí una nueva forma de cuidar tu cuerpo
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg text-muted text-balance">
@@ -192,10 +194,8 @@ export default function Home() {
                 Escribinos por WhatsApp
               </a>
             </div>
-            <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs uppercase tracking-wide text-muted">
-              {CREDENCIALES.map((c) => (
-                <span key={c}>{c}</span>
-              ))}
+            <div className="mx-auto mt-10 max-w-2xl">
+              <Marquee items={CREDENCIALES} />
             </div>
           </RevealOnScroll>
         </section>
@@ -267,10 +267,10 @@ export default function Home() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {BENEFICIOS.map((b) => (
               <RevealOnScroll key={b.title}>
-                <div className="h-full rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
+                <SpotlightCard className="h-full rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
                   <h3 className="text-lg font-semibold">{b.title}</h3>
                   <p className="mt-2 text-sm text-muted">{b.desc}</p>
-                </div>
+                </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
@@ -317,7 +317,7 @@ export default function Home() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {PLANES.map((p) => (
               <RevealOnScroll key={p.title}>
-                <div
+                <SpotlightCard
                   className={`flex h-full flex-col rounded-2xl border p-6 ${
                     p.highlight
                       ? "border-accent bg-accent/5"
@@ -329,7 +329,7 @@ export default function Home() {
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
-                </div>
+                </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
