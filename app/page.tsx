@@ -3,6 +3,7 @@ import RevealOnScroll from "@/components/RevealOnScroll";
 import ReserveButton from "@/components/ReserveButton";
 import Marquee from "@/components/Marquee";
 import SpotlightCard from "@/components/SpotlightCard";
+import ParallaxHero from "@/components/ParallaxHero";
 import {
   INSTAGRAM_URL,
   LOCATION,
@@ -170,35 +171,37 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden px-6 py-28 text-center">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(230,41,74,0.18),transparent_60%)]" />
-          <RevealOnScroll>
-            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-accent">
-              1° Centro PRAVILO de Argentina · Plottier, Neuquén
-            </p>
-            <h1 className="text-shimmer mx-auto max-w-3xl text-5xl font-bold tracking-tight text-balance md:text-7xl">
-              Descubrí una nueva forma de cuidar tu cuerpo
-            </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted text-balance">
-              Entrenamiento y terapia de movilidad con el método Pravilo.
-              Suspensión, tracción y eje — tradición eslava, ahora en Plottier.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-border px-8 py-3 font-medium transition-colors hover:border-accent hover:text-accent"
-              >
-                Escribinos por WhatsApp
-              </a>
-            </div>
-            <div className="mx-auto mt-10 max-w-2xl">
-              <Marquee items={CREDENCIALES} />
-            </div>
-          </RevealOnScroll>
-        </section>
+        <ParallaxHero>
+          <section className="px-6 py-32 text-center md:py-48">
+            <RevealOnScroll>
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-accent">
+                1° Centro PRAVILO de Argentina · Plottier, Neuquén
+              </p>
+              <h1 className="text-shimmer mx-auto max-w-3xl text-5xl font-bold tracking-tight text-balance md:text-7xl">
+                Descubrí una nueva forma de cuidar tu cuerpo
+              </h1>
+              <p className="mx-auto mt-6 max-w-xl text-lg text-muted text-balance">
+                Entrenamiento y terapia de movilidad con el método Pravilo.
+                Suspensión, tracción y eje — tradición eslava, ahora en
+                Plottier.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-border px-8 py-3 font-medium transition-colors hover:border-accent hover:text-accent"
+                >
+                  Escribinos por WhatsApp
+                </a>
+              </div>
+              <div className="mx-auto mt-10 max-w-2xl">
+                <Marquee items={CREDENCIALES} />
+              </div>
+            </RevealOnScroll>
+          </section>
+        </ParallaxHero>
 
         {/* ¿Qué es PRAVILO? */}
         <section id="que-es" className="mx-auto max-w-4xl px-6 py-24">
