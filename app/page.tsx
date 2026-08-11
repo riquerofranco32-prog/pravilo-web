@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import ReserveButton from "@/components/ReserveButton";
+import BookingWizard from "@/components/BookingWizard";
 import Marquee from "@/components/Marquee";
 import SpotlightCard from "@/components/SpotlightCard";
 import ParallaxHero from "@/components/ParallaxHero";
@@ -11,6 +11,7 @@ import {
   MAPS_EMBED_SRC,
   whatsappLink,
 } from "@/lib/constants";
+import { PLANES } from "@/lib/plans";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
@@ -93,35 +94,6 @@ const CREDENCIALES = [
   "1er Centro PRAVILO de Argentina",
 ];
 
-const PLANES = [
-  {
-    title: "Experiencia Individual",
-    price: "$45.000",
-    desc: "Evaluación integral + sesión completa (1h 30m).",
-  },
-  {
-    title: "Plan Esencial",
-    price: "$280.000",
-    desc: "Paquete de 8 experiencias ($35.000 c/u).",
-    highlight: true,
-  },
-  {
-    title: "Plan Evolución",
-    price: "$360.000",
-    desc: "Paquete de 12 experiencias ($30.000 c/u).",
-  },
-  {
-    title: "Funcional 2x semana",
-    price: "$55.000/mes",
-    desc: "Entrenamiento funcional, dos sesiones semanales.",
-  },
-  {
-    title: "Funcional 3x semana",
-    price: "$70.000/mes",
-    desc: "Entrenamiento funcional, tres sesiones semanales.",
-  },
-];
-
 const FAQ = [
   {
     q: "¿Necesito experiencia previa?",
@@ -172,14 +144,14 @@ export default function Home() {
 
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="rounded-md bg-white px-2 py-1">
+          <span className="rounded-lg bg-white px-3 py-2">
             <Image
               src="/images/logo.png"
               alt="PRAVILO ARG"
               width={140}
               height={34}
               priority
-              className="h-6 w-auto md:h-7"
+              className="h-9 w-auto md:h-11"
             />
           </span>
           <nav className="hidden gap-6 text-sm text-muted md:flex">
@@ -193,7 +165,7 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <ReserveButton className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
+          <BookingWizard className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
         </div>
       </header>
 
@@ -214,7 +186,7 @@ export default function Home() {
                 Plottier.
               </p>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
+                <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
                 <a
                   href={whatsappLink()}
                   target="_blank"
@@ -505,7 +477,7 @@ export default function Home() {
               Argentina.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
+              <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
               <a
                 href={whatsappLink()}
                 target="_blank"
@@ -520,13 +492,13 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-border px-6 py-10 text-center text-sm text-muted">
-        <p className="inline-block rounded-md bg-white px-2 py-1">
+        <p className="inline-block rounded-lg bg-white px-3 py-2">
           <Image
             src="/images/logo.png"
             alt="PRAVILO ARG"
             width={140}
             height={34}
-            className="h-6 w-auto"
+            className="h-9 w-auto"
           />
         </p>
         <p className="mt-2">{LOCATION}</p>
