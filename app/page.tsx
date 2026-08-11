@@ -164,7 +164,7 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <ReserveButton className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
+          <ReserveButton className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
         </div>
       </header>
 
@@ -184,7 +184,7 @@ export default function Home() {
               Suspensión, tracción y eje — tradición eslava, ahora en Plottier.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <ReserveButton className="rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
+              <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
               <a
                 href={whatsappLink()}
                 target="_blank"
@@ -264,10 +264,15 @@ export default function Home() {
               Beneficios
             </h2>
           </RevealOnScroll>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {BENEFICIOS.map((b) => (
-              <RevealOnScroll key={b.title}>
-                <SpotlightCard className="h-full rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
+          <div className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {BENEFICIOS.map((b, i) => (
+              <RevealOnScroll
+                key={b.title}
+                className={
+                  i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""
+                }
+              >
+                <SpotlightCard className="flex h-full flex-col justify-center rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
                   <h3 className="text-lg font-semibold">{b.title}</h3>
                   <p className="mt-2 text-sm text-muted">{b.desc}</p>
                 </SpotlightCard>
@@ -281,7 +286,7 @@ export default function Home() {
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
-              <div className="flex h-28 w-28 items-center justify-center rounded-full border border-accent/40 bg-background text-4xl font-bold text-accent">
+              <div className="border-beam flex h-28 w-28 items-center justify-center rounded-full border border-accent/40 bg-background text-4xl font-bold text-accent">
                 JG
               </div>
               <div>
@@ -320,7 +325,7 @@ export default function Home() {
                 <SpotlightCard
                   className={`flex h-full flex-col rounded-2xl border p-6 ${
                     p.highlight
-                      ? "border-accent bg-accent/5"
+                      ? "border-beam border-accent bg-accent/5"
                       : "border-border bg-surface"
                   }`}
                 >
@@ -347,16 +352,28 @@ export default function Home() {
               </h2>
             </RevealOnScroll>
             <div className="mt-10 divide-y divide-border rounded-2xl border border-border bg-background">
-              {FAQ.map((item) => (
-                <details key={item.q} className="group p-6">
-                  <summary className="flex cursor-pointer list-none items-center justify-between font-medium">
+              {FAQ.map((item, i) => (
+                <div key={item.q} className="p-6">
+                  <input
+                    type="checkbox"
+                    id={`faq-${i}`}
+                    className="accordion-toggle peer hidden"
+                  />
+                  <label
+                    htmlFor={`faq-${i}`}
+                    className="accordion-header flex cursor-pointer items-center justify-between font-medium"
+                  >
                     {item.q}
-                    <span className="ml-4 text-accent transition-transform duration-300 group-open:rotate-45">
+                    <span className="accordion-icon ml-4 text-accent transition-transform duration-300">
                       +
                     </span>
-                  </summary>
-                  <p className="mt-3 text-muted">{item.a}</p>
-                </details>
+                  </label>
+                  <div className="accordion-content">
+                    <div className="accordion-inner">
+                      <p className="pt-3 text-muted">{item.a}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -422,7 +439,7 @@ export default function Home() {
               Argentina.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <ReserveButton className="rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
+              <ReserveButton className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
               <a
                 href={whatsappLink()}
                 target="_blank"
