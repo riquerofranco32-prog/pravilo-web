@@ -13,8 +13,8 @@ export default function Image() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0b0b0c",
-        color: "#f5f3ee",
+        background: "#0a0f1c",
+        color: "#f2f4f8",
         fontFamily: "sans-serif",
       }}
     >
@@ -26,17 +26,17 @@ export default function Image() {
           display: "flex",
         }}
       >
-        PRAVILO <span style={{ color: "#c9a35a", marginLeft: 16 }}>ARG</span>
+        PRAVILO <span style={{ color: "#e6294a", marginLeft: 16 }}>ARG</span>
       </div>
       <div
         style={{
           fontSize: 32,
-          color: "#a8a49c",
+          color: "#8b93a7",
           marginTop: 24,
           display: "flex",
         }}
       >
-        Primer Centro Pravilo de Argentina — Neuquén
+        Primer Centro Pravilo de Argentina — Plottier, Neuquén
       </div>
     </div>,
     { ...size },

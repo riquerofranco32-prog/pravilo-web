@@ -15,9 +15,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "PRAVILO ARG | Primer Centro Pravilo de Argentina — Neuquén";
+const title =
+  "PRAVILO ARG | Primer Centro Pravilo de Argentina — Plottier, Neuquén";
 const description =
-  "Entrenamiento y terapia de movilidad con el método Pravilo. Sesiones individuales y personalizadas, adaptadas a todas las edades y niveles, en Neuquén.";
+  "Entrenamiento y terapia de movilidad con el método Pravilo. Sesiones individuales y personalizadas, adaptadas a todas las edades y niveles, en Plottier, Neuquén.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

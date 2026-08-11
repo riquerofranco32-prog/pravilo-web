@@ -8,6 +8,10 @@ export const whatsappLink = (message: string = WHATSAPP_DEFAULT_MESSAGE) =>
 
 export const INSTAGRAM_URL = "https://www.instagram.com/praviloarg/";
 
+export const LOCATION = "Plottier, Neuquén, Argentina";
+export const MAPS_EMBED_SRC =
+  "https://www.google.com/maps?q=Plottier,+Neuqu%C3%A9n,+Argentina&output=embed";
+
 // ponytail: sin link de Calendly todavía. Cuando lo tengan, setear
 // NEXT_PUBLIC_CALENDLY_URL en .env.local (ej: https://calendly.com/praviloarg/sesion)
 // y el botón "Reservar turno" pasa a abrir el widget de Calendly automáticamente.

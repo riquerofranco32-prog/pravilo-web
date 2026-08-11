@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0b0c;
-  --surface: #141416;
-  --foreground: #f5f3ee;
-  --muted: #a8a49c;
-  --accent: #c9a35a;
-  --accent-foreground: #0b0b0c;
-  --border: #26262a;
+  --background: #0a0f1c;
+  --surface: #111a2c;
+  --foreground: #f2f4f8;
+  --muted: #8b93a7;
+  --accent: #e6294a;
+  --accent-foreground: #f2f4f8;
+  --border: #1f2937;
 }
 
 @theme inline {
