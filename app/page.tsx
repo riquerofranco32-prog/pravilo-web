@@ -9,6 +9,7 @@ import {
 } from "@/lib/constants";
 
 const NAV = [
+  { href: "#que-es", label: "¿Qué es?" },
   { href: "#practica", label: "La práctica" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#instructor", label: "Instructor" },
@@ -199,6 +200,27 @@ export default function Home() {
           </RevealOnScroll>
         </section>
 
+        {/* ¿Qué es PRAVILO? */}
+        <section id="que-es" className="mx-auto max-w-4xl px-6 py-24">
+          <RevealOnScroll>
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              ¿Qué es PRAVILO?
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-muted">
+              PRAVILO es un sistema de entrenamiento y terapia de movimiento, de
+              tradición eslava, que trabaja la movilidad, la flexibilidad y las
+              capas profundas de tu cuerpo —la fascia— para que puedas moverte
+              con más libertad y menos tensión. Tu fascia guarda más que
+              tensión: guarda tu historia.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-muted">
+              Es para todos los que buscan moverse mejor: no importa si sos
+              deportista, trabajás muchas horas sentado, manejás largas
+              distancias o simplemente querés sentirte mejor en tu cuerpo.
+            </p>
+          </RevealOnScroll>
+        </section>
+
         {/* La práctica / método */}
         <section id="practica" className="bg-surface px-6 py-24">
           <div className="mx-auto max-w-5xl">
@@ -370,6 +392,22 @@ export default function Home() {
             >
               Pedí la ubicación por WhatsApp
             </a>
+          </RevealOnScroll>
+        </section>
+
+        {/* Testimonios */}
+        <section id="testimonios" className="bg-surface px-6 py-24 text-center">
+          <RevealOnScroll>
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              Sé parte de los primeros
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
+              PRAVILO ARG recién abrió sus puertas como el primer centro de este
+              método en el país. Todavía no hay testimonios propios, pero Juan
+              llega con formación certificada en el sistema PRAVILO y
+              trayectoria como antropometrista. Reservá tu primera sesión y sé
+              de los primeros en compartir tu experiencia.
+            </p>
           </RevealOnScroll>
         </section>
 
