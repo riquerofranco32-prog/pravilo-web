@@ -6,7 +6,7 @@ export type Plan = {
   highlight?: boolean;
 };
 
-export const PLANES: Plan[] = [
+export const PLANES_EXPERIENCIA: Plan[] = [
   {
     title: "Experiencia Individual",
     price: "$45.000",
@@ -26,6 +26,9 @@ export const PLANES: Plan[] = [
     priceNumber: 360000,
     desc: "Paquete de 12 experiencias ($30.000 c/u).",
   },
+];
+
+export const PLANES_FUNCIONAL: Plan[] = [
   {
     title: "Funcional 2x semana",
     price: "$55.000/mes",
@@ -39,3 +42,5 @@ export const PLANES: Plan[] = [
     desc: "Entrenamiento funcional, tres sesiones semanales.",
   },
 ];
+
+export const PLANES: Plan[] = [...PLANES_EXPERIENCIA, ...PLANES_FUNCIONAL];

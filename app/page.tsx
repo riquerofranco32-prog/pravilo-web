@@ -15,11 +15,12 @@ import {
   SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
-import { PLANES } from "@/lib/plans";
+import { PLANES_EXPERIENCIA, PLANES_FUNCIONAL } from "@/lib/plans";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
   { href: "#practica", label: "La práctica" },
+  { href: "#experiencias", label: "Experiencias" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#instructor", label: "Instructor" },
   { href: "#galeria", label: "Galería" },
@@ -62,6 +63,31 @@ const METODO = [
     n: "03",
     title: "Simetría",
     desc: "Extensión pareja de los dos lados del cuerpo.",
+  },
+];
+
+const TIPOS_EXPERIENCIA = [
+  {
+    icon: "isotipo" as const,
+    title: "Experiencia PRAVILO",
+    tagline: "Individual · Suspensión y tracción",
+    desc: "Sesiones uno a uno guiadas por el instructor sobre el aparato de suspensión: trabajo profundo de fascia, movilidad y eje corporal. Empieza con una evaluación inicial.",
+    bullets: [
+      "Evaluación inicial incluida",
+      "1h 30m por sesión",
+      "A tu ritmo, sin grupo",
+    ],
+  },
+  {
+    icon: "funcional" as const,
+    title: "Entrenamiento Funcional",
+    tagline: "Semanal · Fuerza y resistencia",
+    desc: "Rutinas funcionales de piso pensadas para complementar el trabajo de movilidad: fuerza, resistencia y control, con la misma mirada personalizada.",
+    bullets: [
+      "2 o 3 sesiones por semana",
+      "Complementa cualquier deporte",
+      "Seguimiento mensual",
+    ],
   },
 ];
 
@@ -165,16 +191,14 @@ export default function Home() {
 
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="rounded-lg bg-white px-3 py-2">
-            <Image
-              src="/images/logo.png"
-              alt="PRAVILO ARG"
-              width={140}
-              height={34}
-              priority
-              className="h-9 w-auto md:h-11"
-            />
-          </span>
+          <Image
+            src="/images/logo-transparent.png"
+            alt="PRAVILO ARG"
+            width={300}
+            height={300}
+            priority
+            className="h-14 w-auto md:h-16"
+          />
           <nav className="hidden gap-6 text-sm text-muted md:flex">
             {NAV.map((item) => (
               <a
@@ -327,33 +351,107 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Beneficios */}
-        <section id="beneficios" className="mx-auto max-w-4xl px-6 py-24">
+        {/* Tipos de experiencia */}
+        <section id="experiencias" className="mx-auto max-w-5xl px-6 py-24">
           <RevealOnScroll>
-            <span className="eyebrow">Beneficios</span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Lo que cambia en tu cuerpo
+            <span className="eyebrow mx-auto w-fit">Elegí tu camino</span>
+            <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+              Dos formas de moverte mejor
             </h2>
+            <p className="mx-auto mt-4 max-w-xl text-center text-muted">
+              Se complementan, pero podés empezar por la que más te resuene.
+            </p>
           </RevealOnScroll>
-          <div className="mt-10 divide-y divide-border border-t border-border">
-            {BENEFICIOS.map((b, i) => (
-              <RevealOnScroll key={b.title}>
-                <div className="group flex items-start gap-6 py-6 transition-colors hover:bg-surface">
-                  <span className="w-10 shrink-0 font-condensed text-2xl font-extrabold text-border transition-colors group-hover:text-accent">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-semibold">{b.title}</h3>
-                    <p className="mt-1 text-sm text-muted">{b.desc}</p>
-                  </div>
+          <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
+            {TIPOS_EXPERIENCIA.map((t, i) => (
+              <RevealOnScroll
+                key={t.title}
+                style={{ transitionDelay: `${i * 120}ms` }}
+              >
+                <div className="group flex h-full flex-col bg-background p-8 transition-colors hover:bg-surface">
+                  {t.icon === "isotipo" ? (
+                    <svg
+                      viewBox="0 0 24 40"
+                      className="h-10 w-auto text-accent"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    >
+                      <path d="M12 2v36" />
+                      <path d="M4 15c4 3 12 3 16 0" />
+                      <path d="M4 25c4-3 12-3 16 0" />
+                    </svg>
+                  ) : (
+                    <svg
+                      viewBox="0 0 40 24"
+                      className="h-10 w-auto text-accent"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    >
+                      <path d="M4 12h32" />
+                      <path d="M4 6v12M9 8v8" />
+                      <path d="M36 6v12M31 8v8" />
+                    </svg>
+                  )}
+                  <h3 className="mt-5 text-xl font-bold">{t.title}</h3>
+                  <p className="mt-1 font-condensed text-xs font-bold tracking-wide text-accent uppercase">
+                    {t.tagline}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-muted">
+                    {t.desc}
+                  </p>
+                  <ul className="mt-5 space-y-2 border-t border-border pt-5 text-sm text-muted">
+                    {t.bullets.map((b) => (
+                      <li key={b} className="flex items-center gap-2">
+                        <span className="h-1 w-1 rounded-full bg-accent" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#precios"
+                    className="mt-6 inline-flex items-center gap-2 font-condensed text-sm font-bold text-accent transition-transform group-hover:translate-x-1"
+                  >
+                    Ver planes →
+                  </a>
                 </div>
               </RevealOnScroll>
             ))}
           </div>
         </section>
 
+        {/* Beneficios */}
+        <section id="beneficios" className="bg-surface px-6 py-24">
+          <div className="mx-auto max-w-4xl">
+            <RevealOnScroll>
+              <span className="eyebrow">Beneficios</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+                Lo que cambia en tu cuerpo
+              </h2>
+            </RevealOnScroll>
+            <div className="mt-10 divide-y divide-border border-t border-border">
+              {BENEFICIOS.map((b, i) => (
+                <RevealOnScroll key={b.title}>
+                  <div className="group flex items-start gap-6 py-6 transition-colors hover:bg-background">
+                    <span className="w-10 shrink-0 font-condensed text-2xl font-extrabold text-border transition-colors group-hover:text-accent">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-semibold">{b.title}</h3>
+                      <p className="mt-1 text-sm text-muted">{b.desc}</p>
+                    </div>
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Instructor */}
-        <section id="instructor" className="bg-surface px-6 py-24">
+        <section id="instructor" className="px-6 py-24">
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
@@ -381,27 +479,29 @@ export default function Home() {
         </section>
 
         {/* Galería */}
-        <section id="galeria" className="mx-auto max-w-6xl px-6 py-24">
-          <RevealOnScroll>
-            <span className="eyebrow mx-auto w-fit">Galería</span>
-            <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-              El espacio
-            </h2>
-          </RevealOnScroll>
-          <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
-            {GALERIA.map((img) => (
-              <RevealOnScroll key={img.src}>
-                <div className="group relative aspect-4/3 h-full overflow-hidden bg-background">
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    sizes="(min-width: 640px) 50vw, 100vw"
-                    className="object-cover grayscale-[0.4] transition-[filter] duration-500 group-hover:grayscale-0"
-                  />
-                </div>
-              </RevealOnScroll>
-            ))}
+        <section id="galeria" className="bg-surface px-6 py-24">
+          <div className="mx-auto max-w-6xl">
+            <RevealOnScroll>
+              <span className="eyebrow mx-auto w-fit">Galería</span>
+              <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+                El espacio
+              </h2>
+            </RevealOnScroll>
+            <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+              {GALERIA.map((img) => (
+                <RevealOnScroll key={img.src}>
+                  <div className="group relative aspect-4/3 h-full overflow-hidden bg-background">
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover grayscale-[0.4] transition-[filter] duration-500 group-hover:grayscale-0"
+                    />
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -418,15 +518,17 @@ export default function Home() {
             </p>
           </RevealOnScroll>
           <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-            {PLANES.map((p) => (
+            {PLANES_EXPERIENCIA.map((p) => (
               <RevealOnScroll key={p.title}>
                 <div
-                  className={`relative flex h-full flex-col bg-background p-6 ${
-                    p.highlight ? "ring-2 ring-accent ring-inset" : ""
+                  className={`relative flex h-full flex-col p-6 ${
+                    p.highlight
+                      ? "bg-accent/10 ring-1 ring-accent ring-inset"
+                      : "bg-background"
                   }`}
                 >
                   {p.highlight && (
-                    <span className="absolute top-6 right-6 font-condensed text-xs font-bold tracking-wide text-accent uppercase">
+                    <span className="absolute top-6 right-6 rounded-full bg-accent px-2.5 py-1 font-condensed text-[0.65rem] font-bold tracking-wide text-accent-foreground uppercase">
                       Más elegido
                     </span>
                   )}
@@ -439,6 +541,22 @@ export default function Home() {
               </RevealOnScroll>
             ))}
           </div>
+
+          <p className="eyebrow mx-auto mt-14 w-fit">Entrenamiento funcional</p>
+          <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+            {PLANES_FUNCIONAL.map((p) => (
+              <RevealOnScroll key={p.title}>
+                <div className="relative flex h-full flex-col bg-background p-6">
+                  <h3 className="text-lg font-semibold">{p.title}</h3>
+                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent">
+                    {p.price}
+                  </p>
+                  <p className="mt-3 text-sm text-muted">{p.desc}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+
           <p className="mt-6 text-center text-xs text-muted">
             Precios de referencia, sujetos a confirmación al reservar.
           </p>
@@ -535,7 +653,7 @@ export default function Home() {
         </section>
 
         {/* CTA final */}
-        <section className="grain bg-surface px-6 py-28 text-center">
+        <section className="grain px-6 py-28 text-center">
           <RevealOnScroll>
             <h2 className="font-condensed text-4xl font-extrabold tracking-tight md:text-6xl">
               Empezá tu proceso hoy
@@ -564,15 +682,13 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-border px-6 py-10 text-center text-sm text-muted">
-        <p className="inline-block rounded-lg bg-white px-3 py-2">
-          <Image
-            src="/images/logo.png"
-            alt="PRAVILO ARG"
-            width={140}
-            height={34}
-            className="h-9 w-auto"
-          />
-        </p>
+        <Image
+          src="/images/logo-transparent.png"
+          alt="PRAVILO ARG"
+          width={300}
+          height={300}
+          className="mx-auto h-10 w-auto"
+        />
         <p className="mt-2">{LOCATION}</p>
         <div className="mt-4 flex justify-center gap-6">
           <Link
