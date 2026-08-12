@@ -351,7 +351,7 @@ export default function Home() {
               </p>
             </RevealOnScroll>
             <RevealOnScroll>
-              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-sm border border-border grayscale-[0.3]">
+              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-sm border border-border">
                 <Image
                   src="/images/accion-suspension.jpg"
                   alt="Sesión de suspensión y tracción del método PRAVILO"
