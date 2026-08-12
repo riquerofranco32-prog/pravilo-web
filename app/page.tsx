@@ -298,13 +298,8 @@ export default function Home() {
             </h2>
           </RevealOnScroll>
           <div className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {BENEFICIOS.map((b, i) => (
-              <RevealOnScroll
-                key={b.title}
-                className={
-                  i === 0 ? "sm:col-span-2 lg:col-span-1 lg:row-span-2" : ""
-                }
-              >
+            {BENEFICIOS.map((b) => (
+              <RevealOnScroll key={b.title}>
                 <SpotlightCard className="flex h-full flex-col justify-center rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
                   <h3 className="text-lg font-semibold">{b.title}</h3>
                   <p className="mt-2 text-sm text-muted">{b.desc}</p>
@@ -453,7 +448,7 @@ export default function Home() {
                 width="100%"
                 height="320"
                 loading="lazy"
-                className="block"
+                className="block invert-[90%] hue-rotate-180 contrast-[.9] brightness-90"
               />
             </div>
             <a
