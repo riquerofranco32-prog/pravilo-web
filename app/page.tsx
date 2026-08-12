@@ -31,25 +31,6 @@ const NAV = [
   { href: "#ubicacion", label: "Ubicación" },
 ];
 
-const GALERIA = [
-  {
-    src: "/images/rig-completo.jpg",
-    alt: "Aparato de suspensión y tracción PRAVILO armado en Plottier",
-  },
-  {
-    src: "/images/rig-anillas.jpg",
-    alt: "Detalle de las anillas del aparato PRAVILO",
-  },
-  {
-    src: "/images/pared-pravilo.jpg",
-    alt: "Sector de entrenamiento funcional del centro PRAVILO ARG",
-  },
-  {
-    src: "/images/rig-detalle.jpg",
-    alt: "Detalle de la estructura de madera del aparato PRAVILO",
-  },
-];
-
 const GALERIA_ACCION = [
   {
     src: "/images/promo-rojo.jpg",
@@ -351,10 +332,10 @@ export default function Home() {
               </p>
             </RevealOnScroll>
             <RevealOnScroll>
-              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-sm border border-border">
+              <div className="relative mt-10 aspect-3/2 overflow-hidden rounded-sm border border-border">
                 <Image
-                  src="/images/accion-suspension.jpg"
-                  alt="Sesión de suspensión y tracción del método PRAVILO"
+                  src="/images/promo-naranja.jpg"
+                  alt="Liberación de tensiones en suspensión, método PRAVILO"
                   fill
                   sizes="(min-width: 1024px) 900px, 100vw"
                   className="object-cover"
@@ -512,15 +493,12 @@ export default function Home() {
             <RevealOnScroll>
               <span className="eyebrow mx-auto w-fit">Galería</span>
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-                El espacio
+                En acción
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-center text-muted">
                 Tocá una foto para verla en grande.
               </p>
             </RevealOnScroll>
-            <Gallery images={GALERIA} />
-
-            <p className="eyebrow mx-auto mt-14 w-fit">En acción</p>
             <Gallery
               images={GALERIA_ACCION}
               gridClassName="sm:grid-cols-3"
