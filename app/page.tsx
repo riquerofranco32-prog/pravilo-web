@@ -3,6 +3,8 @@ import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import BookingWizard from "@/components/BookingWizard";
 import MobileNav from "@/components/MobileNav";
+import ScrollProgress from "@/components/ScrollProgress";
+import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
 import SpotlightCard from "@/components/SpotlightCard";
 import ParallaxHero from "@/components/ParallaxHero";
@@ -157,6 +159,9 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+
+      <ScrollProgress />
+      <SectionDots items={NAV} />
 
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
