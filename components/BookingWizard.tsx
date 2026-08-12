@@ -125,7 +125,7 @@ export default function BookingWizard({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium uppercase tracking-wide text-accent">
+                <p className="text-sm font-medium uppercase tracking-wide text-accent-text">
                   Paso {step} de 3
                 </p>
                 <button
@@ -154,7 +154,7 @@ export default function BookingWizard({
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-semibold">{p.title}</span>
-                          <span className="font-bold text-accent">
+                          <span className="font-bold text-accent-text">
                             {p.price}
                           </span>
                         </div>
@@ -193,7 +193,7 @@ export default function BookingWizard({
                     style={{ minWidth: 280, height: 520 }}
                   />
                   {scheduled && (
-                    <p className="mt-3 rounded-lg bg-accent/10 p-3 text-sm text-accent">
+                    <p className="mt-3 rounded-lg bg-accent/10 p-3 text-sm text-accent-text">
                       ✓ Turno agendado. Continuá al siguiente paso.
                     </p>
                   )}
@@ -223,7 +223,7 @@ export default function BookingWizard({
                   <div className="mt-3 rounded-xl border border-border p-4">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold">{plan?.title}</span>
-                      <span className="font-bold text-accent">
+                      <span className="font-bold text-accent-text">
                         {plan?.price}
                       </span>
                     </div>
@@ -264,7 +264,7 @@ export default function BookingWizard({
                   </div>
 
                   {mpError && (
-                    <p className="mt-3 text-sm text-accent">{mpError}</p>
+                    <p className="mt-3 text-sm text-accent-text">{mpError}</p>
                   )}
 
                   <div className="mt-6 flex gap-3">

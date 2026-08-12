@@ -7,6 +7,10 @@
   --muted: #9c9187;
   --accent: #a01a1a;
   --accent-foreground: #f4efe8;
+  /* accent lightened to meet WCAG AA (4.5:1) as text on --background and
+     --surface; --accent itself only hits ~2.2-2.4:1 there, fine for
+     fills/borders, not text */
+  --accent-text: #e35353;
   --border: #2e2620;
 }
 
@@ -17,6 +21,7 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-text: var(--accent-text);
   --color-border: var(--border);
   --font-display: var(--font-display);
   --font-condensed: var(--font-condensed);
@@ -68,7 +73,7 @@ h3,
   font-size: 0.8rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .eyebrow::before {

@@ -235,7 +235,7 @@ export default function Home() {
                 <h1 className="mt-6 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
                   Tu cuerpo,
                   <br />
-                  <span className="text-accent">bajo tensión</span>
+                  <span className="text-accent-text">bajo tensión</span>
                   <br />
                   controlada.
                 </h1>
@@ -253,7 +253,7 @@ export default function Home() {
                       href={whatsappLink()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+                      className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
                     >
                       Escribinos por WhatsApp
                     </a>
@@ -349,7 +349,7 @@ export default function Home() {
                   style={{ transitionDelay: `${i * 100}ms` }}
                 >
                   <div className="h-full bg-background p-6">
-                    <span className="font-condensed text-3xl font-extrabold text-accent">
+                    <span className="font-condensed text-3xl font-extrabold text-accent-text">
                       {step.n}
                     </span>
                     <h3 className="mt-2 text-xl font-bold">{step.title}</h3>
@@ -382,7 +382,7 @@ export default function Home() {
                   {t.icon === "isotipo" ? (
                     <svg
                       viewBox="0 0 24 40"
-                      className="h-10 w-auto text-accent"
+                      className="h-10 w-auto text-accent-text"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2.5"
@@ -395,7 +395,7 @@ export default function Home() {
                   ) : (
                     <svg
                       viewBox="0 0 40 24"
-                      className="h-10 w-auto text-accent"
+                      className="h-10 w-auto text-accent-text"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2.5"
@@ -407,7 +407,7 @@ export default function Home() {
                     </svg>
                   )}
                   <h3 className="mt-5 text-xl font-bold">{t.title}</h3>
-                  <p className="mt-1 font-condensed text-xs font-bold tracking-wide text-accent uppercase">
+                  <p className="mt-1 font-condensed text-xs font-bold tracking-wide text-accent-text uppercase">
                     {t.tagline}
                   </p>
                   <p className="mt-4 text-sm leading-relaxed text-muted">
@@ -423,7 +423,7 @@ export default function Home() {
                   </ul>
                   <a
                     href="#precios"
-                    className="mt-6 inline-flex items-center gap-2 font-condensed text-sm font-bold text-accent transition-transform group-hover:translate-x-1"
+                    className="mt-6 inline-flex items-center gap-2 font-condensed text-sm font-bold text-accent-text transition-transform group-hover:translate-x-1"
                   >
                     Ver planes →
                   </a>
@@ -464,7 +464,7 @@ export default function Home() {
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
-              <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent">
+              <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent-text">
                 JG
               </div>
               <div>
@@ -472,7 +472,7 @@ export default function Home() {
                 <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                   Juan Garrafa
                 </h2>
-                <p className="mt-2 text-accent">
+                <p className="mt-2 text-accent-text">
                   Instructor PRAVILO &amp; Antropometrista
                 </p>
                 <blockquote className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
@@ -535,7 +535,7 @@ export default function Home() {
                     </span>
                   )}
                   <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent">
+                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent-text">
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
@@ -550,7 +550,7 @@ export default function Home() {
               <RevealOnScroll key={p.title}>
                 <div className="relative flex h-full flex-col bg-background p-6">
                   <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent">
+                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent-text">
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
@@ -586,7 +586,7 @@ export default function Home() {
                     className="accordion-header flex cursor-pointer items-center justify-between font-medium"
                   >
                     {item.q}
-                    <span className="accordion-icon ml-4 text-accent transition-transform duration-300">
+                    <span className="accordion-icon ml-4 text-accent-text transition-transform duration-300">
                       +
                     </span>
                   </label>
@@ -628,7 +628,7 @@ export default function Home() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+                className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
               >
                 Pedí la ubicación por WhatsApp
               </a>
@@ -673,7 +673,7 @@ export default function Home() {
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
                 >
                   Escribinos por WhatsApp
                 </a>

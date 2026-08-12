@@ -12,7 +12,7 @@ export default function BenefitIcon({ name }: { name: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-6 w-6 text-accent"
+      className="h-6 w-6 text-accent-text"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.8"
