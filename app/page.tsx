@@ -333,13 +333,20 @@ export default function Home() {
             </RevealOnScroll>
             <RevealOnScroll>
               <div className="relative mt-10 aspect-3/2 overflow-hidden rounded-sm border border-border">
-                <Image
-                  src="/images/promo-naranja.jpg"
-                  alt="Liberación de tensiones en suspensión, método PRAVILO"
-                  fill
-                  sizes="(min-width: 1024px) 900px, 100vw"
-                  className="object-cover"
-                />
+                <video
+                  poster="/images/promo-naranja.jpg"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 h-full w-full object-cover"
+                >
+                  <source
+                    src="/videos/practica-suspension.mp4"
+                    type="video/mp4"
+                  />
+                </video>
               </div>
             </RevealOnScroll>
             <div className="mt-10 grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-3">
