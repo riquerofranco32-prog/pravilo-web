@@ -23,7 +23,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-text: var(--accent-text);
   --color-border: var(--border);
-  --font-display: var(--font-display);
   --font-condensed: var(--font-condensed);
   --font-sans: var(--font-body);
 }

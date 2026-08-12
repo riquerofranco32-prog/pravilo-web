@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Barlow_Condensed, Barlow } from "next/font/google";
+import { Barlow_Condensed, Barlow } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/constants";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
-
-const display = Bebas_Neue({
-  variable: "--font-display",
-  weight: "400",
-  subsets: ["latin"],
-});
 
 const condensed = Barlow_Condensed({
   variable: "--font-condensed",
@@ -61,7 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-AR"
-      className={`${display.variable} ${condensed.variable} ${body.variable} h-full antialiased`}
+      className={`${condensed.variable} ${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
