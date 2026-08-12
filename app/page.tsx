@@ -264,7 +264,7 @@ export default function Home() {
                   ataduras de plan largo
                 </p>
               </RevealOnScroll>
-              <RevealOnScroll className="hidden lg:block">
+              <RevealOnScroll className="mx-auto w-full max-w-sm lg:max-w-none">
                 <div className="relative aspect-3/4 overflow-hidden rounded-sm border border-border">
                   <video
                     poster="/images/promo-rojo.jpg"
