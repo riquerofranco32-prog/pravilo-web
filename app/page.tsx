@@ -50,6 +50,21 @@ const GALERIA = [
   },
 ];
 
+const GALERIA_ACCION = [
+  {
+    src: "/images/promo-rojo.jpg",
+    alt: "Sesión de suspensión en split completo, método PRAVILO",
+  },
+  {
+    src: "/images/promo-naranja.jpg",
+    alt: "Liberación de tensiones en suspensión, método PRAVILO",
+  },
+  {
+    src: "/images/promo-navy.jpg",
+    alt: "Alineación corporal en suspensión invertida, método PRAVILO",
+  },
+];
+
 const METODO = [
   {
     n: "01",
@@ -202,10 +217,10 @@ export default function Home() {
           <Image
             src="/images/logo-transparent.png"
             alt="PRAVILO ARG"
-            width={300}
-            height={300}
+            width={900}
+            height={176}
             priority
-            className="h-14 w-auto md:h-16"
+            className="h-8 w-auto md:h-10"
           />
           <nav className="hidden gap-6 text-sm text-muted md:flex">
             {NAV.map((item) => (
@@ -271,8 +286,8 @@ export default function Home() {
               <RevealOnScroll className="hidden lg:block">
                 <div className="relative aspect-3/4 overflow-hidden rounded-sm border border-border">
                   <Image
-                    src="/images/accion-suspension.jpg"
-                    alt="Sesión de suspensión y tracción del método PRAVILO"
+                    src="/images/promo-rojo.jpg"
+                    alt="Sesión de suspensión en split completo, método PRAVILO"
                     fill
                     sizes="480px"
                     priority
@@ -498,6 +513,13 @@ export default function Home() {
               </p>
             </RevealOnScroll>
             <Gallery images={GALERIA} />
+
+            <p className="eyebrow mx-auto mt-14 w-fit">En acción</p>
+            <Gallery
+              images={GALERIA_ACCION}
+              gridClassName="sm:grid-cols-3"
+              aspectClassName="aspect-4/5"
+            />
           </div>
         </section>
 
@@ -681,8 +703,8 @@ export default function Home() {
         <Image
           src="/images/logo-transparent.png"
           alt="PRAVILO ARG"
-          width={300}
-          height={300}
+          width={900}
+          height={176}
           className="mx-auto h-10 w-auto"
         />
         <p className="mt-2">{LOCATION}</p>

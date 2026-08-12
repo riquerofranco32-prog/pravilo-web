@@ -6,7 +6,15 @@ import RevealOnScroll from "@/components/RevealOnScroll";
 
 type GalleryImg = { src: string; alt: string };
 
-export default function Gallery({ images }: { images: GalleryImg[] }) {
+export default function Gallery({
+  images,
+  gridClassName = "sm:grid-cols-2",
+  aspectClassName = "aspect-4/3",
+}: {
+  images: GalleryImg[];
+  gridClassName?: string;
+  aspectClassName?: string;
+}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const close = useCallback(() => setOpenIndex(null), []);
@@ -39,14 +47,16 @@ export default function Gallery({ images }: { images: GalleryImg[] }) {
 
   return (
     <>
-      <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+      <div
+        className={`mt-10 grid gap-px overflow-hidden border border-border bg-border ${gridClassName}`}
+      >
         {images.map((img, i) => (
           <RevealOnScroll key={img.src}>
             <button
               type="button"
               onClick={() => setOpenIndex(i)}
               aria-label={`Ver imagen: ${img.alt}`}
-              className="group relative aspect-4/3 h-full w-full cursor-zoom-in overflow-hidden bg-background"
+              className={`group relative ${aspectClassName} h-full w-full cursor-zoom-in overflow-hidden bg-background`}
             >
               <Image
                 src={img.src}
