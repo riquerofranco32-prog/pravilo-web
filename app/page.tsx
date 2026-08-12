@@ -462,14 +462,16 @@ export default function Home() {
                 Lo que cambia en tu cuerpo
               </h2>
             </RevealOnScroll>
-            <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {BENEFICIOS.map((b, i) => (
                 <RevealOnScroll
                   key={b.title}
                   style={{ transitionDelay: `${(i % 3) * 100}ms` }}
                 >
-                  <SpotlightCard className="group h-full bg-background p-6 transition-colors hover:bg-surface">
-                    <BenefitIcon name={b.icon} />
+                  <SpotlightCard className="h-full rounded-2xl border border-border bg-background p-6 transition-colors hover:border-accent/40">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
+                      <BenefitIcon name={b.icon} />
+                    </span>
                     <h3 className="mt-4 text-lg font-semibold">{b.title}</h3>
                     <p className="mt-1 text-sm text-muted">{b.desc}</p>
                   </SpotlightCard>
@@ -492,9 +494,14 @@ export default function Home() {
                 <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                   Juan Garrafa
                 </h2>
-                <p className="mt-2 text-accent-text">
-                  Instructor PRAVILO &amp; Antropometrista
-                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                  <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
+                    Instructor certificado PRAVILO
+                  </span>
+                  <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
+                    Antropometrista
+                  </span>
+                </div>
                 <blockquote className="relative mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
                   &ldquo;Creé PRAVILO ARG con el objetivo de brindar una
                   atención completamente personalizada, adaptada a las
@@ -626,91 +633,144 @@ export default function Home() {
 
         {/* FAQ */}
         <section id="faq" className="bg-surface px-6 py-24">
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
             <RevealOnScroll>
-              <span className="eyebrow mx-auto w-fit">FAQ</span>
-              <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+              <span className="eyebrow">FAQ</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                 Preguntas frecuentes
               </h2>
-            </RevealOnScroll>
-            <div className="mt-10 divide-y divide-border rounded-2xl border border-border bg-background">
-              {FAQ.map((item, i) => (
-                <div
-                  key={item.q}
-                  className="border-l-2 border-transparent p-6 transition-colors hover:border-accent hover:bg-surface"
+              <p className="mt-4 text-muted">
+                ¿No encontrás lo que buscás? Escribinos y te respondemos
+                directo.
+              </p>
+              <MagneticButton className="mt-6 inline-block">
+                <a
+                  href={whatsappLink("Hola! Tengo una pregunta sobre PRAVILO.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block rounded-full border border-border px-6 py-2.5 font-condensed text-sm font-semibold transition-colors hover:border-accent hover:text-accent-text"
                 >
-                  <input
-                    type="checkbox"
-                    id={`faq-${i}`}
-                    className="accordion-toggle peer hidden"
-                  />
-                  <label
-                    htmlFor={`faq-${i}`}
-                    className="accordion-header flex cursor-pointer items-center justify-between font-medium"
-                  >
-                    {item.q}
-                    <span className="accordion-icon ml-4 text-accent-text transition-transform duration-300">
-                      +
-                    </span>
-                  </label>
-                  <div className="accordion-content">
-                    <div className="accordion-inner">
-                      <p className="pt-3 text-muted">{item.a}</p>
+                  Escribinos por WhatsApp
+                </a>
+              </MagneticButton>
+            </RevealOnScroll>
+            <div className="space-y-3">
+              {FAQ.map((item, i) => (
+                <RevealOnScroll
+                  key={item.q}
+                  style={{ transitionDelay: `${i * 60}ms` }}
+                >
+                  <div className="rounded-2xl border border-border bg-background px-6 transition-colors has-[.accordion-toggle:checked]:border-accent/40">
+                    <input
+                      type="checkbox"
+                      id={`faq-${i}`}
+                      className="accordion-toggle peer hidden"
+                    />
+                    <label
+                      htmlFor={`faq-${i}`}
+                      className="accordion-header flex cursor-pointer items-center justify-between gap-4 py-5 font-medium"
+                    >
+                      {item.q}
+                      <span className="accordion-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 text-accent-text transition-transform duration-300">
+                        +
+                      </span>
+                    </label>
+                    <div className="accordion-content">
+                      <div className="accordion-inner">
+                        <p className="pb-5 text-muted">{item.a}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
         </section>
 
         {/* Ubicación */}
-        <section id="ubicacion" className="px-6 py-24 text-center">
-          <RevealOnScroll>
-            <span className="eyebrow mx-auto w-fit">Ubicación</span>
-            <h2 className="mt-3 flex items-center justify-center gap-2 text-3xl font-extrabold tracking-tight md:text-4xl">
-              <svg
-                viewBox="0 0 24 24"
-                className="h-6 w-6 shrink-0 text-accent-text"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"
+        <section id="ubicacion" className="px-6 py-24">
+          <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center">
+            <RevealOnScroll>
+              <span className="eyebrow">Ubicación</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+                {LOCATION}
+              </h2>
+              <p className="mt-4 max-w-md text-lg text-muted">
+                Coordinamos la dirección exacta y el horario al reservar tu
+                turno.
+              </p>
+              <div className="mt-8 space-y-3">
+                <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 text-accent-text"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"
+                      />
+                      <circle cx="12" cy="9.5" r="2.5" />
+                    </svg>
+                  </span>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold">Dirección</p>
+                    <p className="text-sm text-muted">
+                      A confirmar al reservar
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 text-accent-text"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path strokeLinecap="round" d="M12 7v5l3.5 2" />
+                    </svg>
+                  </span>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold">Horarios</p>
+                    <p className="text-sm text-muted">
+                      A coordinar según turno
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <MagneticButton className="mt-8 inline-block">
+                <a
+                  href={whatsappLink(
+                    "Hola! ¿Me pasás la ubicación exacta del centro?",
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
+                >
+                  Pedí la ubicación por WhatsApp
+                </a>
+              </MagneticButton>
+            </RevealOnScroll>
+            <RevealOnScroll>
+              <div className="overflow-hidden rounded-2xl border border-border">
+                <iframe
+                  src={MAPS_EMBED_SRC}
+                  title="Mapa de Plottier, Neuquén"
+                  width="100%"
+                  height="420"
+                  loading="lazy"
+                  className="block invert-[90%] hue-rotate-180 contrast-[.9] brightness-90"
                 />
-                <circle cx="12" cy="9.5" r="2.5" />
-              </svg>
-              {LOCATION}
-            </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
-              Coordinamos la dirección exacta y el horario al reservar tu turno.
-            </p>
-            <div className="mx-auto mt-8 max-w-2xl overflow-hidden border border-border">
-              <iframe
-                src={MAPS_EMBED_SRC}
-                title="Mapa de Plottier, Neuquén"
-                width="100%"
-                height="320"
-                loading="lazy"
-                className="block invert-[90%] hue-rotate-180 contrast-[.9] brightness-90"
-              />
-            </div>
-            <MagneticButton className="mt-8">
-              <a
-                href={whatsappLink(
-                  "Hola! ¿Me pasás la ubicación exacta del centro?",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
-              >
-                Pedí la ubicación por WhatsApp
-              </a>
-            </MagneticButton>
-          </RevealOnScroll>
+              </div>
+            </RevealOnScroll>
+          </div>
         </section>
 
         {/* Testimonios */}

@@ -47,16 +47,14 @@ export default function Gallery({
 
   return (
     <>
-      <div
-        className={`mt-10 grid gap-px overflow-hidden border border-border bg-border ${gridClassName}`}
-      >
+      <div className={`mt-10 grid gap-4 ${gridClassName}`}>
         {images.map((img, i) => (
           <RevealOnScroll key={img.src}>
             <button
               type="button"
               onClick={() => setOpenIndex(i)}
               aria-label={`Ver imagen: ${img.alt}`}
-              className={`group relative ${aspectClassName} h-full w-full cursor-zoom-in overflow-hidden bg-background`}
+              className={`group relative ${aspectClassName} h-full w-full cursor-zoom-in overflow-hidden rounded-2xl border border-border bg-background`}
             >
               <Image
                 src={img.src}
@@ -65,6 +63,11 @@ export default function Gallery({
                 sizes="(min-width: 640px) 50vw, 100vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/30 group-hover:opacity-100">
+                <span className="rounded-full border border-white/30 bg-black/40 px-4 py-1.5 text-xs font-semibold tracking-wide text-white uppercase backdrop-blur-sm">
+                  Ver ↗
+                </span>
+              </span>
             </button>
           </RevealOnScroll>
         ))}
@@ -79,7 +82,7 @@ export default function Gallery({
             type="button"
             onClick={close}
             aria-label="Cerrar"
-            className="absolute top-6 right-6 text-3xl text-foreground/70 transition-colors hover:text-foreground"
+            className="absolute top-6 right-6 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground"
           >
             ×
           </button>
@@ -90,7 +93,7 @@ export default function Gallery({
               prev();
             }}
             aria-label="Imagen anterior"
-            className="absolute left-4 text-3xl text-foreground/70 transition-colors hover:text-foreground md:left-8"
+            className="absolute left-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground md:left-8"
           >
             ‹
           </button>
@@ -113,7 +116,7 @@ export default function Gallery({
               next();
             }}
             aria-label="Imagen siguiente"
-            className="absolute right-4 text-3xl text-foreground/70 transition-colors hover:text-foreground md:right-8"
+            className="absolute right-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground md:right-8"
           >
             ›
           </button>
