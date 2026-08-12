@@ -6,6 +6,8 @@ import MobileNav from "@/components/MobileNav";
 import ScrollProgress from "@/components/ScrollProgress";
 import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
+import Gallery from "@/components/Gallery";
+import BenefitIcon from "@/components/BenefitIcon";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import {
@@ -93,26 +95,32 @@ const TIPOS_EXPERIENCIA = [
 
 const BENEFICIOS = [
   {
+    icon: "movilidad" as const,
     title: "Más movilidad",
     desc: "Ganá rango de movimiento real en articulaciones y cadera.",
   },
   {
+    icon: "tension" as const,
     title: "Menos tensión y dolor",
     desc: "Liberá capas profundas de tejido que acumulan tensión crónica.",
   },
   {
+    icon: "postura" as const,
     title: "Mejor postura",
     desc: "Trabajo consciente sobre la alineación de tu cuerpo en el día a día.",
   },
   {
+    icon: "recuperacion" as const,
     title: "Recuperación activa",
     desc: "Complementá tu deporte o rutina con un trabajo regenerativo.",
   },
   {
+    icon: "rendimiento" as const,
     title: "Rendimiento deportivo",
     desc: "Más amplitud y control de movimiento para cualquier disciplina.",
   },
   {
+    icon: "bienestar" as const,
     title: "Bienestar y autonomía",
     desc: "Una mejor relación con tu cuerpo, a tu ritmo y sin comparaciones.",
   },
@@ -425,24 +433,23 @@ export default function Home() {
 
         {/* Beneficios */}
         <section id="beneficios" className="bg-surface px-6 py-24">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-5xl">
             <RevealOnScroll>
-              <span className="eyebrow">Beneficios</span>
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              <span className="eyebrow mx-auto w-fit">Beneficios</span>
+              <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 Lo que cambia en tu cuerpo
               </h2>
             </RevealOnScroll>
-            <div className="mt-10 divide-y divide-border border-t border-border">
+            <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
               {BENEFICIOS.map((b, i) => (
-                <RevealOnScroll key={b.title}>
-                  <div className="group flex items-start gap-6 py-6 transition-colors hover:bg-background">
-                    <span className="w-10 shrink-0 font-condensed text-2xl font-extrabold text-border transition-colors group-hover:text-accent">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="text-lg font-semibold">{b.title}</h3>
-                      <p className="mt-1 text-sm text-muted">{b.desc}</p>
-                    </div>
+                <RevealOnScroll
+                  key={b.title}
+                  style={{ transitionDelay: `${(i % 3) * 100}ms` }}
+                >
+                  <div className="group h-full bg-background p-6 transition-colors hover:bg-surface">
+                    <BenefitIcon name={b.icon} />
+                    <h3 className="mt-4 text-lg font-semibold">{b.title}</h3>
+                    <p className="mt-1 text-sm text-muted">{b.desc}</p>
                   </div>
                 </RevealOnScroll>
               ))}
@@ -486,22 +493,11 @@ export default function Home() {
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 El espacio
               </h2>
+              <p className="mx-auto mt-4 max-w-xl text-center text-muted">
+                Tocá una foto para verla en grande.
+              </p>
             </RevealOnScroll>
-            <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
-              {GALERIA.map((img) => (
-                <RevealOnScroll key={img.src}>
-                  <div className="group relative aspect-4/3 h-full overflow-hidden bg-background">
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      className="object-cover grayscale-[0.4] transition-[filter] duration-500 group-hover:grayscale-0"
-                    />
-                  </div>
-                </RevealOnScroll>
-              ))}
-            </div>
+            <Gallery images={GALERIA} />
           </div>
         </section>
 
