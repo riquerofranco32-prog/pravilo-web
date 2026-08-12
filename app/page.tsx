@@ -285,14 +285,20 @@ export default function Home() {
               </RevealOnScroll>
               <RevealOnScroll className="hidden lg:block">
                 <div className="relative aspect-3/4 overflow-hidden rounded-sm border border-border">
-                  <Image
-                    src="/images/promo-rojo.jpg"
-                    alt="Sesión de suspensión en split completo, método PRAVILO"
-                    fill
-                    sizes="480px"
-                    priority
-                    className="object-cover"
-                  />
+                  <video
+                    poster="/images/promo-rojo.jpg"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  >
+                    <source
+                      src="/videos/hero-suspension.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
                 </div>
               </RevealOnScroll>
             </div>
