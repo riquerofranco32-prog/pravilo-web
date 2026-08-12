@@ -8,6 +8,7 @@ import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
 import Gallery from "@/components/Gallery";
 import BenefitIcon from "@/components/BenefitIcon";
+import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import {
@@ -233,11 +234,21 @@ export default function Home() {
                   1° Centro PRAVILO de Argentina · Plottier, Neuquén
                 </span>
                 <h1 className="mt-6 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
-                  Tu cuerpo,
-                  <br />
-                  <span className="text-accent-text">bajo tensión</span>
-                  <br />
-                  controlada.
+                  <span className="hero-line" style={{ animationDelay: "0ms" }}>
+                    Tu cuerpo,
+                  </span>
+                  <span
+                    className="hero-line text-accent-text"
+                    style={{ animationDelay: "110ms" }}
+                  >
+                    bajo tensión
+                  </span>
+                  <span
+                    className="hero-line"
+                    style={{ animationDelay: "220ms" }}
+                  >
+                    controlada.
+                  </span>
                 </h1>
                 <p className="mt-6 max-w-lg text-lg text-muted text-balance">
                   Entrenamiento y terapia de movilidad con el método Pravilo.
@@ -305,10 +316,12 @@ export default function Home() {
               PRAVILO es un sistema de entrenamiento y terapia de movimiento, de
               tradición eslava, que trabaja la movilidad, la flexibilidad y las
               capas profundas de tu cuerpo —la fascia— para que puedas moverte
-              con más libertad y menos tensión. Tu fascia guarda más que
-              tensión: guarda tu historia.
+              con más libertad y menos tensión.
             </p>
-            <p className="mt-4 text-lg leading-relaxed text-muted">
+            <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
+              Tu fascia guarda más que tensión: guarda tu historia.
+            </p>
+            <p className="mt-8 text-lg leading-relaxed text-muted">
               Es para todos los que buscan moverse mejor: no importa si sos
               deportista, trabajás muchas horas sentado, manejás largas
               distancias o simplemente querés sentirte mejor en tu cuerpo.
@@ -385,7 +398,7 @@ export default function Home() {
                 key={t.title}
                 style={{ transitionDelay: `${i * 120}ms` }}
               >
-                <div className="group flex h-full flex-col bg-background p-8 transition-colors hover:bg-surface">
+                <SpotlightCard className="group flex h-full flex-col bg-background p-8 transition-colors hover:bg-surface">
                   {t.icon === "isotipo" ? (
                     <svg
                       viewBox="0 0 24 40"
@@ -434,7 +447,7 @@ export default function Home() {
                   >
                     Ver planes →
                   </a>
-                </div>
+                </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
@@ -455,11 +468,11 @@ export default function Home() {
                   key={b.title}
                   style={{ transitionDelay: `${(i % 3) * 100}ms` }}
                 >
-                  <div className="group h-full bg-background p-6 transition-colors hover:bg-surface">
+                  <SpotlightCard className="group h-full bg-background p-6 transition-colors hover:bg-surface">
                     <BenefitIcon name={b.icon} />
                     <h3 className="mt-4 text-lg font-semibold">{b.title}</h3>
                     <p className="mt-1 text-sm text-muted">{b.desc}</p>
-                  </div>
+                  </SpotlightCard>
                 </RevealOnScroll>
               ))}
             </div>
@@ -471,18 +484,18 @@ export default function Home() {
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
-              <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent-text">
+              <div className="relative flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent-text shadow-[0_0_40px_-8px_var(--accent)]">
                 JG
               </div>
-              <div>
-                <span className="eyebrow">Instructor</span>
+              <div className="relative">
+                <span className="eyebrow relative">Instructor</span>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                   Juan Garrafa
                 </h2>
                 <p className="mt-2 text-accent-text">
                   Instructor PRAVILO &amp; Antropometrista
                 </p>
-                <blockquote className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
+                <blockquote className="relative mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
                   &ldquo;Creé PRAVILO ARG con el objetivo de brindar una
                   atención completamente personalizada, adaptada a las
                   necesidades, objetivos y características de cada persona. Cada
@@ -529,8 +542,8 @@ export default function Home() {
           <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {PLANES_EXPERIENCIA.map((p) => (
               <RevealOnScroll key={p.title}>
-                <div
-                  className={`relative flex h-full flex-col p-6 ${
+                <SpotlightCard
+                  className={`flex h-full flex-col p-6 ${
                     p.highlight
                       ? "bg-accent/10 ring-1 ring-accent ring-inset"
                       : "bg-background"
@@ -546,7 +559,7 @@ export default function Home() {
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
-                </div>
+                </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
@@ -555,13 +568,13 @@ export default function Home() {
           <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
             {PLANES_FUNCIONAL.map((p) => (
               <RevealOnScroll key={p.title}>
-                <div className="relative flex h-full flex-col bg-background p-6">
+                <SpotlightCard className="flex h-full flex-col bg-background p-6">
                   <h3 className="text-lg font-semibold">{p.title}</h3>
                   <p className="mt-1 font-condensed text-2xl font-extrabold text-accent-text">
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
-                </div>
+                </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
@@ -582,7 +595,10 @@ export default function Home() {
             </RevealOnScroll>
             <div className="mt-10 divide-y divide-border rounded-2xl border border-border bg-background">
               {FAQ.map((item, i) => (
-                <div key={item.q} className="p-6">
+                <div
+                  key={item.q}
+                  className="border-l-2 border-transparent p-6 transition-colors hover:border-accent hover:bg-surface"
+                >
                   <input
                     type="checkbox"
                     id={`faq-${i}`}
@@ -612,7 +628,21 @@ export default function Home() {
         <section id="ubicacion" className="px-6 py-24 text-center">
           <RevealOnScroll>
             <span className="eyebrow mx-auto w-fit">Ubicación</span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+            <h2 className="mt-3 flex items-center justify-center gap-2 text-3xl font-extrabold tracking-tight md:text-4xl">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-6 w-6 shrink-0 text-accent-text"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"
+                />
+                <circle cx="12" cy="9.5" r="2.5" />
+              </svg>
               {LOCATION}
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
@@ -646,7 +676,25 @@ export default function Home() {
         {/* Testimonios */}
         <section id="testimonios" className="bg-surface px-6 py-24 text-center">
           <RevealOnScroll>
-            <span className="eyebrow mx-auto w-fit">
+            <div className="mx-auto flex w-fit gap-1.5" aria-hidden>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <svg
+                  key={i}
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5 text-border"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3.5l2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8L12 3.5Z"
+                  />
+                </svg>
+              ))}
+            </div>
+            <span className="eyebrow mx-auto mt-4 w-fit">
               Sé parte de los primeros
             </span>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">

@@ -147,3 +147,58 @@ h3,
 .accordion-toggle:checked ~ .accordion-header .accordion-icon {
   transform: rotate(45deg);
 }
+
+/* spotlight: halo que sigue el cursor sobre una tarjeta
+   ::before pinta arriba del fondo propio de la tarjeta y detrás del resto
+   del contenido real por orden de pintado normal (sin z-index) */
+.spotlight {
+  position: relative;
+}
+
+.spotlight > * {
+  position: relative;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: var(--spot-opacity, 0);
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    320px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent-text) 45%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight::before {
+    display: none;
+  }
+}
+
+/* hero: entrada escalonada del título, una sola vez al cargar */
+@keyframes hero-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-line {
+  display: block;
+  opacity: 0;
+  animation: hero-line-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line {
+    opacity: 1;
+    animation: none;
+  }
+}
