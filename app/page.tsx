@@ -539,41 +539,81 @@ export default function Home() {
               cambiarlo antes de confirmar.
             </p>
           </RevealOnScroll>
-          <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 lg:grid-cols-3 lg:items-center">
             {PLANES_EXPERIENCIA.map((p) => (
               <RevealOnScroll key={p.title}>
                 <SpotlightCard
-                  className={`flex h-full flex-col p-6 ${
+                  className={`flex h-full flex-col rounded-2xl border p-7 ${
                     p.highlight
-                      ? "bg-accent/10 ring-1 ring-accent ring-inset"
-                      : "bg-background"
+                      ? "border-accent bg-accent/10 shadow-[0_0_50px_-12px_var(--accent)] lg:scale-105"
+                      : "border-border bg-background"
                   }`}
                 >
                   {p.highlight && (
-                    <span className="absolute top-6 right-6 rounded-full bg-accent px-2.5 py-1 font-condensed text-[0.65rem] font-bold tracking-wide text-accent-foreground uppercase">
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 font-condensed text-[0.65rem] font-bold tracking-wide whitespace-nowrap text-accent-foreground uppercase">
                       Más elegido
                     </span>
                   )}
                   <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent-text">
-                    {p.price}
+                  <p className="mt-2 flex items-baseline gap-1">
+                    <span className="font-condensed text-3xl font-extrabold text-accent-text">
+                      {p.price}
+                    </span>
                   </p>
-                  <p className="mt-3 text-sm text-muted">{p.desc}</p>
+                  <ul className="mt-5 flex-1 space-y-2.5 border-t border-border pt-5 text-sm">
+                    {p.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2.5">
+                        <svg
+                          viewBox="0 0 20 20"
+                          className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 10.5l4 4 8-9"
+                          />
+                        </svg>
+                        <span className="text-muted">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </SpotlightCard>
               </RevealOnScroll>
             ))}
           </div>
 
           <p className="eyebrow mx-auto mt-14 w-fit">Entrenamiento funcional</p>
-          <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {PLANES_FUNCIONAL.map((p) => (
               <RevealOnScroll key={p.title}>
-                <SpotlightCard className="flex h-full flex-col bg-background p-6">
+                <SpotlightCard className="flex h-full flex-col rounded-2xl border border-border bg-background p-7">
                   <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent-text">
+                  <p className="mt-2 font-condensed text-3xl font-extrabold text-accent-text">
                     {p.price}
                   </p>
-                  <p className="mt-3 text-sm text-muted">{p.desc}</p>
+                  <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm">
+                    {p.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2.5">
+                        <svg
+                          viewBox="0 0 20 20"
+                          className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 10.5l4 4 8-9"
+                          />
+                        </svg>
+                        <span className="text-muted">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </SpotlightCard>
               </RevealOnScroll>
             ))}
