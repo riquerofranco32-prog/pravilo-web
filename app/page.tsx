@@ -270,13 +270,36 @@ export default function Home() {
                     </a>
                   </MagneticButton>
                 </div>
-                <p className="mt-6 text-sm text-muted">
-                  Evaluación inicial incluida · Sesiones individuales · Sin
-                  ataduras de plan largo
-                </p>
+                <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+                  {[
+                    "Evaluación inicial incluida",
+                    "Sesiones individuales",
+                    "Sin ataduras de plan largo",
+                  ].map((t) => (
+                    <span
+                      key={t}
+                      className="flex items-center gap-1.5 text-sm text-muted"
+                    >
+                      <svg
+                        viewBox="0 0 20 20"
+                        className="h-3.5 w-3.5 shrink-0 text-accent-text"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 10.5l4 4 8-9"
+                        />
+                      </svg>
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </RevealOnScroll>
               <RevealOnScroll className="mx-auto w-full max-w-sm lg:max-w-none">
-                <div className="relative aspect-3/4 overflow-hidden rounded-sm border border-border">
+                <div className="relative aspect-3/4 overflow-hidden rounded-2xl border border-border shadow-[0_0_60px_-15px_var(--accent)]">
                   <video
                     poster="/images/promo-rojo.jpg"
                     autoPlay
@@ -294,6 +317,27 @@ export default function Home() {
                 </div>
               </RevealOnScroll>
             </div>
+            <RevealOnScroll className="mt-16 hidden justify-center lg:flex">
+              <a
+                href="#que-es"
+                aria-label="Ver más"
+                className="flex flex-col items-center gap-2 text-muted transition-colors hover:text-accent-text"
+              >
+                <span className="text-xs tracking-widest uppercase">
+                  Scroll
+                </span>
+                <svg
+                  viewBox="0 0 20 28"
+                  className="h-7 w-5 animate-bounce"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <rect x="1" y="1" width="18" height="26" rx="9" />
+                  <circle cx="10" cy="8" r="1.6" fill="currentColor" />
+                </svg>
+              </a>
+            </RevealOnScroll>
           </section>
         </ParallaxHero>
 
@@ -326,6 +370,23 @@ export default function Home() {
               deportista, trabajás muchas horas sentado, manejás largas
               distancias o simplemente querés sentirte mejor en tu cuerpo.
             </p>
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {[
+                { label: "Movilidad", desc: "Rango real de movimiento" },
+                { label: "Tracción", desc: "Suspensión controlada" },
+                { label: "Fascia", desc: "Memoria del cuerpo" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-border bg-surface p-5"
+                >
+                  <p className="font-condensed text-lg font-bold text-accent-text">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-sm text-muted">{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </RevealOnScroll>
         </section>
 
@@ -774,8 +835,8 @@ export default function Home() {
         </section>
 
         {/* Testimonios */}
-        <section id="testimonios" className="bg-surface px-6 py-24 text-center">
-          <RevealOnScroll>
+        <section id="testimonios" className="bg-surface px-6 py-24">
+          <RevealOnScroll className="mx-auto max-w-2xl rounded-3xl border border-border bg-background p-10 text-center md:p-14">
             <div className="mx-auto flex w-fit gap-1.5" aria-hidden>
               {Array.from({ length: 5 }).map((_, i) => (
                 <svg
@@ -810,8 +871,12 @@ export default function Home() {
         </section>
 
         {/* CTA final */}
-        <section className="grain px-6 py-28 text-center">
-          <RevealOnScroll>
+        <section className="grain relative overflow-hidden px-6 py-28 text-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/20 blur-[120px]"
+          />
+          <RevealOnScroll className="relative">
             <h2 className="font-condensed text-4xl font-extrabold tracking-tight md:text-6xl">
               Empezá tu proceso hoy
             </h2>
@@ -847,21 +912,39 @@ export default function Home() {
           className="mx-auto h-10 w-auto"
         />
         <p className="mt-2">{LOCATION}</p>
-        <div className="mt-4 flex justify-center gap-6">
+        <div className="mt-5 flex justify-center gap-3">
           <Link
             href={INSTAGRAM_URL}
             target="_blank"
-            className="hover:text-foreground"
+            aria-label="Instagram"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border transition-colors hover:border-accent hover:text-accent-text"
           >
-            Instagram
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4.5 w-4.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" />
+            </svg>
           </Link>
           <a
             href={whatsappLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground"
+            aria-label="WhatsApp"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-border transition-colors hover:border-accent hover:text-accent-text"
           >
-            WhatsApp
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4.5 w-4.5"
+              fill="currentColor"
+            >
+              <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3Z" />
+            </svg>
           </a>
         </div>
         <p className="mt-6">© {new Date().getFullYear()} PRAVILO ARG</p>
