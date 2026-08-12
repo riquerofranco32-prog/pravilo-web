@@ -13,8 +13,8 @@ export default function Image() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0a0f1c",
-        color: "#f2f4f8",
+        background: "#120f0d",
+        color: "#f4efe8",
         fontFamily: "sans-serif",
       }}
     >
@@ -26,12 +26,12 @@ export default function Image() {
           display: "flex",
         }}
       >
-        PRAVILO <span style={{ color: "#e6294a", marginLeft: 16 }}>ARG</span>
+        PRAVILO <span style={{ color: "#b8402c", marginLeft: 16 }}>ARG</span>
       </div>
       <div
         style={{
           fontSize: 32,
-          color: "#8b93a7",
+          color: "#9c9187",
           marginTop: 24,
           display: "flex",
         }}

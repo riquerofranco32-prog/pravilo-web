@@ -6,7 +6,7 @@ import MobileNav from "@/components/MobileNav";
 import ScrollProgress from "@/components/ScrollProgress";
 import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
-import SpotlightCard from "@/components/SpotlightCard";
+import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import {
   INSTAGRAM_URL,
@@ -187,7 +187,9 @@ export default function Home() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <BookingWizard className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
+            <MagneticButton>
+              <BookingWizard className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-condensed font-semibold text-accent-foreground" />
+            </MagneticButton>
             <MobileNav items={NAV} />
           </div>
         </div>
@@ -196,42 +198,74 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <ParallaxHero>
-          <section className="px-6 py-32 text-center md:py-48">
-            <RevealOnScroll>
-              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-accent">
-                1° Centro PRAVILO de Argentina · Plottier, Neuquén
-              </p>
-              <h1 className="text-shimmer mx-auto max-w-3xl text-5xl font-bold tracking-tight text-balance md:text-7xl">
-                Descubrí una nueva forma de cuidar tu cuerpo
-              </h1>
-              <p className="mx-auto mt-6 max-w-xl text-lg text-muted text-balance">
-                Entrenamiento y terapia de movilidad con el método Pravilo.
-                Suspensión, tracción y eje — tradición eslava, ahora en
-                Plottier.
-              </p>
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
-                <a
-                  href={whatsappLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-border px-8 py-3 font-medium transition-colors hover:border-accent hover:text-accent"
-                >
-                  Escribinos por WhatsApp
-                </a>
-              </div>
-              <div className="mx-auto mt-10 max-w-2xl">
-                <Marquee items={CREDENCIALES} />
-              </div>
-            </RevealOnScroll>
+          <section className="grain px-6 pt-28 pb-20 md:pt-36 md:pb-28">
+            <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+              <RevealOnScroll>
+                <span className="eyebrow">
+                  1° Centro PRAVILO de Argentina · Plottier, Neuquén
+                </span>
+                <h1 className="mt-6 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
+                  Tu cuerpo,
+                  <br />
+                  <span className="text-accent">bajo tensión</span>
+                  <br />
+                  controlada.
+                </h1>
+                <p className="mt-6 max-w-lg text-lg text-muted text-balance">
+                  Entrenamiento y terapia de movilidad con el método Pravilo.
+                  Suspensión, tracción y eje — tradición eslava, ahora en
+                  Plottier.
+                </p>
+                <div className="mt-9 flex flex-wrap items-center gap-4">
+                  <MagneticButton>
+                    <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-condensed text-lg font-semibold text-accent-foreground" />
+                  </MagneticButton>
+                  <MagneticButton>
+                    <a
+                      href={whatsappLink()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+                    >
+                      Escribinos por WhatsApp
+                    </a>
+                  </MagneticButton>
+                </div>
+                <p className="mt-6 text-sm text-muted">
+                  Evaluación inicial incluida · Sesiones individuales · Sin
+                  ataduras de plan largo
+                </p>
+              </RevealOnScroll>
+              <RevealOnScroll className="hidden lg:block">
+                <div className="relative aspect-3/4 overflow-hidden rounded-sm border border-border">
+                  <Image
+                    src="/images/accion-suspension.jpg"
+                    alt="Sesión de suspensión y tracción del método PRAVILO"
+                    fill
+                    sizes="480px"
+                    priority
+                    className="object-cover"
+                  />
+                </div>
+              </RevealOnScroll>
+            </div>
           </section>
         </ParallaxHero>
+
+        {/* Cinta de credenciales */}
+        <div className="border-y border-border bg-accent py-3">
+          <Marquee
+            items={CREDENCIALES}
+            itemClassName="font-condensed text-sm font-bold text-accent-foreground"
+          />
+        </div>
 
         {/* ¿Qué es PRAVILO? */}
         <section id="que-es" className="mx-auto max-w-4xl px-6 py-24">
           <RevealOnScroll>
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-              ¿Qué es PRAVILO?
+            <span className="eyebrow">¿Qué es PRAVILO?</span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              Movilidad, tracción y memoria del cuerpo
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted">
               PRAVILO es un sistema de entrenamiento y terapia de movimiento, de
@@ -252,10 +286,8 @@ export default function Home() {
         <section id="practica" className="bg-surface px-6 py-24">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll>
-              <p className="text-center text-sm font-medium uppercase tracking-[0.2em] text-accent">
-                La práctica
-              </p>
-              <h2 className="mt-3 text-center text-3xl font-bold tracking-tight md:text-4xl">
+              <span className="eyebrow mx-auto w-fit">La práctica</span>
+              <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 Suspensión, tracción y eje
               </h2>
               <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted">
@@ -266,7 +298,7 @@ export default function Home() {
               </p>
             </RevealOnScroll>
             <RevealOnScroll>
-              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-2xl border border-border">
+              <div className="relative mt-10 aspect-21/9 overflow-hidden rounded-sm border border-border grayscale-[0.3]">
                 <Image
                   src="/images/accion-suspension.jpg"
                   alt="Sesión de suspensión y tracción del método PRAVILO"
@@ -276,14 +308,14 @@ export default function Home() {
                 />
               </div>
             </RevealOnScroll>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <div className="mt-10 grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-3">
               {METODO.map((step, i) => (
                 <RevealOnScroll
                   key={step.title}
                   style={{ transitionDelay: `${i * 100}ms` }}
                 >
-                  <div className="h-full rounded-2xl border border-border bg-background p-6">
-                    <span className="text-sm font-semibold text-accent">
+                  <div className="h-full bg-background p-6">
+                    <span className="font-condensed text-3xl font-extrabold text-accent">
                       {step.n}
                     </span>
                     <h3 className="mt-2 text-xl font-bold">{step.title}</h3>
@@ -296,19 +328,25 @@ export default function Home() {
         </section>
 
         {/* Beneficios */}
-        <section id="beneficios" className="mx-auto max-w-6xl px-6 py-24">
+        <section id="beneficios" className="mx-auto max-w-4xl px-6 py-24">
           <RevealOnScroll>
-            <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
-              Beneficios
+            <span className="eyebrow">Beneficios</span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              Lo que cambia en tu cuerpo
             </h2>
           </RevealOnScroll>
-          <div className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {BENEFICIOS.map((b) => (
+          <div className="mt-10 divide-y divide-border border-t border-border">
+            {BENEFICIOS.map((b, i) => (
               <RevealOnScroll key={b.title}>
-                <SpotlightCard className="flex h-full flex-col justify-center rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent">
-                  <h3 className="text-lg font-semibold">{b.title}</h3>
-                  <p className="mt-2 text-sm text-muted">{b.desc}</p>
-                </SpotlightCard>
+                <div className="group flex items-start gap-6 py-6 transition-colors hover:bg-surface">
+                  <span className="w-10 shrink-0 font-condensed text-2xl font-extrabold text-border transition-colors group-hover:text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-semibold">{b.title}</h3>
+                    <p className="mt-1 text-sm text-muted">{b.desc}</p>
+                  </div>
+                </div>
               </RevealOnScroll>
             ))}
           </div>
@@ -319,11 +357,12 @@ export default function Home() {
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
-              <div className="border-beam flex h-28 w-28 items-center justify-center rounded-full border border-accent/40 bg-background text-4xl font-bold text-accent">
+              <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent">
                 JG
               </div>
               <div>
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                <span className="eyebrow">Instructor</span>
+                <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                   Juan Garrafa
                 </h2>
                 <p className="mt-2 text-accent">
@@ -344,20 +383,21 @@ export default function Home() {
         {/* Galería */}
         <section id="galeria" className="mx-auto max-w-6xl px-6 py-24">
           <RevealOnScroll>
-            <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
-              Galería
+            <span className="eyebrow mx-auto w-fit">Galería</span>
+            <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+              El espacio
             </h2>
           </RevealOnScroll>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <div className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
             {GALERIA.map((img) => (
               <RevealOnScroll key={img.src}>
-                <div className="relative aspect-4/3 h-full overflow-hidden rounded-2xl border border-border">
+                <div className="group relative aspect-4/3 h-full overflow-hidden bg-background">
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
                     sizes="(min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
+                    className="object-cover grayscale-[0.4] transition-[filter] duration-500 group-hover:grayscale-0"
                   />
                 </div>
               </RevealOnScroll>
@@ -368,30 +408,34 @@ export default function Home() {
         {/* Precios */}
         <section id="precios" className="mx-auto max-w-6xl px-6 py-24">
           <RevealOnScroll>
-            <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
-              Planes
+            <span className="eyebrow mx-auto w-fit">Planes</span>
+            <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+              Elegí tu formato
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-center text-muted">
               Elegí el formato que mejor se adapte a tu objetivo. Podés
               cambiarlo antes de confirmar.
             </p>
           </RevealOnScroll>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {PLANES.map((p) => (
               <RevealOnScroll key={p.title}>
-                <SpotlightCard
-                  className={`flex h-full flex-col rounded-2xl border p-6 ${
-                    p.highlight
-                      ? "border-beam border-accent bg-accent/5"
-                      : "border-border bg-surface"
+                <div
+                  className={`relative flex h-full flex-col bg-background p-6 ${
+                    p.highlight ? "ring-2 ring-accent ring-inset" : ""
                   }`}
                 >
+                  {p.highlight && (
+                    <span className="absolute top-6 right-6 font-condensed text-xs font-bold tracking-wide text-accent uppercase">
+                      Más elegido
+                    </span>
+                  )}
                   <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-1 text-2xl font-bold text-accent">
+                  <p className="mt-1 font-condensed text-2xl font-extrabold text-accent">
                     {p.price}
                   </p>
                   <p className="mt-3 text-sm text-muted">{p.desc}</p>
-                </SpotlightCard>
+                </div>
               </RevealOnScroll>
             ))}
           </div>
@@ -404,7 +448,8 @@ export default function Home() {
         <section id="faq" className="bg-surface px-6 py-24">
           <div className="mx-auto max-w-3xl">
             <RevealOnScroll>
-              <h2 className="text-center text-3xl font-bold tracking-tight md:text-4xl">
+              <span className="eyebrow mx-auto w-fit">FAQ</span>
+              <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 Preguntas frecuentes
               </h2>
             </RevealOnScroll>
@@ -439,14 +484,14 @@ export default function Home() {
         {/* Ubicación */}
         <section id="ubicacion" className="px-6 py-24 text-center">
           <RevealOnScroll>
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-              Ubicación
+            <span className="eyebrow mx-auto w-fit">Ubicación</span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              {LOCATION}
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
-              {LOCATION}. Coordinamos la dirección exacta y el horario al
-              reservar tu turno.
+              Coordinamos la dirección exacta y el horario al reservar tu turno.
             </p>
-            <div className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-2xl border border-border">
+            <div className="mx-auto mt-8 max-w-2xl overflow-hidden border border-border">
               <iframe
                 src={MAPS_EMBED_SRC}
                 title="Mapa de Plottier, Neuquén"
@@ -456,39 +501,43 @@ export default function Home() {
                 className="block invert-[90%] hue-rotate-180 contrast-[.9] brightness-90"
               />
             </div>
-            <a
-              href={whatsappLink(
-                "Hola! ¿Me pasás la ubicación exacta del centro?",
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-block rounded-full border border-border px-8 py-3 font-medium transition-colors hover:border-accent hover:text-accent"
-            >
-              Pedí la ubicación por WhatsApp
-            </a>
+            <MagneticButton className="mt-8">
+              <a
+                href={whatsappLink(
+                  "Hola! ¿Me pasás la ubicación exacta del centro?",
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+              >
+                Pedí la ubicación por WhatsApp
+              </a>
+            </MagneticButton>
           </RevealOnScroll>
         </section>
 
         {/* Testimonios */}
         <section id="testimonios" className="bg-surface px-6 py-24 text-center">
           <RevealOnScroll>
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+            <span className="eyebrow mx-auto w-fit">
               Sé parte de los primeros
+            </span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              Todavía no hay testimonios. El primero podés ser vos.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
               PRAVILO ARG recién abrió sus puertas como el primer centro de este
-              método en el país. Todavía no hay testimonios propios, pero Juan
-              llega con formación certificada en el sistema PRAVILO y
-              trayectoria como antropometrista. Reservá tu primera sesión y sé
-              de los primeros en compartir tu experiencia.
+              método en el país. Juan llega con formación certificada en el
+              sistema PRAVILO y trayectoria como antropometrista. Reservá tu
+              primera sesión y sé de los primeros en compartir tu experiencia.
             </p>
           </RevealOnScroll>
         </section>
 
         {/* CTA final */}
-        <section className="bg-surface px-6 py-28 text-center">
+        <section className="grain bg-surface px-6 py-28 text-center">
           <RevealOnScroll>
-            <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
+            <h2 className="font-condensed text-4xl font-extrabold tracking-tight md:text-6xl">
               Empezá tu proceso hoy
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-muted">
@@ -496,15 +545,19 @@ export default function Home() {
               Argentina.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105" />
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-border px-8 py-3 font-medium transition-colors hover:border-accent hover:text-accent"
-              >
-                Escribinos por WhatsApp
-              </a>
+              <MagneticButton>
+                <BookingWizard className="btn-shiny rounded-full bg-accent px-8 py-3 font-condensed text-lg font-semibold text-accent-foreground" />
+              </MagneticButton>
+              <MagneticButton>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent"
+                >
+                  Escribinos por WhatsApp
+                </a>
+              </MagneticButton>
             </div>
           </RevealOnScroll>
         </section>

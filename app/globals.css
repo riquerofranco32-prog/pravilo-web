@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0f1c;
-  --surface: #111a2c;
-  --foreground: #f2f4f8;
-  --muted: #8b93a7;
-  --accent: #e6294a;
-  --accent-foreground: #f2f4f8;
-  --border: #1f2937;
+  --background: #120f0d;
+  --surface: #1c1713;
+  --foreground: #f4efe8;
+  --muted: #9c9187;
+  --accent: #b8402c;
+  --accent-foreground: #f4efe8;
+  --border: #2e2620;
 }
 
 @theme inline {
@@ -18,8 +18,9 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+  --font-condensed: var(--font-condensed);
+  --font-sans: var(--font-body);
 }
 
 html {
@@ -29,6 +30,53 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+.font-condensed {
+  font-family: var(--font-condensed);
+  letter-spacing: -0.01em;
+}
+
+/* grano de película sobre fondos oscuros: crudo, no glossy */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* etiqueta editorial: — LABEL antes de un título de sección */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.eyebrow::before {
+  content: "";
+  display: block;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--accent);
 }
 
 .reveal {
@@ -42,30 +90,6 @@ body {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-}
-
-/* shimmer: barrido de gradiente sobre texto, tipo 21st.dev "Gradient Shimmer" */
-.text-shimmer {
-  background: linear-gradient(
-    100deg,
-    var(--foreground) 40%,
-    var(--accent) 50%,
-    var(--foreground) 60%
-  );
-  background-size: 220% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: shimmer 4s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -120% 0;
-  }
 }
 
 /* marquee: cinta infinita para credenciales/badges */
@@ -85,115 +109,20 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .text-shimmer {
-    animation: none;
-    background: none;
-    -webkit-background-clip: unset;
-    background-clip: unset;
-    color: var(--accent);
-  }
   .marquee-track {
     animation: none;
   }
 }
 
-/* spotlight: glow que sigue al cursor en cards */
-.spotlight-card {
-  position: relative;
-  isolation: isolate;
-}
-
-.spotlight-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    220px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-    rgba(230, 41, 74, 0.18),
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.spotlight-card:hover::before {
-  opacity: 1;
-}
-
-/* border beam: luz que recorre el borde, tipo magicui/21st.dev */
-@property --beam-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-.border-beam {
-  position: relative;
-}
-
-.border-beam::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from var(--beam-angle),
-    transparent 0deg,
-    transparent 300deg,
-    var(--accent) 335deg,
-    var(--foreground) 350deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: beam-spin 5s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes beam-spin {
-  to {
-    --beam-angle: 360deg;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .border-beam::after {
-    animation: none;
-  }
-}
-
-/* shiny button: destello diagonal al hover */
+/* botón principal: plano, sin destello — el movimiento vive en MagneticButton */
 .btn-shiny {
-  position: relative;
-  overflow: hidden;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.btn-shiny::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  transition: left 0.6s ease;
-  pointer-events: none;
-}
-
-.btn-shiny:hover::after {
-  left: 130%;
+.btn-shiny:hover {
+  background-color: color-mix(in srgb, var(--accent) 85%, white);
 }
 
 /* accordion CSS-only: transición de alto real sin JS */

@@ -10,10 +10,8 @@ export default async function ReservaConfirmada({
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center">
-      <p className="text-sm font-medium uppercase tracking-[0.2em] text-accent">
-        Pago recibido
-      </p>
-      <h1 className="text-shimmer mt-4 text-4xl font-bold tracking-tight md:text-5xl">
+      <span className="eyebrow">Pago recibido</span>
+      <h1 className="mt-4 font-condensed text-4xl font-extrabold tracking-tight text-accent md:text-5xl">
         ¡Listo, {plan || "tu plan"}!
       </h1>
       <p className="mx-auto mt-4 max-w-md text-lg text-muted">
@@ -24,7 +22,7 @@ export default async function ReservaConfirmada({
         href={whatsappLink(message)}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-shiny mt-10 rounded-full bg-accent px-8 py-3 font-medium text-accent-foreground transition-transform hover:scale-105"
+        className="btn-shiny mt-10 rounded-full bg-accent px-8 py-3 font-condensed text-lg font-semibold text-accent-foreground"
       >
         Enviar resumen por WhatsApp
       </a>
