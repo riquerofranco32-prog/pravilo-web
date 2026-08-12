@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import BookingWizard from "@/components/BookingWizard";
+import MobileNav from "@/components/MobileNav";
 import Marquee from "@/components/Marquee";
 import SpotlightCard from "@/components/SpotlightCard";
 import ParallaxHero from "@/components/ParallaxHero";
@@ -9,6 +10,7 @@ import {
   INSTAGRAM_URL,
   LOCATION,
   MAPS_EMBED_SRC,
+  SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
 import { PLANES } from "@/lib/plans";
@@ -124,7 +126,7 @@ export default function Home() {
     name: "PRAVILO ARG",
     description:
       "Primer centro Pravilo de Argentina. Entrenamiento y terapia de movilidad, individual y personalizado.",
-    url: "https://pravilo-web.vercel.app",
+    url: SITE_URL,
     telephone: "+5492942564386",
     address: {
       "@type": "PostalAddress",
@@ -135,15 +137,29 @@ export default function Home() {
     sameAs: [INSTAGRAM_URL],
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <span className="rounded-lg bg-white px-3 py-2">
             <Image
               src="/images/logo.png"
@@ -165,7 +181,10 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <BookingWizard className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
+          <div className="flex items-center gap-3">
+            <BookingWizard className="btn-shiny rounded-full bg-accent px-5 py-2 text-sm font-medium text-accent-foreground transition-transform hover:scale-105" />
+            <MobileNav items={NAV} />
+          </div>
         </div>
       </header>
 

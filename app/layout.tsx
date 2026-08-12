@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title,
   description,
+  alternates: { canonical: SITE_URL },
   keywords: [
     "Pravilo",
     "Pravilo Argentina",
