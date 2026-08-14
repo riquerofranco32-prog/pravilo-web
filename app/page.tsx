@@ -12,6 +12,7 @@ import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import {
+  GOOGLE_REVIEWS_URL,
   INSTAGRAM_URL,
   LOCATION,
   LOCATION_SHORT,
@@ -854,8 +855,8 @@ export default function Home() {
                 <svg
                   key={i}
                   viewBox="0 0 24 24"
-                  className="h-5 w-5 text-border"
-                  fill="none"
+                  className="h-5 w-5 text-accent-text"
+                  fill="currentColor"
                   stroke="currentColor"
                   strokeWidth="1.5"
                 >
@@ -867,18 +868,23 @@ export default function Home() {
                 </svg>
               ))}
             </div>
-            <span className="eyebrow mx-auto mt-4 w-fit">
-              Sé parte de los primeros
-            </span>
+            <span className="eyebrow mx-auto mt-4 w-fit">Reseña en Google</span>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Todavía no hay testimonios. El primero podés ser vos.
+              &ldquo;Exelente&rdquo;
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-              PRAVILO ARG recién abrió sus puertas como el primer centro de este
-              método en el país. Juan llega con formación certificada en el
-              sistema PRAVILO y trayectoria como antropometrista. Reservá tu
-              primera sesión y sé de los primeros en compartir tu experiencia.
+              Javier Garrafa calificó a PRAVILO ARG con 5 estrellas en Google.
+              Somos el primer centro de este método en el país — reservá tu
+              sesión y sé de los próximos en compartir tu experiencia.
             </p>
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-block text-sm font-semibold text-accent-text underline underline-offset-4"
+            >
+              Ver reseña en Google Maps →
+            </a>
           </RevealOnScroll>
         </section>
 

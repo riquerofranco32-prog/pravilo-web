@@ -8,6 +8,9 @@ export const whatsappLink = (message: string = WHATSAPP_DEFAULT_MESSAGE) =>
 
 export const INSTAGRAM_URL = "https://www.instagram.com/praviloarg/";
 
+export const GOOGLE_REVIEWS_URL =
+  "https://www.google.com/maps/place/PRAVILO+ARGENTINA+Plottier/data=!4m2!3m1!1s0x960bcb7e8c328b6f:0x5f4f8d8bde3cb669?hl=es-AR";
+
 export const LOCATION_SHORT = "Plottier, Neuquén";
 export const LOCATION = "Código 600 N°853, Plottier, Neuquén";
 export const MAPS_EMBED_SRC =
