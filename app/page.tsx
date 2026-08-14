@@ -401,6 +401,33 @@ export default function Home() {
           </RevealOnScroll>
         </section>
 
+        {/* Simetría / Vitruvio */}
+        <section className="grain relative overflow-hidden bg-black px-6 py-24 text-center">
+          <video
+            poster="/images/vitruvian-poster.jpg"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 h-full w-full object-cover opacity-70"
+          >
+            <source src="/videos/vitruvian.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
+          <RevealOnScroll className="relative mx-auto max-w-2xl">
+            <span className="eyebrow mx-auto w-fit">Proporción y simetría</span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+              El cuerpo, en equilibrio
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+              Como el hombre de Vitruvio, PRAVILO trabaja tu cuerpo como un
+              sistema de proporciones: eje, tracción y simetría trabajando en
+              conjunto, no partes aisladas.
+            </p>
+          </RevealOnScroll>
+        </section>
+
         {/* La práctica / método */}
         <section id="practica" className="bg-surface px-6 py-24">
           <div className="mx-auto max-w-5xl">
