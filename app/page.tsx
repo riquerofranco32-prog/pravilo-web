@@ -154,6 +154,42 @@ const FAQ = [
   },
 ];
 
+const TRUST_CARDS = [
+  {
+    title: "Exelente",
+    subtitle: "Javier Garrafa · Google, 5★",
+  },
+  {
+    title: "1er Centro PRAVILO de Argentina",
+    subtitle: "Método traído por primera vez al país",
+  },
+  {
+    title: "Instructor certificado en el sistema PRAVILO",
+    subtitle: "Juan I. Garrafa, Profesor de Educación Física",
+  },
+  {
+    title: "Evaluación inicial incluida",
+    subtitle: "En cada primera sesión",
+  },
+  {
+    title: "Sesiones 100% individuales",
+    subtitle: "Sin grupos, a tu ritmo",
+  },
+  {
+    title: "Antropometrista Nivel I",
+    subtitle: "Formación certificada del instructor",
+  },
+];
+
+function TrustCard({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="h-full w-64 rounded-2xl border border-border bg-background p-4">
+      <p className="text-sm font-semibold">{title}</p>
+      <p className="mt-1 text-xs text-muted">{subtitle}</p>
+    </div>
+  );
+}
+
 export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -912,6 +948,22 @@ export default function Home() {
             >
               Ver reseña en Google Maps →
             </a>
+          </RevealOnScroll>
+
+          <RevealOnScroll className="mt-14 space-y-3">
+            <Marquee
+              variant="cards"
+              items={TRUST_CARDS.slice(0, 3).map((card) => (
+                <TrustCard key={card.title} {...card} />
+              ))}
+            />
+            <Marquee
+              variant="cards"
+              reverse
+              items={TRUST_CARDS.slice(3).map((card) => (
+                <TrustCard key={card.title} {...card} />
+              ))}
+            />
           </RevealOnScroll>
         </section>
 
