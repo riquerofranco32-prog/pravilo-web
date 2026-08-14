@@ -40,14 +40,6 @@ const GALERIA_ACCION = [
     alt: "Sesión de suspensión invertida frente al cartel PRAVILO",
   },
   {
-    src: "/images/pravilo-blue-action.jpg",
-    alt: "Entrenamiento en suspensión con iluminación del estudio",
-  },
-  {
-    src: "/images/pravilo-green-action.jpg",
-    alt: "Ejercicio de suspensión en el rig de PRAVILO",
-  },
-  {
     src: "/images/pravilo-pulley-tension.jpg",
     alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
   },
@@ -58,6 +50,10 @@ const GALERIA_ACCION = [
   {
     src: "/images/pravilo-mirror-suspension.jpg",
     alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
+  },
+  {
+    src: "/images/pravilo-estudio-completo.jpg",
+    alt: "Vista completa del estudio PRAVILO ARG",
   },
 ];
 
