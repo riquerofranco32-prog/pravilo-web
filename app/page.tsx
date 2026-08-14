@@ -14,6 +14,7 @@ import ParallaxHero from "@/components/ParallaxHero";
 import {
   INSTAGRAM_URL,
   LOCATION,
+  LOCATION_SHORT,
   MAPS_EMBED_SRC,
   SITE_URL,
   whatsappLink,
@@ -34,16 +35,16 @@ const NAV = [
 
 const GALERIA_ACCION = [
   {
-    src: "/images/promo-rojo.jpg",
-    alt: "Sesión de suspensión en split completo, método PRAVILO",
+    src: "/images/pravilo-sign-suspension.jpg",
+    alt: "Sesión de suspensión invertida frente al cartel PRAVILO",
   },
   {
-    src: "/images/promo-naranja.jpg",
-    alt: "Liberación de tensiones en suspensión, método PRAVILO",
+    src: "/images/pravilo-blue-action.jpg",
+    alt: "Entrenamiento en suspensión con iluminación del estudio",
   },
   {
-    src: "/images/promo-navy.jpg",
-    alt: "Alineación corporal en suspensión invertida, método PRAVILO",
+    src: "/images/pravilo-green-action.jpg",
+    alt: "Ejercicio de suspensión en el rig de PRAVILO",
   },
 ];
 
@@ -148,7 +149,7 @@ const FAQ = [
   },
   {
     q: "¿Dónde queda el centro?",
-    a: `Estamos en ${LOCATION}. Te pasamos la dirección exacta al coordinar tu turno.`,
+    a: `Estamos en ${LOCATION}.`,
   },
 ];
 
@@ -301,7 +302,7 @@ export default function Home() {
               <RevealOnScroll className="mx-auto w-full max-w-sm lg:max-w-none">
                 <div className="relative aspect-3/4 overflow-hidden rounded-2xl border border-border shadow-[0_0_60px_-15px_var(--accent)]">
                   <video
-                    poster="/images/promo-rojo.jpg"
+                    poster="/images/pravilo-sign-suspension.jpg"
                     autoPlay
                     loop
                     muted
@@ -310,7 +311,7 @@ export default function Home() {
                     className="absolute inset-0 h-full w-full object-cover"
                   >
                     <source
-                      src="/videos/hero-suspension.mp4"
+                      src="/videos/hero-suspension-real.mp4"
                       type="video/mp4"
                     />
                   </video>
@@ -357,13 +358,22 @@ export default function Home() {
               Movilidad, tracción y memoria del cuerpo
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted">
-              PRAVILO es un sistema de entrenamiento y terapia de movimiento, de
-              tradición eslava, que trabaja la movilidad, la flexibilidad y las
-              capas profundas de tu cuerpo —la fascia— para que puedas moverte
-              con más libertad y menos tensión.
+              PRAVILO es un método de entrenamiento y trabajo corporal que
+              utiliza un sistema de tensión y tracción para trabajar el cuerpo
+              de forma integral, profunda y personalizada. A través de un
+              dispositivo diseñado específicamente para este método, el cuerpo
+              interactúa con la tensión, el propio peso y la gravedad,
+              integrando movilidad, activación muscular, estiramiento y
+              descompresión en un mismo sistema de trabajo.
             </p>
             <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
               Tu fascia guarda más que tensión: guarda tu historia.
+            </p>
+            <p className="mt-8 text-lg leading-relaxed text-muted">
+              PRAVILO no es simplemente una máquina ni se limita al
+              estiramiento: cada sesión sigue una metodología específica que se
+              adapta a las características, capacidades y objetivos de cada
+              persona, siempre bajo la guía de un profesional capacitado.
             </p>
             <p className="mt-8 text-lg leading-relaxed text-muted">
               Es para todos los que buscan moverse mejor: no importa si sos
@@ -553,22 +563,27 @@ export default function Home() {
               <div className="relative">
                 <span className="eyebrow relative">Instructor</span>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-                  Juan Garrafa
+                  Juan I. Garrafa
                 </h2>
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
-                    Instructor certificado PRAVILO
+                    Profesor de Educación Física
                   </span>
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
-                    Antropometrista
+                    Instructor de PRAVILO
+                  </span>
+                  <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
+                    Antropometrista Nivel I
                   </span>
                 </div>
                 <blockquote className="relative mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
-                  &ldquo;Creé PRAVILO ARG con el objetivo de brindar una
-                  atención completamente personalizada, adaptada a las
-                  necesidades, objetivos y características de cada persona. Cada
-                  experiencia comienza con una evaluación inicial para conocerte
-                  y diseñar un recorrido pensado exclusivamente para vos.&rdquo;
+                  &ldquo;Mi interés por PRAVILO surgió a partir de una búsqueda
+                  personal: conviviendo con un dolor crónico, conocí este método
+                  mientras buscaba nuevas herramientas para abordar mi propia
+                  situación. De ahí nació PRAVILO ARG, con el objetivo de
+                  acercar este método a Argentina y brindar una atención
+                  completamente personalizada, adaptada a las necesidades,
+                  objetivos y características de cada persona.&rdquo;
                 </blockquote>
               </div>
             </RevealOnScroll>
@@ -754,11 +769,10 @@ export default function Home() {
             <RevealOnScroll>
               <span className="eyebrow">Ubicación</span>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-                {LOCATION}
+                {LOCATION_SHORT}
               </h2>
               <p className="mt-4 max-w-md text-lg text-muted">
-                Coordinamos la dirección exacta y el horario al reservar tu
-                turno.
+                Coordinamos el horario al reservar tu turno.
               </p>
               <div className="mt-8 space-y-3">
                 <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4">
@@ -780,9 +794,7 @@ export default function Home() {
                   </span>
                   <div className="text-left">
                     <p className="text-sm font-semibold">Dirección</p>
-                    <p className="text-sm text-muted">
-                      A confirmar al reservar
-                    </p>
+                    <p className="text-sm text-muted">{LOCATION}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4">
