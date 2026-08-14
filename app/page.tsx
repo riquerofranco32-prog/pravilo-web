@@ -133,20 +133,40 @@ const CREDENCIALES = [
 
 const FAQ = [
   {
-    q: "¿Necesito experiencia previa?",
-    a: "No. Las sesiones se adaptan a cualquier nivel, desde quienes recién empiezan hasta deportistas con experiencia.",
+    q: "¿Para qué sirve PRAVILO?",
+    a: "PRAVILO ayuda a mejorar la fuerza, movilidad, flexibilidad, postura, equilibrio y coordinación, promoviendo un cuerpo más funcional, saludable y preparado para la vida diaria.",
   },
   {
-    q: "¿Para qué edades es PRAVILO?",
-    a: "Está adaptado a todas las edades y niveles. Cada plan se arma según tu cuerpo y tus objetivos.",
+    q: "¿Qué hace diferente a PRAVILO?",
+    a: "PRAVILO no se enfoca únicamente en entrenar. Busca desarrollar el cuerpo de manera integral, promoviendo movimiento, bienestar, conciencia corporal y una mejor calidad de vida.",
   },
   {
-    q: "¿Es entrenamiento o terapia?",
-    a: "Las dos cosas: combina trabajo físico guiado con un enfoque terapéutico sobre la movilidad y la fascia.",
+    q: "¿Cómo es una sesión y cuánto dura?",
+    a: "Cada sesión comienza con una rutina de movilidad articular y una fase de activación, para después trabajar en la máquina de PRAVILO. La duración es de aproximadamente 60 minutos.",
   },
   {
-    q: "¿Cuánto dura una sesión y cada cuánto se recomienda ir?",
-    a: "La Experiencia Individual dura 1h30 e incluye evaluación. La frecuencia ideal se define según tu objetivo — te asesoramos al reservar.",
+    q: "¿Cómo es la primera sesión?",
+    a: "La primera sesión incluye una evaluación inicial para conocer tu estado físico, tus condiciones actuales y observar tu postura.",
+  },
+  {
+    q: "¿Necesito experiencia o estar en buen estado físico para empezar?",
+    a: "No. PRAVILO se adapta a cada persona según su condición física, experiencia, necesidades y objetivos. La evaluación inicial nos permite ajustar el trabajo a tu punto de partida.",
+  },
+  {
+    q: "¿Hay límite de edad?",
+    a: "No. PRAVILO puede adaptarse a diferentes edades y niveles de condición física. Lo más importante es realizar una evaluación inicial para adecuar el trabajo a cada persona.",
+  },
+  {
+    q: "¿Qué debo llevar a la sesión?",
+    a: "Solo necesitás asistir con ropa cómoda que te permita moverte con libertad y una botella de agua. Nosotros nos encargamos del resto.",
+  },
+  {
+    q: "¿Cuántas veces por semana se recomienda?",
+    a: "Generalmente se recomienda entre 2 y 3 sesiones por semana, permitiendo que el cuerpo tenga tiempo para recuperarse y adaptarse. La frecuencia puede variar según cada persona, sus necesidades y sus objetivos.",
+  },
+  {
+    q: "¿Qué esperar después de la primera sesión?",
+    a: "Es común sentir mayor movilidad, alivio de tensiones, más conciencia corporal y una sensación de claridad mental y bienestar general.",
   },
   {
     q: "¿Dónde queda el centro?",
@@ -273,25 +293,24 @@ export default function Home() {
                 </span>
                 <h1 className="mt-6 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
                   <span className="hero-line" style={{ animationDelay: "0ms" }}>
-                    Tu cuerpo,
+                    Explorá
                   </span>
                   <span
                     className="hero-line text-accent-text"
                     style={{ animationDelay: "110ms" }}
                   >
-                    bajo tensión
+                    tu cuerpo
                   </span>
                   <span
                     className="hero-line"
                     style={{ animationDelay: "220ms" }}
                   >
-                    controlada.
+                    a otro nivel.
                   </span>
                 </h1>
                 <p className="mt-6 max-w-lg text-lg text-muted text-balance">
-                  Entrenamiento y terapia de movilidad con el método Pravilo.
-                  Suspensión, tracción y eje — tradición eslava, ahora en
-                  Plottier.
+                  Entrenamiento y terapia de movilidad con el método Pravilo,
+                  tradición eslava, ahora en Plottier.
                 </p>
                 <div className="mt-9 flex flex-wrap items-center gap-4">
                   <MagneticButton>
@@ -309,31 +328,29 @@ export default function Home() {
                   </MagneticButton>
                 </div>
                 <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
-                  {[
-                    "Evaluación inicial incluida",
-                    "Sesiones individuales",
-                    "Sin ataduras de plan largo",
-                  ].map((t) => (
-                    <span
-                      key={t}
-                      className="flex items-center gap-1.5 text-sm text-muted"
-                    >
-                      <svg
-                        viewBox="0 0 20 20"
-                        className="h-3.5 w-3.5 shrink-0 text-accent-text"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
+                  {["Evaluación inicial incluida", "Sesiones individuales"].map(
+                    (t) => (
+                      <span
+                        key={t}
+                        className="flex items-center gap-1.5 text-sm text-muted"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4 10.5l4 4 8-9"
-                        />
-                      </svg>
-                      {t}
-                    </span>
-                  ))}
+                        <svg
+                          viewBox="0 0 20 20"
+                          className="h-3.5 w-3.5 shrink-0 text-accent-text"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 10.5l4 4 8-9"
+                          />
+                        </svg>
+                        {t}
+                      </span>
+                    ),
+                  )}
                 </div>
               </RevealOnScroll>
               <RevealOnScroll className="mx-auto w-full max-w-sm lg:max-w-none">
@@ -399,23 +416,29 @@ export default function Home() {
               utiliza un sistema de tensión y tracción para trabajar el cuerpo
               de forma integral, profunda y personalizada. A través de un
               dispositivo diseñado específicamente para este método, el cuerpo
-              interactúa con la tensión, el propio peso y la gravedad,
-              integrando movilidad, activación muscular, estiramiento y
-              descompresión en un mismo sistema de trabajo.
+              interactúa con diferentes fuerzas: la tensión, el propio peso y la
+              gravedad. Esta combinación permite realizar posiciones y
+              movimientos en múltiples direcciones, integrando movilidad,
+              activación muscular, estiramiento y descompresión en un mismo
+              sistema de trabajo.
             </p>
             <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
               Tu fascia guarda más que tensión: guarda tu historia.
             </p>
             <p className="mt-8 text-lg leading-relaxed text-muted">
               PRAVILO no es simplemente una máquina ni se limita al
-              estiramiento: cada sesión sigue una metodología específica que se
-              adapta a las características, capacidades y objetivos de cada
-              persona, siempre bajo la guía de un profesional capacitado.
+              estiramiento. Detrás de cada sesión existe una metodología
+              específica, en la que el trabajo se adapta a las características,
+              capacidades y objetivos de cada persona, siempre bajo la guía de
+              un profesional capacitado.
             </p>
             <p className="mt-8 text-lg leading-relaxed text-muted">
-              Es para todos los que buscan moverse mejor: no importa si sos
-              deportista, trabajás muchas horas sentado, manejás largas
-              distancias o simplemente querés sentirte mejor en tu cuerpo.
+              El método propone una forma diferente de entender y trabajar el
+              cuerpo: no como partes aisladas, sino como un sistema integrado,
+              donde músculos, articulaciones, cadenas de movimiento y tejidos
+              conectivos interactúan entre sí. Una experiencia corporal
+              diferente, donde tensión, movimiento y gravedad se combinan para
+              explorar, desafiar y desarrollar las capacidades del cuerpo.
             </p>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
@@ -470,13 +493,14 @@ export default function Home() {
             <RevealOnScroll>
               <span className="eyebrow mx-auto w-fit">La práctica</span>
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-                Suspensión, tracción y eje
+                Individual, guiada y adaptada a vos
               </h2>
               <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted">
-                Cada sesión es individual y personalizada, guiada de principio a
-                fin por un instructor certificado en el sistema PRAVILO.
-                Empezamos con una evaluación inicial y armamos un proceso
-                progresivo, a tu ritmo.
+                El trabajo comienza con una evaluación que permite conocer tus
+                características, necesidades y objetivos para establecer un
+                proceso progresivo y personalizado. La intensidad, el nivel de
+                tensión y la duración se adaptan a tus posibilidades, respetando
+                tu ritmo y evolución — sin forzar ni llevar el cuerpo al dolor.
               </p>
             </RevealOnScroll>
             <RevealOnScroll>
@@ -631,10 +655,10 @@ export default function Home() {
                 </h2>
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
-                    Profesor de Educación Física
+                    Primer instructor de PRAVILO en Argentina
                   </span>
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
-                    Instructor de PRAVILO
+                    Profesor de Educación Física
                   </span>
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
                     Antropometrista Nivel I
@@ -642,12 +666,15 @@ export default function Home() {
                 </div>
                 <blockquote className="relative mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
                   &ldquo;Mi interés por PRAVILO surgió a partir de una búsqueda
-                  personal: conviviendo con un dolor crónico, conocí este método
+                  personal. Conviviendo con un dolor crónico, conocí este método
                   mientras buscaba nuevas herramientas para abordar mi propia
-                  situación. De ahí nació PRAVILO ARG, con el objetivo de
-                  acercar este método a Argentina y brindar una atención
-                  completamente personalizada, adaptada a las necesidades,
-                  objetivos y características de cada persona.&rdquo;
+                  situación. Esa experiencia despertó mi interés por profundizar
+                  en su práctica y formación profesional. A partir de allí nació
+                  PRAVILO ARG, con el objetivo de acercar este método a
+                  Argentina y crear un espacio para quienes buscan una nueva
+                  forma de trabajar sobre su cuerpo, superar sus propias
+                  limitaciones o alcanzar sus objetivos personales y
+                  deportivos.&rdquo;
                 </blockquote>
               </div>
             </RevealOnScroll>

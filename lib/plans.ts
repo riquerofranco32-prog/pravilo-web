@@ -9,38 +9,30 @@ export type Plan = {
 
 export const PLANES_EXPERIENCIA: Plan[] = [
   {
-    title: "Experiencia Individual",
-    price: "$45.000",
-    priceNumber: 45000,
-    desc: "Evaluación integral + sesión completa (1h 30m).",
+    title: "1 Sesión Individual",
+    price: "$35.000",
+    priceNumber: 35000,
+    desc: "Precio de lanzamiento.",
     features: [
-      "Evaluación integral incluida",
-      "Sesión de 1h 30m",
+      "Precio de lanzamiento",
+      "Evaluación incluida",
       "Ideal para probar el método",
     ],
   },
   {
-    title: "Plan Esencial",
-    price: "$280.000",
-    priceNumber: 280000,
-    desc: "Paquete de 8 experiencias ($35.000 c/u).",
-    features: [
-      "8 experiencias ($35.000 c/u)",
-      "Ahorrás vs. la individual",
-      "El más elegido",
-    ],
+    title: "8 Sesiones",
+    price: "$240.000",
+    priceNumber: 240000,
+    desc: "$30.000 por sesión. Vigencia: 2 meses.",
+    features: ["$30.000 por sesión", "Vigencia: 2 meses", "Recomendado"],
     highlight: true,
   },
   {
-    title: "Plan Evolución",
-    price: "$360.000",
-    priceNumber: 360000,
-    desc: "Paquete de 12 experiencias ($30.000 c/u).",
-    features: [
-      "12 experiencias ($30.000 c/u)",
-      "El mejor precio por sesión",
-      "Para un proceso más profundo",
-    ],
+    title: "12 Sesiones",
+    price: "$300.000",
+    priceNumber: 300000,
+    desc: "$25.000 por sesión. Vigencia: 3 meses.",
+    features: ["$25.000 por sesión", "Vigencia: 3 meses", "Mayor ahorro"],
   },
 ];
 
