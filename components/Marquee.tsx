@@ -11,8 +11,8 @@ export default function Marquee({
   variant?: "badge" | "cards";
   reverse?: boolean;
 }) {
-  // se duplica la lista para que el loop de -50% sea continuo, sin salto
-  const track = [...items, ...items];
+  // se cuadruplica la lista para que el loop sea fluido con pocos items
+  const track = [...items, ...items, ...items, ...items];
 
   return (
     <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">

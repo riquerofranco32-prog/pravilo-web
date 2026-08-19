@@ -223,7 +223,7 @@ const FAQ = [
 
 const TRUST_CARDS = [
   {
-    title: "Exelente",
+    title: "Excelente",
     subtitle: "Javier Garrafa · Google, 5★",
   },
   {
@@ -1025,7 +1025,7 @@ export default function Home() {
             </div>
             <span className="eyebrow mx-auto mt-4 w-fit">Reseña en Google</span>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-              &ldquo;Exelente&rdquo;
+              &ldquo;Excelente&rdquo;
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
               Javier Garrafa calificó a PRAVILO ARG con 5 estrellas en Google.
@@ -1045,14 +1045,14 @@ export default function Home() {
           <RevealOnScroll className="mt-14 space-y-3">
             <Marquee
               variant="cards"
-              items={TRUST_CARDS.slice(0, 3).map((card) => (
+              items={TRUST_CARDS.map((card) => (
                 <TrustCard key={card.title} {...card} />
               ))}
             />
             <Marquee
               variant="cards"
               reverse
-              items={TRUST_CARDS.slice(3).map((card) => (
+              items={TRUST_CARDS.map((card) => (
                 <TrustCard key={card.title} {...card} />
               ))}
             />
