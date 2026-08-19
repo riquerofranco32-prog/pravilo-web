@@ -1118,15 +1118,15 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-border px-6 py-10 text-center text-sm text-muted">
+      <footer className="border-t border-border px-6 py-12 text-center text-sm text-muted">
         <Image
           src="/images/logo-transparent.png"
           alt="PRAVILO ARG"
           width={900}
           height={176}
-          className="mx-auto h-10 w-auto"
+          className="mx-auto h-10 w-auto opacity-80"
         />
-        <p className="mt-2">{LOCATION}</p>
+        <p className="mt-3">{LOCATION}</p>
         <div className="mt-5 flex justify-center gap-3">
           <Link
             href={INSTAGRAM_URL}
@@ -1162,7 +1162,23 @@ export default function Home() {
             </svg>
           </a>
         </div>
-        <p className="mt-6">© {new Date().getFullYear()} PRAVILO ARG</p>
+        <div className="mt-8 flex flex-col items-center gap-2 border-t border-border pt-6 sm:flex-row sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} PRAVILO ARG. Todos los derechos reservados.</p>
+          <a
+            href="https://se7endev.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-1 transition-colors hover:text-accent-text"
+          >
+            Hecho por{" "}
+            <span className="font-semibold text-foreground/70 transition-colors group-hover:text-accent-text">
+              Se7en Studio
+            </span>
+            <span className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              &nearr;
+            </span>
+          </a>
+        </div>
       </footer>
     </>
   );
