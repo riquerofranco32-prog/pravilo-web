@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
@@ -50,7 +50,6 @@ export default function Gallery({
   return (
     <>
       {isMasonry ? (
-        /* Masonry: CSS columns, alturas naturales de cada foto */
         <RevealOnScroll>
           <div className="mt-10 columns-2 gap-3 sm:columns-3 lg:columns-4">
             {images.map((img, i) => (
@@ -71,7 +70,7 @@ export default function Gallery({
                 />
                 <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/30 group-hover:opacity-100">
                   <span className="rounded-full border border-white/30 bg-black/40 px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase backdrop-blur-sm">
-                    Ver ?
+                    Ver &uarr;
                   </span>
                 </span>
               </button>
@@ -79,7 +78,6 @@ export default function Gallery({
           </div>
         </RevealOnScroll>
       ) : (
-        /* Grid: aspecto uniforme */
         <div className={`mt-10 grid gap-4 ${gridClassName}`}>
           {images.map((img, i) => (
             <RevealOnScroll key={img.src}>
@@ -98,7 +96,7 @@ export default function Gallery({
                 />
                 <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/30 group-hover:opacity-100">
                   <span className="rounded-full border border-white/30 bg-black/40 px-4 py-1.5 text-xs font-semibold tracking-wide text-white uppercase backdrop-blur-sm">
-                    Ver ?
+                    Ver &uarr;
                   </span>
                 </span>
               </button>
@@ -118,7 +116,7 @@ export default function Gallery({
             aria-label="Cerrar"
             className="absolute top-6 right-6 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground"
           >
-            x
+            &times;
           </button>
           <button
             type="button"
@@ -129,7 +127,7 @@ export default function Gallery({
             aria-label="Imagen anterior"
             className="absolute left-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground md:left-8"
           >
-            ‹
+            &lsaquo;
           </button>
           <div
             className="relative max-h-[85vh] w-full max-w-4xl"
@@ -153,7 +151,7 @@ export default function Gallery({
             aria-label="Imagen siguiente"
             className="absolute right-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-2xl text-foreground/80 transition-colors hover:border-white/40 hover:text-foreground md:right-8"
           >
-            ›
+            &rsaquo;
           </button>
         </div>
       )}
