@@ -476,8 +476,8 @@ export default function Home() {
               {/* Foto intercalada — visible en todos los tamaños */}
               <div className="relative mt-8 overflow-hidden rounded-2xl border border-border shadow-[0_0_40px_-15px_var(--accent)]">
                 <Image
-                  src="/images/foto-img-3416.jpg"
-                  alt="Práctica en el aparato PRAVILO"
+                  src="/images/foto-img-3399.jpg"
+                  alt="El aparato PRAVILO — sistema de cuerdas y tensión"
                   width={900}
                   height={600}
                   sizes="(min-width: 1024px) 600px, 100vw"
