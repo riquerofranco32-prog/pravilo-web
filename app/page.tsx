@@ -692,9 +692,15 @@ export default function Home() {
         <section id="instructor" className="px-6 py-24">
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
-              {/* ponytail: sin foto real todavía — avatar con inicial en vez de simular una foto */}
-              <div className="relative flex h-28 w-28 items-center justify-center rounded-full border-2 border-accent bg-background font-condensed text-4xl font-extrabold text-accent-text shadow-[0_0_40px_-8px_var(--accent)]">
-                JG
+              {/* Foto real del instructor */}
+              <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-accent shadow-[0_0_40px_-8px_var(--accent)]">
+                <Image
+                  src="/images/foto-img-3445.jpg"
+                  alt="Juan I. Garrafa, instructor PRAVILO ARG"
+                  fill
+                  sizes="112px"
+                  className="object-cover object-top"
+                />
               </div>
               <div className="relative">
                 <span className="eyebrow relative">Instructor</span>
