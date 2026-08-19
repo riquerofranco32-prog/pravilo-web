@@ -49,7 +49,7 @@ export default function ParallaxHero({ children }: { children: ReactNode }) {
       <div
         data-layer="photo"
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-20 opacity-25"
+        className="pointer-events-none absolute inset-0 -z-20 opacity-40"
       >
         <Image
           src="/images/espacio-completo.jpg"

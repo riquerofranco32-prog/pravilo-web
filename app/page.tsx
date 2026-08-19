@@ -452,59 +452,67 @@ export default function Home() {
         </div>
 
         {/* ¿Qué es PRAVILO? */}
-        <section id="que-es" className="mx-auto max-w-4xl px-6 py-24">
-          <RevealOnScroll>
-            <span className="eyebrow">¿Qué es PRAVILO?</span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Movilidad, tracción y memoria del cuerpo
-            </h2>
-            <p className="mt-6 text-lg leading-relaxed text-muted">
-              PRAVILO es un método de entrenamiento y trabajo corporal que
-              utiliza un sistema de tensión y tracción para trabajar el cuerpo
-              de forma integral, profunda y personalizada. A través de un
-              dispositivo diseñado específicamente para este método, el cuerpo
-              interactúa con diferentes fuerzas: la tensión, el propio peso y la
-              gravedad. Esta combinación permite realizar posiciones y
-              movimientos en múltiples direcciones, integrando movilidad,
-              activación muscular, estiramiento y descompresión en un mismo
-              sistema de trabajo.
-            </p>
-            <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
-              Tu fascia guarda más que tensión: guarda tu historia.
-            </p>
-            <p className="mt-8 text-lg leading-relaxed text-muted">
-              PRAVILO no es simplemente una máquina ni se limita al
-              estiramiento. Detrás de cada sesión existe una metodología
-              específica, en la que el trabajo se adapta a las características,
-              capacidades y objetivos de cada persona, siempre bajo la guía de
-              un profesional capacitado.
-            </p>
-            <p className="mt-8 text-lg leading-relaxed text-muted">
-              El método propone una forma diferente de entender y trabajar el
-              cuerpo: no como partes aisladas, sino como un sistema integrado,
-              donde músculos, articulaciones, cadenas de movimiento y tejidos
-              conectivos interactúan entre sí. Una experiencia corporal
-              diferente, donde tensión, movimiento y gravedad se combinan para
-              explorar, desafiar y desarrollar las capacidades del cuerpo.
-            </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {[
-                { label: "Movilidad", desc: "Rango real de movimiento" },
-                { label: "Tracción", desc: "Suspensión controlada" },
-                { label: "Fascia", desc: "Memoria del cuerpo" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl border border-border bg-surface p-5"
-                >
-                  <p className="font-condensed text-lg font-bold text-accent-text">
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-sm text-muted">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </RevealOnScroll>
+        <section id="que-es" className="mx-auto max-w-6xl px-6 py-24">
+          <div className="grid gap-12 lg:grid-cols-[1fr_380px] lg:items-start">
+            <RevealOnScroll>
+              <span className="eyebrow">¿Qué es PRAVILO?</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+                Movilidad, tracción y memoria del cuerpo
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-muted">
+                PRAVILO es un método de entrenamiento y trabajo corporal que
+                utiliza un sistema de tensión y tracción para trabajar el cuerpo
+                de forma integral, profunda y personalizada. A través de un
+                dispositivo diseñado específicamente para este método, el cuerpo
+                interactúa con diferentes fuerzas: la tensión, el propio peso y la
+                gravedad. Esta combinación permite realizar posiciones y
+                movimientos en múltiples direcciones, integrando movilidad,
+                activación muscular, estiramiento y descompresión en un mismo
+                sistema de trabajo.
+              </p>
+              <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
+                Tu fascia guarda más que tensión: guarda tu historia.
+              </p>
+              <p className="mt-8 text-lg leading-relaxed text-muted">
+                PRAVILO no es simplemente una máquina ni se limita al
+                estiramiento. Detrás de cada sesión existe una metodología
+                específica, en la que el trabajo se adapta a las características,
+                capacidades y objetivos de cada persona, siempre bajo la guía de
+                un profesional capacitado.
+              </p>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {[
+                  { label: "Movilidad", desc: "Rango real de movimiento" },
+                  { label: "Tracción", desc: "Suspensión controlada" },
+                  { label: "Fascia", desc: "Memoria del cuerpo" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-border bg-surface p-5"
+                  >
+                    <p className="font-condensed text-lg font-bold text-accent-text">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm text-muted">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </RevealOnScroll>
+            {/* Foto lateral */}
+            <RevealOnScroll className="hidden lg:block" style={{ transitionDelay: "150ms" }}>
+              <div className="sticky top-28 overflow-hidden rounded-3xl border border-border shadow-[0_0_60px_-20px_var(--accent)]">
+                <Image
+                  src="/images/foto-img-3404.jpg"
+                  alt="Sesión en el aparato PRAVILO"
+                  width={760}
+                  height={1000}
+                  sizes="380px"
+                  className="h-auto w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
+            </RevealOnScroll>
+          </div>
         </section>
 
         {/* Simetría / Vitruvio */}
@@ -674,7 +682,7 @@ export default function Home() {
                   key={b.title}
                   style={{ transitionDelay: `${(i % 3) * 100}ms` }}
                 >
-                  <SpotlightCard className="h-full rounded-2xl border border-border bg-background p-6 transition-colors hover:border-accent/40">
+                  <SpotlightCard className="h-full rounded-2xl border border-border bg-background p-6 transition-all duration-300 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_8px_30px_-12px_var(--accent)]">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
                       <BenefitIcon name={b.icon} />
                     </span>
@@ -689,24 +697,29 @@ export default function Home() {
 
         {/* Instructor */}
         <section id="instructor" className="px-6 py-24">
-          <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
-            <RevealOnScroll className="flex flex-col items-center gap-8">
-              {/* Foto real del instructor */}
-              <div className="relative h-56 w-56 overflow-hidden rounded-full border-2 border-accent shadow-[0_0_40px_-8px_var(--accent)]">
-                <Image
-                  src="/images/foto-img-3445.jpg"
-                  alt="Juan I. Garrafa, instructor PRAVILO ARG"
-                  fill
-                  sizes="224px"
-                  className="object-cover object-top"
-                />
-              </div>
-              <div className="relative">
-                <span className="eyebrow relative">Instructor</span>
+          <div className="mx-auto max-w-5xl">
+            <div className="flex flex-col items-center gap-10 md:flex-row md:items-start md:gap-16">
+              {/* Foto rectangular — más editorial */}
+              <RevealOnScroll className="w-full max-w-xs shrink-0 md:max-w-sm">
+                <div className="relative overflow-hidden rounded-3xl border border-border shadow-[0_0_60px_-15px_var(--accent)]">
+                  <Image
+                    src="/images/foto-img-3445.jpg"
+                    alt="Juan I. Garrafa, instructor PRAVILO ARG"
+                    width={760}
+                    height={1010}
+                    sizes="(min-width: 768px) 384px, 100vw"
+                    className="h-auto w-full object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                </div>
+              </RevealOnScroll>
+              {/* Texto */}
+              <RevealOnScroll className="flex-1 text-center md:text-left" style={{ transitionDelay: "120ms" }}>
+                <span className="eyebrow">Instructor</span>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                   Juan I. Garrafa
                 </h2>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                <div className="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">
                   <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent-text">
                     Primer instructor de PRAVILO en Argentina
                   </span>
@@ -717,7 +730,7 @@ export default function Home() {
                     Antropometrista Nivel I
                   </span>
                 </div>
-                <blockquote className="relative mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted italic">
+                <blockquote className="relative mt-6 text-lg leading-relaxed text-muted italic border-l-2 border-accent pl-6 py-1">
                   &ldquo;Mi interés por PRAVILO surgió a partir de una búsqueda
                   personal. Conviviendo con un dolor crónico, conocí este método
                   mientras buscaba nuevas herramientas para abordar mi propia
@@ -729,8 +742,8 @@ export default function Home() {
                   limitaciones o alcanzar sus objetivos personales y
                   deportivos.&rdquo;
                 </blockquote>
-              </div>
-            </RevealOnScroll>
+              </RevealOnScroll>
+            </div>
           </div>
         </section>
 
@@ -748,8 +761,7 @@ export default function Home() {
             </RevealOnScroll>
             <Gallery
               images={GALERIA_ACCION}
-              gridClassName="sm:grid-cols-3"
-              aspectClassName="aspect-4/5"
+              isMasonry
             />
           </div>
         </section>
@@ -1048,10 +1060,24 @@ export default function Home() {
         </section>
 
         {/* CTA final */}
-        <section className="grain relative overflow-hidden px-6 py-28 text-center">
+        <section className="grain relative overflow-hidden px-6 py-32 text-center">
+          {/* Foto de fondo con overlay */}
+          <div className="pointer-events-none absolute inset-0">
+            <Image
+              src="/images/foto-img-3437.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center"
+              aria-hidden
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+            <div className="absolute inset-0 bg-accent/10" />
+          </div>
+          {/* Glow */}
           <div
             aria-hidden
-            className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/20 blur-[120px]"
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/25 blur-[140px]"
           />
           <RevealOnScroll className="relative">
             <h2 className="font-condensed text-4xl font-extrabold tracking-tight md:text-6xl">
@@ -1070,7 +1096,7 @@ export default function Home() {
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
+                  className="block rounded-full border border-white/20 bg-white/5 px-8 py-3 font-condensed text-lg font-semibold backdrop-blur-sm transition-colors hover:border-accent hover:text-accent-text"
                 >
                   Escribinos por WhatsApp
                 </a>
