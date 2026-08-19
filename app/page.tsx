@@ -692,12 +692,12 @@ export default function Home() {
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
             <RevealOnScroll className="flex flex-col items-center gap-8">
               {/* Foto real del instructor */}
-              <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-accent shadow-[0_0_40px_-8px_var(--accent)]">
+              <div className="relative h-56 w-56 overflow-hidden rounded-full border-2 border-accent shadow-[0_0_40px_-8px_var(--accent)]">
                 <Image
                   src="/images/foto-img-3445.jpg"
                   alt="Juan I. Garrafa, instructor PRAVILO ARG"
                   fill
-                  sizes="112px"
+                  sizes="224px"
                   className="object-cover object-top"
                 />
               </div>
