@@ -473,6 +473,18 @@ export default function Home() {
               <p className="mt-8 border-l-2 border-accent py-1 pl-6 font-condensed text-2xl leading-snug font-semibold text-balance md:text-3xl">
                 Tu fascia guarda más que tensión: guarda tu historia.
               </p>
+              {/* Foto intercalada — visible en todos los tamaños */}
+              <div className="relative mt-8 overflow-hidden rounded-2xl border border-border shadow-[0_0_40px_-15px_var(--accent)]">
+                <Image
+                  src="/images/foto-img-3416.jpg"
+                  alt="Práctica en el aparato PRAVILO"
+                  width={900}
+                  height={600}
+                  sizes="(min-width: 1024px) 600px, 100vw"
+                  className="h-auto w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
               <p className="mt-8 text-lg leading-relaxed text-muted">
                 PRAVILO no es simplemente una máquina ni se limita al
                 estiramiento. Detrás de cada sesión existe una metodología
