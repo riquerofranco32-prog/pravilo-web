@@ -90,7 +90,6 @@ const GALERIA_ACCION = [
   { src: "/images/foto-img-3442.jpg", alt: "Sesión de suspensión PRAVILO" },
   { src: "/images/foto-img-3443.jpg", alt: "Ejercicio en el estudio PRAVILO" },
   { src: "/images/foto-img-3444.jpg", alt: "Trabajo corporal profundo PRAVILO" },
-  { src: "/images/foto-img-3445.jpg", alt: "Práctica personal en PRAVILO" },
   { src: "/images/foto-img-3446.jpg", alt: "Suspensión con instructor PRAVILO" },
   { src: "/images/foto-img-3447.jpg", alt: "Sesión de tracción PRAVILO" },
   { src: "/images/foto-img-3448.jpg", alt: "Movimiento y eje en PRAVILO" },
