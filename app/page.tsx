@@ -783,66 +783,134 @@ export default function Home() {
           </RevealOnScroll>
 
           <div className="mt-14 grid gap-7 lg:grid-cols-3 lg:items-stretch">
-            {PLANES_EXPERIENCIA.map((p) => (
-              <RevealOnScroll key={p.title}>
-                <SpotlightCard
-                  className={`flex h-full flex-col justify-between rounded-3xl border p-8 transition-all duration-300 ${
-                    p.highlight
-                      ? "border-accent bg-gradient-to-b from-accent/15 via-surface-raised to-surface-raised shadow-[0_0_60px_-15px_rgba(160,26,26,0.6)] lg:-translate-y-3"
-                      : "border-border bg-surface-raised/70 hover:border-border-highlight"
-                  }`}
-                >
-                  <div>
-                    {p.highlight && (
-                      <span className="inline-block rounded-full bg-accent px-3.5 py-1 font-condensed text-xs font-black tracking-wider text-accent-foreground uppercase shadow-md mb-3">
-                        Plan Más Recomendado
-                      </span>
-                    )}
-                    <h3 className="font-condensed text-2xl font-bold text-foreground">{p.title}</h3>
-                    <p className="mt-3 flex items-baseline gap-1">
-                      <span className="font-condensed text-4xl font-black text-accent-text">
-                        {p.price}
-                      </span>
-                    </p>
-                    <ul className="mt-6 space-y-3 border-t border-border/80 pt-6 text-sm">
-                      {p.features.map((f) => (
-                        <li key={f} className="flex items-start gap-3">
-                          <svg
-                            viewBox="0 0 20 20"
-                            className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M4 10.5l4 4 8-9"
-                            />
-                          </svg>
-                          <span className="text-muted leading-relaxed text-xs sm:text-sm">{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+            {PLANES_EXPERIENCIA.map((p) => {
+              const perSessionText =
+                p.title.includes("8")
+                  ? "$30.000 / sesión"
+                  : p.title.includes("12")
+                    ? "$25.000 / sesión"
+                    : "$35.000 / sesión";
 
-                  <div className="mt-8 pt-5 border-t border-border/80">
-                    <BookingWizard
-                      buttonText="Reservar turno ahora →"
-                      className={`btn-shiny w-full rounded-full py-3.5 font-condensed text-base font-bold uppercase tracking-wider transition-all ${
-                        p.highlight
-                          ? "bg-accent text-accent-foreground shadow-lg hover:bg-accent/90"
-                          : "border border-border bg-background text-foreground hover:border-accent hover:text-accent-text"
-                      }`}
-                    />
-                  </div>
-                </SpotlightCard>
-              </RevealOnScroll>
-            ))}
+              const savingsText =
+                p.title.includes("8")
+                  ? "Ahorrás $40.000"
+                  : p.title.includes("12")
+                    ? "Ahorrás $120.000"
+                    : null;
+
+              return (
+                <RevealOnScroll key={p.title}>
+                  <SpotlightCard
+                    className={`flex h-full flex-col justify-between rounded-3xl border p-8 transition-all duration-300 ${
+                      p.highlight
+                        ? "border-accent bg-gradient-to-b from-accent/15 via-surface-raised to-surface-raised shadow-[0_0_60px_-15px_rgba(160,26,26,0.6)] lg:-translate-y-3"
+                        : "border-border bg-surface-raised/70 hover:border-border-highlight"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        {p.highlight ? (
+                          <span className="inline-block rounded-full bg-accent px-3.5 py-1 font-condensed text-xs font-black tracking-wider text-accent-foreground uppercase shadow-md">
+                            Plan Más Elegido
+                          </span>
+                        ) : (
+                          <span className="inline-block rounded-full border border-border bg-background px-3 py-0.5 font-condensed text-xs font-semibold text-muted">
+                            {p.title.includes("12") ? "Mayor Descuento" : "Sesión Única"}
+                          </span>
+                        )}
+
+                        {savingsText && (
+                          <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 font-condensed text-[11px] font-bold text-emerald-400">
+                            {savingsText}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="font-condensed text-2xl font-bold text-foreground">{p.title}</h3>
+                      <div className="mt-3 flex items-baseline gap-2">
+                        <span className="font-condensed text-4xl font-black text-accent-text">
+                          {p.price}
+                        </span>
+                        <span className="font-condensed text-xs font-bold text-muted uppercase tracking-wider">
+                          ({perSessionText})
+                        </span>
+                      </div>
+
+                      <ul className="mt-6 space-y-3 border-t border-border/80 pt-6 text-sm">
+                        {p.features.map((f) => (
+                          <li key={f} className="flex items-start gap-3">
+                            <svg
+                              viewBox="0 0 20 20"
+                              className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4 10.5l4 4 8-9"
+                              />
+                            </svg>
+                            <span className="text-muted leading-relaxed text-xs sm:text-sm">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-8 pt-5 border-t border-border/80">
+                      <BookingWizard
+                        buttonText="Reservar turno ahora →"
+                        className={`btn-shiny w-full rounded-full py-3.5 font-condensed text-base font-bold uppercase tracking-wider transition-all ${
+                          p.highlight
+                            ? "bg-accent text-accent-foreground shadow-lg hover:bg-accent/90"
+                            : "border border-border bg-background text-foreground hover:border-accent hover:text-accent-text"
+                        }`}
+                      />
+                    </div>
+                  </SpotlightCard>
+                </RevealOnScroll>
+              );
+            })}
+          </div>
+
+          {/* Bloque Compromiso de Bienestar */}
+          <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">
+            <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
+              <div className="space-y-1">
+                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                  <span>🛡️</span>
+                  <span>Estudio 100% Privado</span>
+                </span>
+                <p className="text-xs text-muted">
+                  Sin ruidos de gimnasio ni distracciones. El espacio completo está reservado exclusivamente para vos.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                  <span>🧘</span>
+                  <span>Tensión Milimétrica</span>
+                </span>
+                <p className="text-xs text-muted">
+                  La carga e intensidad se adaptan paso a paso a tu nivel de confort, sin forzar ninguna articulación.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                  <span>✨</span>
+                  <span>Evaluación Biomecánica</span>
+                </span>
+                <p className="text-xs text-muted">
+                  Juan analiza tu postura, rango de movimiento y antecedentes previos antes de iniciar la tracción.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Banner de Gift Card VIP */}
-          <div className="mt-14 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
+          <div className="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
             <div>
               <span className="inline-block rounded-full bg-accent/20 border border-accent/40 px-3 py-0.5 font-condensed text-[11px] font-bold uppercase tracking-wider text-accent-text mb-2">
                 Experiencia para regalar
