@@ -5,7 +5,7 @@ import { Booking } from "@/lib/bookings";
 let bookingsStorage: Booking[] = [
   {
     id: "sample-1",
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
     planTitle: "1 Sesión Individual",
     planPrice: "$35.000",
     date: new Date().toISOString().split("T")[0],
@@ -13,7 +13,25 @@ let bookingsStorage: Booking[] = [
     customerName: "Rocío Ríos",
     customerPhone: "2991234567",
     customerNotes: "Primera sesión, descompresión de columna",
+    internalNotes: "Excelente movilidad inicial",
+    sessionsCompleted: 1,
+    totalSessions: 1,
     status: "confirmado",
+  },
+  {
+    id: "sample-2",
+    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+    planTitle: "8 Sesiones (2x/sem)",
+    planPrice: "$240.000",
+    date: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString().split("T")[0],
+    time: "10:30",
+    customerName: "Carlos Méndez",
+    customerPhone: "2994567890",
+    customerNotes: "Dolor ciático recurrente",
+    internalNotes: "Comenzar con tracción progresiva baja",
+    sessionsCompleted: 0,
+    totalSessions: 8,
+    status: "pendiente",
   },
 ];
 
@@ -35,6 +53,7 @@ export async function POST(req: NextRequest) {
       customerName,
       customerPhone,
       customerNotes,
+      internalNotes,
       status = "pendiente",
     } = body;
 
@@ -44,6 +63,13 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
+
+    const totalSessions =
+      planTitle && planTitle.includes("8")
+        ? 8
+        : planTitle && planTitle.includes("12")
+          ? 12
+          : 1;
 
     const newBooking: Booking = {
       id: `bk_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
@@ -55,6 +81,9 @@ export async function POST(req: NextRequest) {
       customerName,
       customerPhone: customerPhone || "",
       customerNotes: customerNotes || "",
+      internalNotes: internalNotes || "",
+      sessionsCompleted: 0,
+      totalSessions,
       status,
     };
 
@@ -77,18 +106,24 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, status } = body;
+    const { id, status, internalNotes, sessionsCompleted } = body;
 
-    if (!id || !status) {
+    if (!id) {
       return NextResponse.json(
-        { ok: false, error: "ID y estado requeridos" },
+        { ok: false, error: "ID requerido" },
         { status: 400 },
       );
     }
 
-    bookingsStorage = bookingsStorage.map((b) =>
-      b.id === id ? { ...b, status } : b,
-    );
+    bookingsStorage = bookingsStorage.map((b) => {
+      if (b.id !== id) return b;
+      return {
+        ...b,
+        ...(status !== undefined ? { status } : {}),
+        ...(internalNotes !== undefined ? { internalNotes } : {}),
+        ...(sessionsCompleted !== undefined ? { sessionsCompleted } : {}),
+      };
+    });
 
     return NextResponse.json({
       ok: true,

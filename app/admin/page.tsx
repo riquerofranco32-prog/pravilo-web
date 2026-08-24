@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   DEFAULT_SCHEDULE_CONFIG,
   LOCAL_STORAGE_SCHEDULE_KEY,
   ScheduleConfig,
 } from "@/lib/availability";
-import { Booking } from "@/lib/bookings";
+import {
+  Booking,
+  buildQuickWhatsAppMessage,
+  exportBookingsToCSV,
+  formatDateTimeExact,
+  formatRelativeTime,
+  parsePriceToNumber,
+} from "@/lib/bookings";
 
 const PRESET_TIMES = [
   "08:00",
@@ -59,6 +66,10 @@ export default function AdminPage() {
   );
   const [agendaMonth, setAgendaMonth] = useState<Date>(new Date());
 
+  // Editing Note State
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [tempNoteText, setTempNoteText] = useState("");
+
   // Manual booking modal
   const [showManualModal, setShowManualModal] = useState(false);
   const [manualName, setManualName] = useState("");
@@ -69,6 +80,11 @@ export default function AdminPage() {
   );
   const [manualTime, setManualTime] = useState("16:00");
   const [manualNotes, setManualNotes] = useState("");
+
+  const todayStr = useMemo(
+    () => new Date().toISOString().split("T")[0],
+    [],
+  );
 
   // Load config & bookings on mount
   useEffect(() => {
@@ -155,6 +171,56 @@ export default function AdminPage() {
     } catch {
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b)),
+      );
+    }
+  };
+
+  const handleSaveInternalNote = async (id: string) => {
+    try {
+      const res = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, internalNotes: tempNoteText }),
+      });
+      const data = await res.json();
+      if (data?.ok && data.bookings) {
+        setBookings(data.bookings);
+      }
+    } catch {
+      setBookings((prev) =>
+        prev.map((b) =>
+          b.id === id ? { ...b, internalNotes: tempNoteText } : b,
+        ),
+      );
+    }
+    setEditingNoteId(null);
+  };
+
+  const handleIncrementSession = async (
+    id: string,
+    current: number = 0,
+    total: number = 1,
+  ) => {
+    const nextVal = Math.min(total, current + 1);
+    try {
+      const res = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          sessionsCompleted: nextVal,
+          status: nextVal === total ? "realizado" : "confirmado",
+        }),
+      });
+      const data = await res.json();
+      if (data?.ok && data.bookings) {
+        setBookings(data.bookings);
+      }
+    } catch {
+      setBookings((prev) =>
+        prev.map((b) =>
+          b.id === id ? { ...b, sessionsCompleted: nextVal } : b,
+        ),
       );
     }
   };
@@ -312,6 +378,41 @@ export default function AdminPage() {
     setTimeout(() => setSaveStatus(null), 3500);
   };
 
+  // KPIs & Stats
+  const stats = useMemo(() => {
+    const todayCount = bookings.filter((b) => b.date === todayStr).length;
+    const pendingCount = bookings.filter((b) => b.status === "pendiente").length;
+    const confirmedCount = bookings.filter(
+      (b) => b.status === "confirmado" || b.status === "realizado",
+    ).length;
+
+    const projectedRevenue = bookings
+      .filter((b) => b.status !== "cancelado")
+      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
+
+    // Plan count
+    const planCounts: { [key: string]: number } = {};
+    bookings.forEach((b) => {
+      planCounts[b.planTitle] = (planCounts[b.planTitle] || 0) + 1;
+    });
+    let topPlan = "1 Sesión Individual";
+    let maxCount = 0;
+    Object.entries(planCounts).forEach(([plan, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        topPlan = plan;
+      }
+    });
+
+    return {
+      todayCount,
+      pendingCount,
+      confirmedCount,
+      projectedRevenue,
+      topPlan,
+    };
+  }, [bookings, todayStr]);
+
   // Filtered Bookings
   const filteredBookings = bookings.filter((b) => {
     const matchesStatus =
@@ -333,13 +434,19 @@ export default function AdminPage() {
 
     const days = [];
     for (let i = 0; i < startingOffset; i++) {
-      days.push(<div key={`empty-${i}`} className="h-16 rounded-xl border border-transparent" />);
+      days.push(
+        <div
+          key={`empty-${i}`}
+          className="h-16 rounded-xl border border-transparent"
+        />,
+      );
     }
 
     for (let d = 1; d <= totalDays; d++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       const dayBookings = bookings.filter((b) => b.date === dateStr);
       const isSelected = selectedCalendarDate === dateStr;
+      const isToday = dateStr === todayStr;
 
       days.push(
         <button
@@ -348,19 +455,31 @@ export default function AdminPage() {
           onClick={() => setSelectedCalendarDate(dateStr)}
           className={`flex h-16 flex-col justify-between rounded-2xl border p-2 text-left transition-all ${
             isSelected
-              ? "border-accent bg-accent/15 shadow-md"
-              : "border-border bg-surface hover:border-accent/50"
+              ? "border-accent bg-accent/20 shadow-md ring-1 ring-accent"
+              : isToday
+                ? "border-accent/40 bg-surface/90"
+                : "border-border bg-surface hover:border-accent/50"
           }`}
         >
-          <span className="font-condensed text-xs font-bold text-foreground">
-            {d}
-          </span>
+          <div className="flex items-center justify-between">
+            <span
+              className={`font-condensed text-xs font-bold ${
+                isToday ? "text-accent-text" : "text-foreground"
+              }`}
+            >
+              {d}
+            </span>
+            {isToday && (
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-ping" />
+            )}
+          </div>
           {dayBookings.length > 0 ? (
             <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-condensed text-[10px] font-bold text-accent-foreground">
-              {dayBookings.length} {dayBookings.length === 1 ? "turno" : "turnos"}
+              {dayBookings.length}{" "}
+              {dayBookings.length === 1 ? "turno" : "turnos"}
             </span>
           ) : (
-            <span className="text-[10px] text-muted/40">-</span>
+            <span className="text-[10px] text-muted/30">-</span>
           )}
         </button>,
       );
@@ -435,8 +554,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20">
-      {/* Header */}
+    <div className="min-h-screen bg-background text-foreground pb-24">
+      {/* Header Pro */}
       <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
@@ -447,19 +566,40 @@ export default function AdminPage() {
               ← Ver web
             </Link>
             <span className="text-border">|</span>
-            <span className="font-condensed text-lg font-bold">
-              PRAVILO ARG · Panel de Control
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-condensed text-lg font-bold">
+                PRAVILO ARG · Panel de Control Pro
+              </span>
+              {stats.todayCount > 0 && (
+                <span className="rounded-full bg-accent/20 border border-accent/40 px-2.5 py-0.5 font-condensed text-xs font-bold text-accent-text">
+                  {stats.todayCount} hoy
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => exportBookingsToCSV(bookings)}
+              title="Descargar base de datos en Excel/CSV"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-accent hover:text-accent-text"
+            >
+              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 fill-current">
+                <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.69L6.53 8.72a.75.75 0 0 0-1.06 1.06l4 4a.75.75 0 0 0 1.06 0l4-4a.75.75 0 1 0-1.06-1.06l-2.72 2.72V2.75Z" />
+                <path d="M3.5 14.75a.75.75 0 0 0 0 1.5h13a.75.75 0 0 0 0-1.5h-13Z" />
+              </svg>
+              <span>Exportar Excel</span>
+            </button>
+
             <button
               type="button"
               onClick={() => setShowManualModal(true)}
-              className="rounded-full bg-accent px-4 py-1.5 font-condensed text-xs font-bold text-accent-foreground shadow transition-all hover:opacity-90"
+              className="rounded-full bg-accent px-4 py-1.5 font-condensed text-xs font-bold text-accent-foreground shadow transition-all hover:opacity-90 hover:scale-105"
             >
               + Cargar Turno
             </button>
+
             <button
               type="button"
               onClick={handleLogout}
@@ -479,8 +619,59 @@ export default function AdminPage() {
       )}
 
       <main className="mx-auto max-w-6xl px-6 pt-8">
+        {/* KPI & Metrics Bar */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
+            <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+              Turnos para Hoy
+            </span>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="font-condensed text-3xl font-black text-accent-text">
+                {stats.todayCount}
+              </span>
+              <span className="text-xs text-muted">sesiones</span>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
+            <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+              Facturación Proyectada
+            </span>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span className="font-condensed text-2xl font-black text-foreground">
+                ${stats.projectedRevenue.toLocaleString("es-AR")}
+              </span>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
+            <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+              Por Confirmar
+            </span>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span
+                className={`font-condensed text-3xl font-black ${
+                  stats.pendingCount > 0 ? "text-amber-400" : "text-emerald-400"
+                }`}
+              >
+                {stats.pendingCount}
+              </span>
+              <span className="text-xs text-muted">pendientes</span>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
+            <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+              Plan Más Solicitado
+            </span>
+            <div className="mt-2 truncate font-condensed text-lg font-bold text-foreground">
+              {stats.topPlan}
+            </div>
+          </div>
+        </div>
+
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-border pb-4">
+        <div className="mt-8 flex flex-wrap gap-2 border-b border-border pb-4">
           <button
             type="button"
             onClick={() => setActiveTab("clientes")}
@@ -522,11 +713,11 @@ export default function AdminPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="font-condensed text-3xl font-extrabold">
-                  Registro de Reservas y Clientes
+                  Registro de Turnos con Hora Exacta
                 </h1>
                 <p className="text-xs text-muted">
-                  Acá quedan guardados todos los turnos solicitados por la web o
-                  cargados manualmente.
+                  Visualizá cuándo ingresó cada reserva, gestioná notas del
+                  alumno y confirmá por WhatsApp con 1 click.
                 </p>
               </div>
 
@@ -567,101 +758,235 @@ export default function AdminPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filteredBookings.map((b) => (
-                  <div
-                    key={b.id}
-                    className="flex flex-col justify-between rounded-3xl border border-border bg-surface p-5 shadow-sm transition-all hover:border-accent/40"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between">
-                        <span
-                          className={`rounded-full px-2.5 py-0.5 text-[11px] font-condensed font-bold uppercase ${
-                            b.status === "confirmado"
-                              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                              : b.status === "realizado"
-                                ? "bg-blue-500/15 text-blue-400 border border-blue-500/30"
-                                : b.status === "cancelado"
-                                  ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                                  : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                          }`}
-                        >
-                          {b.status}
-                        </span>
-                        <span className="font-condensed text-sm font-bold text-accent-text">
-                          {b.planPrice}
-                        </span>
-                      </div>
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {filteredBookings.map((b) => {
+                  const exactTime = formatDateTimeExact(b.createdAt);
+                  const relTime = formatRelativeTime(b.createdAt);
+                  const isMultiSession =
+                    b.totalSessions && b.totalSessions > 1;
 
-                      <h2 className="mt-3 font-condensed text-xl font-bold text-foreground">
-                        {b.customerName}
-                      </h2>
-                      <p className="text-xs font-semibold text-accent-text">
-                        {b.planTitle}
-                      </p>
+                  return (
+                    <div
+                      key={b.id}
+                      className="flex flex-col justify-between rounded-3xl border border-border bg-surface p-5 shadow-sm transition-all hover:border-accent/40"
+                    >
+                      <div>
+                        {/* Cabecera con estado y precio */}
+                        <div className="flex items-start justify-between">
+                          <span
+                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-condensed font-bold uppercase ${
+                              b.status === "confirmado"
+                                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                : b.status === "realizado"
+                                  ? "bg-blue-500/15 text-blue-400 border border-blue-500/30"
+                                  : b.status === "cancelado"
+                                    ? "bg-red-500/15 text-red-400 border border-red-500/30"
+                                    : "bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse"
+                            }`}
+                          >
+                            {b.status}
+                          </span>
+                          <span className="font-condensed text-sm font-bold text-accent-text">
+                            {b.planPrice}
+                          </span>
+                        </div>
 
-                      <div className="mt-3 space-y-1 text-xs text-muted border-t border-border/60 pt-3">
-                        <p>
-                          📅 <strong>Fecha:</strong> {b.date}
+                        {/* Nombre del cliente */}
+                        <h2 className="mt-3 font-condensed text-xl font-bold text-foreground">
+                          {b.customerName}
+                        </h2>
+                        <p className="text-xs font-semibold text-accent-text">
+                          {b.planTitle}
                         </p>
-                        <p>
-                          ⏰ <strong>Horario:</strong> {b.time} hs
-                        </p>
-                        {b.customerPhone && (
+
+                        {/* Hora exacta de solicitud */}
+                        {b.createdAt && (
+                          <div className="mt-2 flex items-center gap-1.5 rounded-xl bg-background/60 px-2.5 py-1 text-[11px] text-muted">
+                            <svg
+                              viewBox="0 0 20 20"
+                              className="h-3.5 w-3.5 shrink-0 fill-current opacity-70"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>
+                              Pedido el <strong>{exactTime}</strong>{" "}
+                              {relTime && `(${relTime})`}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Datos del Turno */}
+                        <div className="mt-3 space-y-1.5 text-xs text-muted border-t border-border/60 pt-3">
                           <p>
-                            📱 <strong>Teléfono:</strong> {b.customerPhone}
+                            📅 <strong>Fecha del turno:</strong> {b.date}
                           </p>
-                        )}
-                        {b.customerNotes && (
-                          <p className="italic text-foreground/80">
-                            💬 &quot;{b.customerNotes}&quot;
+                          <p>
+                            ⏰ <strong>Horario:</strong> {b.time} hs
                           </p>
+                          {b.customerPhone && (
+                            <p>
+                              📱 <strong>Teléfono:</strong> {b.customerPhone}
+                            </p>
+                          )}
+                          {b.customerNotes && (
+                            <p className="italic text-foreground/90 bg-background/40 p-2 rounded-xl">
+                              💬 &quot;{b.customerNotes}&quot;
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Contador de sesiones completadas si es pack */}
+                        {isMultiSession && (
+                          <div className="mt-3 rounded-2xl border border-accent/20 bg-accent/5 p-2.5 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold text-foreground">
+                                Progreso del Pack:
+                              </span>
+                              <span className="font-condensed font-bold text-accent-text">
+                                {b.sessionsCompleted || 0} / {b.totalSessions}{" "}
+                                sesiones
+                              </span>
+                            </div>
+                            <div className="mt-2 flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleIncrementSession(
+                                    b.id,
+                                    b.sessionsCompleted || 0,
+                                    b.totalSessions || 1,
+                                  )
+                                }
+                                className="w-full rounded-lg bg-accent py-1 font-condensed text-xs font-bold text-accent-foreground hover:opacity-90"
+                              >
+                                + Marcar 1 Sesión Realizada
+                              </button>
+                            </div>
+                          </div>
                         )}
+
+                        {/* Notas del Instructor / Ficha Médica */}
+                        <div className="mt-3 rounded-2xl border border-border bg-background p-2.5 text-xs">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-semibold text-muted text-[11px] uppercase tracking-wider">
+                              Notas del Instructor:
+                            </span>
+                            {editingNoteId !== b.id && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingNoteId(b.id);
+                                  setTempNoteText(b.internalNotes || "");
+                                }}
+                                className="text-[11px] text-accent-text hover:underline"
+                              >
+                                {b.internalNotes ? "Editar" : "+ Agregar nota"}
+                              </button>
+                            )}
+                          </div>
+
+                          {editingNoteId === b.id ? (
+                            <div className="mt-1 space-y-1.5">
+                              <textarea
+                                rows={2}
+                                value={tempNoteText}
+                                onChange={(e) =>
+                                  setTempNoteText(e.target.value)
+                                }
+                                placeholder="Ej: Hernia L4-L5, progresión suave..."
+                                className="w-full rounded-lg border border-border bg-surface px-2.5 py-1 text-xs text-foreground focus:border-accent focus:outline-none"
+                              />
+                              <div className="flex justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingNoteId(null)}
+                                  className="rounded px-2 py-0.5 text-[10px] text-muted hover:text-foreground"
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleSaveInternalNote(b.id)
+                                  }
+                                  className="rounded bg-accent px-2 py-0.5 text-[10px] font-bold text-accent-foreground"
+                                >
+                                  Guardar
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-foreground/80">
+                              {b.internalNotes || (
+                                <span className="italic text-muted/60">
+                                  Sin notas cargadas.
+                                </span>
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Botones de acción & Respuestas Rápidas de WhatsApp */}
+                      <div className="mt-4 space-y-2 border-t border-border/60 pt-3">
+                        {b.customerPhone && (
+                          <div className="flex flex-wrap gap-1.5">
+                            <a
+                              href={buildQuickWhatsAppMessage("confirmar", b)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90"
+                            >
+                              ✓ Confirmar Turno
+                            </a>
+                            <a
+                              href={buildQuickWhatsAppMessage(
+                                "recordatorio",
+                                b,
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-emerald-400 transition-colors hover:bg-emerald-500/20"
+                            >
+                              ⏰ Recordatorio 24h
+                            </a>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-2 pt-1">
+                          <select
+                            value={b.status}
+                            onChange={(e) =>
+                              handleUpdateBookingStatus(
+                                b.id,
+                                e.target.value as Booking["status"],
+                              )
+                            }
+                            className="rounded-lg border border-border bg-background px-2 py-1 text-[11px] text-foreground focus:border-accent focus:outline-none"
+                          >
+                            <option value="pendiente">Pendiente</option>
+                            <option value="confirmado">Confirmado</option>
+                            <option value="realizado">Realizado</option>
+                            <option value="cancelado">Cancelado</option>
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteBooking(b.id)}
+                            aria-label="Eliminar turno"
+                            className="flex h-6 w-6 items-center justify-center rounded text-muted hover:bg-red-500/20 hover:text-red-400"
+                          >
+                            &times;
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-                      {b.customerPhone ? (
-                        <a
-                          href={`https://wa.me/${b.customerPhone.replace(/\D/g, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-xs font-bold text-white transition-opacity hover:opacity-90"
-                        >
-                          WhatsApp →
-                        </a>
-                      ) : (
-                        <span />
-                      )}
-
-                      <div className="flex items-center gap-1.5">
-                        <select
-                          value={b.status}
-                          onChange={(e) =>
-                            handleUpdateBookingStatus(
-                              b.id,
-                              e.target.value as Booking["status"],
-                            )
-                          }
-                          className="rounded-lg border border-border bg-background px-2 py-1 text-[11px] text-foreground focus:border-accent focus:outline-none"
-                        >
-                          <option value="pendiente">Pendiente</option>
-                          <option value="confirmado">Confirmado</option>
-                          <option value="realizado">Realizado</option>
-                          <option value="cancelado">Cancelado</option>
-                        </select>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteBooking(b.id)}
-                          aria-label="Eliminar turno"
-                          className="flex h-6 w-6 items-center justify-center rounded text-muted hover:bg-red-500/20 hover:text-red-400"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -767,15 +1092,25 @@ export default function AdminPage() {
                         {b.customerName}
                       </h4>
                       <p className="text-xs text-muted">{b.planTitle}</p>
-                      {b.customerPhone && (
-                        <p className="mt-1 text-xs text-foreground/80">
-                          📱 {b.customerPhone}
+                      {b.createdAt && (
+                        <p className="text-[10px] text-muted mt-0.5">
+                          Pedido el {formatDateTimeExact(b.createdAt)}
                         </p>
                       )}
-                      {b.customerNotes && (
-                        <p className="mt-1 text-xs italic text-muted">
-                          💬 {b.customerNotes}
-                        </p>
+                      {b.customerPhone && (
+                        <div className="mt-2 flex items-center justify-between">
+                          <span className="text-xs text-foreground/80">
+                            📱 {b.customerPhone}
+                          </span>
+                          <a
+                            href={buildQuickWhatsAppMessage("confirmar", b)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white"
+                          >
+                            WhatsApp →
+                          </a>
+                        </div>
                       )}
                     </div>
                   ))
@@ -1002,7 +1337,10 @@ export default function AdminPage() {
               Para agendar reservas recibidas por llamada o en persona.
             </p>
 
-            <form onSubmit={handleCreateManualBooking} className="mt-5 space-y-4">
+            <form
+              onSubmit={handleCreateManualBooking}
+              className="mt-5 space-y-4"
+            >
               <div>
                 <label className="block text-xs font-semibold text-muted mb-1">
                   Nombre del Cliente *
@@ -1039,7 +1377,9 @@ export default function AdminPage() {
                     onChange={(e) => setManualPlan(e.target.value)}
                     className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-accent focus:outline-none"
                   >
-                    <option value="1 Sesión Individual">1 Sesión Individual</option>
+                    <option value="1 Sesión Individual">
+                      1 Sesión Individual
+                    </option>
                     <option value="8 Sesiones (2x/sem)">8 Sesiones</option>
                     <option value="12 Sesiones (3x/sem)">12 Sesiones</option>
                   </select>
