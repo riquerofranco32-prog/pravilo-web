@@ -9,6 +9,8 @@ import {
 } from "@/lib/availability";
 import {
   Booking,
+  PaymentStatus,
+  buildGoogleCalendarUrl,
   buildQuickWhatsAppMessage,
   exportBookingsToCSV,
   formatDateTimeExact,
@@ -60,6 +62,9 @@ export default function AdminPage() {
   // Bookings State
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>("todos");
+  const [filterDateMode, setFilterDateMode] = useState<
+    "todos" | "hoy" | "manana" | "semana"
+  >("todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<string>(
     new Date().toISOString().split("T")[0],
@@ -81,10 +86,12 @@ export default function AdminPage() {
   const [manualTime, setManualTime] = useState("16:00");
   const [manualNotes, setManualNotes] = useState("");
 
-  const todayStr = useMemo(
-    () => new Date().toISOString().split("T")[0],
-    [],
-  );
+  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const tomorrowStr = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  }, []);
 
   // Load config & bookings on mount
   useEffect(() => {
@@ -171,6 +178,27 @@ export default function AdminPage() {
     } catch {
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b)),
+      );
+    }
+  };
+
+  const handleUpdatePaymentStatus = async (
+    id: string,
+    paymentStatus: PaymentStatus,
+  ) => {
+    try {
+      const res = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, paymentStatus }),
+      });
+      const data = await res.json();
+      if (data?.ok && data.bookings) {
+        setBookings(data.bookings);
+      }
+    } catch {
+      setBookings((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, paymentStatus } : b)),
       );
     }
   };
@@ -262,6 +290,7 @@ export default function AdminPage() {
           customerPhone: manualPhone,
           customerNotes: manualNotes,
           status: "confirmado",
+          paymentStatus: "pendiente",
         }),
       });
       const data = await res.json();
@@ -390,6 +419,15 @@ export default function AdminPage() {
       .filter((b) => b.status !== "cancelado")
       .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
 
+    const paidRevenue = bookings
+      .filter(
+        (b) =>
+          b.paymentStatus === "pagado_efectivo" ||
+          b.paymentStatus === "pagado_transferencia" ||
+          b.paymentStatus === "pagado_mp",
+      )
+      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
+
     // Plan count
     const planCounts: { [key: string]: number } = {};
     bookings.forEach((b) => {
@@ -409,6 +447,7 @@ export default function AdminPage() {
       pendingCount,
       confirmedCount,
       projectedRevenue,
+      paidRevenue,
       topPlan,
     };
   }, [bookings, todayStr]);
@@ -421,7 +460,15 @@ export default function AdminPage() {
       b.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (b.customerPhone && b.customerPhone.includes(searchQuery)) ||
       b.planTitle.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+
+    let matchesDate = true;
+    if (filterDateMode === "hoy") {
+      matchesDate = b.date === todayStr;
+    } else if (filterDateMode === "manana") {
+      matchesDate = b.date === tomorrowStr;
+    }
+
+    return matchesStatus && matchesSearch && matchesDate;
   });
 
   // Calendar rendering in Agenda tab
@@ -662,10 +709,10 @@ export default function AdminPage() {
 
           <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
             <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
-              Plan Más Solicitado
+              Cobrado / Pagado
             </span>
-            <div className="mt-2 truncate font-condensed text-lg font-bold text-foreground">
-              {stats.topPlan}
+            <div className="mt-2 font-condensed text-2xl font-black text-emerald-400">
+              ${stats.paidRevenue.toLocaleString("es-AR")}
             </div>
           </div>
         </div>
@@ -716,20 +763,58 @@ export default function AdminPage() {
                   Registro de Turnos con Hora Exacta
                 </h1>
                 <p className="text-xs text-muted">
-                  Visualizá cuándo ingresó cada reserva, gestioná notas del
-                  alumno y confirmá por WhatsApp con 1 click.
+                  Visualizá cuándo ingresó cada reserva, sincronizá con Google
+                  Calendar y gestioná pagos.
                 </p>
               </div>
 
               {/* Filtros */}
               <div className="flex flex-wrap items-center gap-2">
+                {/* Filtro de día rápido */}
+                <div className="flex rounded-xl border border-border bg-surface p-1">
+                  <button
+                    type="button"
+                    onClick={() => setFilterDateMode("todos")}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-condensed font-semibold transition-colors ${
+                      filterDateMode === "todos"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                  >
+                    Todos
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFilterDateMode("hoy")}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-condensed font-semibold transition-colors ${
+                      filterDateMode === "hoy"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                  >
+                    Hoy
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFilterDateMode("manana")}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-condensed font-semibold transition-colors ${
+                      filterDateMode === "manana"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                  >
+                    Mañana
+                  </button>
+                </div>
+
                 <input
                   type="text"
-                  placeholder="Buscar por nombre o tel..."
+                  placeholder="Buscar alumno o tel..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-xl border border-border bg-surface px-3.5 py-1.5 text-xs text-foreground focus:border-accent focus:outline-none"
+                  className="rounded-xl border border-border bg-surface px-3 py-1.5 text-xs text-foreground focus:border-accent focus:outline-none"
                 />
+
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
@@ -747,12 +832,16 @@ export default function AdminPage() {
             {filteredBookings.length === 0 ? (
               <div className="rounded-3xl border border-border bg-surface p-12 text-center">
                 <p className="font-condensed text-lg font-bold text-muted">
-                  No se encontraron reservas con los filtros aplicados.
+                  No hay reservas registradas en este momento.
+                </p>
+                <p className="mt-1 text-xs text-muted/70">
+                  Las reservas que los clientes soliciten en la web aparecerán
+                  automáticamente acá.
                 </p>
                 <button
                   type="button"
                   onClick={() => setShowManualModal(true)}
-                  className="mt-4 rounded-full bg-accent px-5 py-2 font-condensed text-xs font-bold text-accent-foreground"
+                  className="mt-5 rounded-full bg-accent px-6 py-2.5 font-condensed text-xs font-bold text-accent-foreground transition-all hover:opacity-90"
                 >
                   + Cargar una reserva manualmente
                 </button>
@@ -837,6 +926,35 @@ export default function AdminPage() {
                               💬 &quot;{b.customerNotes}&quot;
                             </p>
                           )}
+                        </div>
+
+                        {/* Estado del Pago */}
+                        <div className="mt-3 flex items-center justify-between gap-2 rounded-2xl border border-border/80 bg-background/50 p-2 text-xs">
+                          <span className="text-[11px] font-semibold text-muted">
+                            Estado Pago:
+                          </span>
+                          <select
+                            value={b.paymentStatus || "pendiente"}
+                            onChange={(e) =>
+                              handleUpdatePaymentStatus(
+                                b.id,
+                                e.target.value as PaymentStatus,
+                              )
+                            }
+                            className="rounded-lg border border-border bg-surface px-2 py-1 text-[11px] text-foreground focus:border-accent focus:outline-none"
+                          >
+                            <option value="pendiente">💳 Pendiente</option>
+                            <option value="seña">💳 Seña Recibida</option>
+                            <option value="pagado_efectivo">
+                              💵 Pagado Efectivo
+                            </option>
+                            <option value="pagado_transferencia">
+                              📱 Pagado Transferencia
+                            </option>
+                            <option value="pagado_mp">
+                              💳 Pagado Mercado Pago
+                            </option>
+                          </select>
                         </div>
 
                         {/* Contador de sesiones completadas si es pack */}
@@ -933,29 +1051,41 @@ export default function AdminPage() {
 
                       {/* Botones de acción & Respuestas Rápidas de WhatsApp */}
                       <div className="mt-4 space-y-2 border-t border-border/60 pt-3">
-                        {b.customerPhone && (
-                          <div className="flex flex-wrap gap-1.5">
-                            <a
-                              href={buildQuickWhatsAppMessage("confirmar", b)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90"
-                            >
-                              ✓ Confirmar Turno
-                            </a>
-                            <a
-                              href={buildQuickWhatsAppMessage(
-                                "recordatorio",
-                                b,
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-emerald-400 transition-colors hover:bg-emerald-500/20"
-                            >
-                              ⏰ Recordatorio 24h
-                            </a>
-                          </div>
-                        )}
+                        <div className="flex flex-wrap gap-1.5">
+                          {b.customerPhone && (
+                            <>
+                              <a
+                                href={buildQuickWhatsAppMessage("confirmar", b)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90"
+                              >
+                                ✓ Confirmar Turno
+                              </a>
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "recordatorio",
+                                  b,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-emerald-400 transition-colors hover:bg-emerald-500/20"
+                              >
+                                ⏰ Recordatorio 24h
+                              </a>
+                            </>
+                          )}
+
+                          {/* Sincronizar Google Calendar */}
+                          <a
+                            href={buildGoogleCalendarUrl(b)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-full border border-blue-500/40 bg-blue-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-blue-400 transition-colors hover:bg-blue-500/20"
+                          >
+                            📅 Google Cal →
+                          </a>
+                        </div>
 
                         <div className="flex items-center justify-between gap-2 pt-1">
                           <select
@@ -1098,18 +1228,28 @@ export default function AdminPage() {
                         </p>
                       )}
                       {b.customerPhone && (
-                        <div className="mt-2 flex items-center justify-between">
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2">
                           <span className="text-xs text-foreground/80">
                             📱 {b.customerPhone}
                           </span>
-                          <a
-                            href={buildQuickWhatsAppMessage("confirmar", b)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white"
-                          >
-                            WhatsApp →
-                          </a>
+                          <div className="flex gap-1.5">
+                            <a
+                              href={buildQuickWhatsAppMessage("confirmar", b)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white"
+                            >
+                              WhatsApp →
+                            </a>
+                            <a
+                              href={buildGoogleCalendarUrl(b)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full border border-blue-500/40 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-400"
+                            >
+                              📅 Cal
+                            </a>
+                          </div>
                         </div>
                       )}
                     </div>

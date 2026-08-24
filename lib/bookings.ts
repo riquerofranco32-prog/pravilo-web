@@ -1,3 +1,10 @@
+export type PaymentStatus =
+  | "pendiente"
+  | "seña"
+  | "pagado_efectivo"
+  | "pagado_transferencia"
+  | "pagado_mp";
+
 export interface Booking {
   id: string;
   createdAt: string; // ISO string
@@ -8,7 +15,8 @@ export interface Booking {
   customerName: string;
   customerPhone?: string;
   customerNotes?: string;
-  internalNotes?: string; // Notas del instructor sobre el alumno
+  internalNotes?: string;
+  paymentStatus?: PaymentStatus;
   sessionsCompleted?: number;
   totalSessions?: number;
   status: "pendiente" | "confirmado" | "realizado" | "cancelado";
@@ -86,6 +94,33 @@ export function buildQuickWhatsAppMessage(
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
+export function buildGoogleCalendarUrl(booking: Booking): string {
+  if (!booking.date || !booking.time) return "";
+  try {
+    // date: YYYY-MM-DD, time: HH:mm
+    const [year, month, day] = booking.date.split("-").map(Number);
+    const [hour, min] = booking.time.split(":").map(Number);
+
+    const startDate = new Date(year, month - 1, day, hour, min, 0);
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 60 min session
+
+    const formatCalDate = (d: Date) =>
+      d.toISOString().replace(/-|:|\.\d+/g, "");
+
+    const title = `Sesión PRAVILO: ${booking.customerName} (${booking.planTitle})`;
+    const details = `Alumno: ${booking.customerName}\nTeléfono: ${booking.customerPhone || "No especificado"}\nPlan: ${booking.planTitle} (${booking.planPrice})\nNotas: ${booking.customerNotes || "Ninguna"}`;
+    const location = "PRAVILO ARG, Plottier, Neuquén";
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      title,
+    )}&dates=${formatCalDate(startDate)}/${formatCalDate(endDate)}&details=${encodeURIComponent(
+      details,
+    )}&location=${encodeURIComponent(location)}`;
+  } catch {
+    return "";
+  }
+}
+
 export function exportBookingsToCSV(bookings: Booking[]): void {
   if (!bookings || bookings.length === 0) return;
 
@@ -97,7 +132,8 @@ export function exportBookingsToCSV(bookings: Booking[]): void {
     "Precio",
     "Fecha Turno",
     "Horario",
-    "Estado",
+    "Estado Turno",
+    "Estado Pago",
     "Comentarios Cliente",
     "Notas Instructor",
   ];
@@ -111,6 +147,7 @@ export function exportBookingsToCSV(bookings: Booking[]): void {
     b.date,
     b.time,
     b.status,
+    b.paymentStatus || "pendiente",
     `"${(b.customerNotes || "").replace(/"/g, '""')}"`,
     `"${(b.internalNotes || "").replace(/"/g, '""')}"`,
   ]);

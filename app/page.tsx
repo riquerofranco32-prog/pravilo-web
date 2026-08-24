@@ -12,6 +12,7 @@ import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import GoogleReviews from "@/components/GoogleReviews";
+import FAQAccordion from "@/components/FAQAccordion";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -304,6 +305,10 @@ export default function Home() {
                     <span>en Google</span>
                     <span className="text-accent-text">→</span>
                   </a>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Turnos disponibles esta semana</span>
+                  </span>
                 </div>
                 <h1 className="mt-5 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
                   <span className="hero-line" style={{ animationDelay: "0ms" }}>
@@ -679,56 +684,27 @@ export default function Home() {
 
         {/* FAQ */}
         <section id="faq" className="bg-surface px-6 py-24">
-          <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
-            <RevealOnScroll>
-              <span className="eyebrow">FAQ</span>
+          <div className="mx-auto max-w-5xl">
+            <RevealOnScroll className="text-center mb-12">
+              <span className="eyebrow mx-auto w-fit">FAQ</span>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
                 Preguntas frecuentes
               </h2>
-              <p className="mt-4 text-muted">
-                ¿No encontrás lo que buscás? Escribinos y te respondemos
-                directo.
+              <p className="mt-4 max-w-lg mx-auto text-muted">
+                Todo lo que necesitás saber antes de tu primera sesión de PRAVILO.
               </p>
-              <MagneticButton className="mt-6 inline-block">
-                <a
-                  href={whatsappLink("Hola! Tengo una pregunta sobre PRAVILO.")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block rounded-full border border-border px-6 py-2.5 font-condensed text-sm font-semibold transition-colors hover:border-accent hover:text-accent-text"
-                >
-                  Escribinos por WhatsApp
-                </a>
-              </MagneticButton>
             </RevealOnScroll>
-            <div className="space-y-3">
-              {FAQ.map((item, i) => (
-                <RevealOnScroll
-                  key={item.q}
-                  style={{ transitionDelay: `${i * 60}ms` }}
-                >
-                  <div className="rounded-2xl border border-border bg-background px-6 transition-colors has-[.accordion-toggle:checked]:border-accent/40">
-                    <input
-                      type="checkbox"
-                      id={`faq-${i}`}
-                      className="accordion-toggle peer hidden"
-                    />
-                    <label
-                      htmlFor={`faq-${i}`}
-                      className="accordion-header flex cursor-pointer items-center justify-between gap-4 py-5 font-medium"
-                    >
-                      {item.q}
-                      <span className="accordion-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 text-accent-text transition-transform duration-300">
-                        +
-                      </span>
-                    </label>
-                    <div className="accordion-content">
-                      <div className="accordion-inner">
-                        <p className="pb-5 text-muted">{item.a}</p>
-                      </div>
-                    </div>
-                  </div>
-                </RevealOnScroll>
-              ))}
+            <FAQAccordion />
+            <div className="mt-10 text-center">
+              <p className="text-xs text-muted">¿Tenés alguna consulta puntual sobre tu caso?</p>
+              <a
+                href={whatsappLink("Hola Juan! Tengo una consulta sobre el método PRAVILO.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-full border border-border bg-background px-6 py-2.5 font-condensed text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent-text"
+              >
+                Escribile a Juan por WhatsApp →
+              </a>
             </div>
           </div>
         </section>
@@ -742,7 +718,7 @@ export default function Home() {
                 {LOCATION_SHORT}
               </h2>
               <p className="mt-4 max-w-md text-lg text-muted">
-                Coordinamos el horario al reservar tu turno.
+                Estudio privado equipado con el método PRAVILO oficial en el centro de Plottier.
               </p>
               <div className="mt-8 space-y-3">
                 <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4">
@@ -783,26 +759,34 @@ export default function Home() {
                   <div className="text-left">
                     <p className="text-sm font-semibold">Horarios</p>
                     <p className="text-sm text-muted">
-                      A coordinar según turno
+                      Lunes a Sábados (con turno previo)
                     </p>
                   </div>
                 </div>
               </div>
-              <MagneticButton className="mt-8 inline-block">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a
+                  href={GOOGLE_REVIEWS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-accent px-6 py-3 font-condensed text-base font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                >
+                  Abrir en Google Maps →
+                </a>
                 <a
                   href={whatsappLink(
                     "Hola! ¿Me pasás la ubicación exacta del centro?",
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-full border border-border px-8 py-3 font-condensed text-lg font-semibold transition-colors hover:border-accent hover:text-accent-text"
+                  className="rounded-full border border-border bg-surface px-6 py-3 font-condensed text-base font-semibold text-foreground transition-colors hover:border-accent hover:text-accent-text"
                 >
-                  Pedí la ubicación por WhatsApp
+                  Pedir por WhatsApp
                 </a>
-              </MagneticButton>
+              </div>
             </RevealOnScroll>
             <RevealOnScroll>
-              <div className="overflow-hidden rounded-2xl border border-border">
+              <div className="overflow-hidden rounded-2xl border border-border shadow-lg">
                 <iframe
                   src={MAPS_EMBED_SRC}
                   title="Mapa de Plottier, Neuquén"
