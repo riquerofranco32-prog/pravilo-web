@@ -2,16 +2,26 @@ import { whatsappLink } from "@/lib/constants";
 
 export default function WhatsAppFloat() {
   return (
-    <a
-      href={whatsappLink()}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Escribinos por WhatsApp"
-      className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg shadow-black/40 transition-transform hover:scale-110"
-    >
-      <svg viewBox="0 0 32 32" className="h-7 w-7 fill-white">
-        <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.696 4.61 1.899 6.484L4 29l7.708-1.855A11.94 11.94 0 0 0 16.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3Zm0 21.75c-1.972 0-3.8-.575-5.34-1.566l-.383-.243-4.573 1.1 1.12-4.457-.25-.394A9.71 9.71 0 0 1 5.25 15c0-5.937 4.813-10.75 10.751-10.75S26.75 9.063 26.75 15 21.938 24.75 16.001 24.75Zm5.893-8.06c-.322-.161-1.906-.94-2.202-1.047-.295-.108-.51-.161-.725.161-.214.322-.833 1.047-1.021 1.262-.188.214-.376.242-.698.081-.322-.161-1.36-.501-2.591-1.598-.958-.854-1.605-1.909-1.793-2.231-.188-.322-.02-.496.141-.656.145-.144.322-.376.483-.564.161-.188.214-.322.322-.537.107-.214.054-.402-.027-.564-.081-.161-.725-1.747-.994-2.393-.262-.63-.528-.545-.725-.555l-.618-.011c-.214 0-.564.081-.859.402-.295.322-1.128 1.102-1.128 2.688 0 1.586 1.155 3.118 1.316 3.332.161.214 2.273 3.47 5.508 4.866.77.332 1.37.531 1.838.679.772.246 1.475.211 2.031.128.62-.093 1.906-.779 2.174-1.531.268-.752.268-1.397.188-1.531-.08-.135-.295-.215-.618-.376Z" />
-      </svg>
-    </a>
+    <aside aria-label="Contacto flotante" className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+      {/* Tooltip / Badge sutil */}
+      <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-border-highlight bg-surface-raised/90 px-3.5 py-1.5 font-condensed text-xs font-bold uppercase tracking-wider text-foreground shadow-lg backdrop-blur-md">
+        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+        <span>Juan en línea</span>
+      </span>
+
+      <a
+        href={whatsappLink()}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribinos por WhatsApp al centro PRAVILO"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_25px_-4px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-110 hover:shadow-[0_4px_35px_-2px_rgba(37,211,102,0.8)]"
+      >
+        <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-30 animate-ping pointer-events-none" />
+        <svg viewBox="0 0 32 32" className="relative h-7 w-7 fill-white transition-transform group-hover:rotate-6">
+          <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.696 4.61 1.899 6.484L4 29l7.708-1.855A11.94 11.94 0 0 0 16.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3Zm0 21.75c-1.972 0-3.8-.575-5.34-1.566l-.383-.243-4.573 1.1 1.12-4.457-.25-.394A9.71 9.71 0 0 1 5.25 15c0-5.937 4.813-10.75 10.751-10.75S26.75 9.063 26.75 15 21.938 24.75 16.001 24.75Zm5.893-8.06c-.322-.161-1.906-.94-2.202-1.047-.295-.108-.51-.161-.725.161-.214.322-.833 1.047-1.021 1.262-.188.214-.376.242-.698.081-.322-.161-1.36-.501-2.591-1.598-.958-.854-1.605-1.909-1.793-2.231-.188-.322-.02-.496.141-.656.145-.144.322-.376.483-.564.161-.188.214-.322.322-.537.107-.214.054-.402-.027-.564-.081-.161-.725-1.747-.994-2.393-.262-.63-.528-.545-.725-.555l-.618-.011c-.214 0-.564.081-.859.402-.295.322-1.128 1.102-1.128 2.688 0 1.586 1.155 3.118 1.316 3.332.161.214 2.273 3.47 5.508 4.866.77.332 1.37.531 1.838.679.772.246 1.475.211 2.031.128.62-.093 1.906-.779 2.174-1.531.268-.752.268-1.397.188-1.531-.08-.135-.295-.215-.618-.376Z" />
+        </svg>
+      </a>
+    </aside>
   );
 }
+

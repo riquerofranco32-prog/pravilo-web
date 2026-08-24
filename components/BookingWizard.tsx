@@ -289,12 +289,12 @@ export default function BookingWizard({
 
               {/* PASO 1: Elegir Plan */}
               {step === 1 && (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <p className="text-xs text-muted">
-                    Seleccioná el formato que mejor se adapte a tu objetivo:
+                    Seleccioná el formato que mejor se adapte a tu objetivo biomecánico:
                   </p>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-3">
                     {PLANES.map((p) => {
                       const isSelected = selectedPlan.title === p.title;
                       return (
@@ -302,26 +302,26 @@ export default function BookingWizard({
                           key={p.title}
                           type="button"
                           onClick={() => setSelectedPlan(p)}
-                          className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all ${
+                          className={`group flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all duration-200 ${
                             isSelected
-                              ? "border-accent bg-accent/10 shadow-[0_0_20px_-8px_var(--accent)]"
-                              : "border-border bg-background hover:border-border/80"
+                              ? "border-accent bg-accent/15 shadow-[0_0_30px_-8px_rgba(160,26,26,0.6)] scale-[1.01]"
+                              : "border-border bg-surface-raised/70 hover:border-border-highlight hover:bg-surface-raised"
                           }`}
                         >
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-semibold text-foreground">
+                              <span className="font-condensed text-lg font-bold text-foreground group-hover:text-accent-text transition-colors">
                                 {p.title}
                               </span>
                               {p.highlight && (
-                                <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-condensed font-bold uppercase text-accent-foreground">
+                                <span className="rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
                                   Recomendado
                                 </span>
                               )}
                             </div>
-                            <p className="mt-1 text-xs text-muted">{p.desc}</p>
+                            <p className="mt-1 text-xs text-muted leading-relaxed">{p.desc}</p>
                           </div>
-                          <span className="font-condensed text-xl font-extrabold text-accent-text">
+                          <span className="font-condensed text-2xl font-black text-accent-text ml-3 shrink-0">
                             {p.price}
                           </span>
                         </button>
@@ -329,11 +329,11 @@ export default function BookingWizard({
                     })}
                   </div>
 
-                  <div className="mt-6 flex justify-end">
+                  <div className="mt-7 flex justify-end pt-2">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="rounded-full bg-accent px-6 py-2.5 font-condensed text-sm font-bold text-accent-foreground shadow-md transition-opacity hover:opacity-90"
+                      className="btn-shiny rounded-full bg-accent px-7 py-3 font-condensed text-sm font-bold uppercase tracking-wider text-accent-foreground shadow-md transition-all hover:scale-105"
                     >
                       Continuar a la fecha →
                     </button>
