@@ -464,8 +464,8 @@ export default function Home() {
             <RevealOnScroll className="hidden lg:block" style={{ transitionDelay: "150ms" }}>
               <div className="sticky top-28 overflow-hidden rounded-3xl border border-border shadow-[0_0_60px_-20px_var(--accent)]">
                 <Image
-                  src="/images/foto-img-3404.jpg"
-                  alt="Sesión en el aparato PRAVILO"
+                  src="/images/pravilo-sign-suspension.jpg"
+                  alt="Sesión de tracción y suspensión en el aparato PRAVILO"
                   width={760}
                   height={1000}
                   sizes="380px"
