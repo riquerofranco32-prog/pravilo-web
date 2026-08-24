@@ -17,6 +17,7 @@ import BodyQuiz from "@/components/BodyQuiz";
 import GiftCardModal from "@/components/GiftCardModal";
 import LiveSocialProof from "@/components/LiveSocialProof";
 import BiomechanicalComparison from "@/components/BiomechanicalComparison";
+import PosturalProgressionCalculator from "@/components/PosturalProgressionCalculator";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -760,6 +761,9 @@ export default function Home() {
             </RevealOnScroll>
           </div>
         </section>
+
+        {/* SIMULADOR DE PROGRESIÓN POSTURAL */}
+        <PosturalProgressionCalculator />
 
         {/* PRECIOS Y EXPERIENCIAS */}
         <section id="precios" className="mx-auto max-w-6xl px-6 py-28">
