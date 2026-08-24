@@ -544,7 +544,7 @@ export default function Home() {
               <RevealOnScroll className="w-full max-w-xs shrink-0 md:max-w-sm">
                 <div className="relative overflow-hidden rounded-3xl border border-border shadow-[0_0_60px_-15px_var(--accent)]">
                   <Image
-                    src="/images/foto-img-3445.jpg"
+                    src="/images/foto-img-3392.jpg"
                     alt="Juan I. Garrafa, instructor PRAVILO ARG"
                     width={760}
                     height={1010}
@@ -657,6 +657,16 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
+                  <div className="mt-6 pt-4 border-t border-border/70">
+                    <BookingWizard
+                      buttonText="Reservar turno →"
+                      className={`w-full rounded-full py-2.5 font-condensed text-sm font-semibold transition-all ${
+                        p.highlight
+                          ? "bg-accent text-accent-foreground shadow-md hover:bg-accent/90"
+                          : "border border-border bg-surface text-foreground hover:border-accent hover:text-accent-text"
+                      }`}
+                    />
+                  </div>
                 </SpotlightCard>
               </RevealOnScroll>
             ))}
