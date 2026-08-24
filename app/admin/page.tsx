@@ -47,9 +47,9 @@ export default function AdminPage() {
   const [pin, setPin] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pinError, setPinError] = useState("");
-  const [activeTab, setActiveTab] = useState<"clientes" | "agenda" | "horarios">(
-    "clientes",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "clientes" | "alumnos" | "agenda" | "analiticas" | "horarios"
+  >("clientes");
 
   // Config State
   const [config, setConfig] = useState<ScheduleConfig>(DEFAULT_SCHEDULE_CONFIG);
@@ -58,6 +58,13 @@ export default function AdminPage() {
     {},
   );
   const [newBlockedDate, setNewBlockedDate] = useState("");
+
+  // Price Edit State
+  const [planPrices, setPlanPrices] = useState({
+    individual: "$35.000",
+    pack8: "$240.000",
+    pack12: "$300.000",
+  });
 
   // Bookings State
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -106,6 +113,15 @@ export default function AdminPage() {
     if (storedConfig) {
       try {
         setConfig(JSON.parse(storedConfig));
+      } catch {
+        // ignore
+      }
+    }
+
+    const savedPrices = localStorage.getItem("pravilo_plan_prices");
+    if (savedPrices) {
+      try {
+        setPlanPrices(JSON.parse(savedPrices));
       } catch {
         // ignore
       }
@@ -280,10 +296,10 @@ export default function AdminPage() {
           planTitle: manualPlan,
           planPrice:
             manualPlan.includes("8")
-              ? "$240.000"
+              ? planPrices.pack8
               : manualPlan.includes("12")
-                ? "$300.000"
-                : "$35.000",
+                ? planPrices.pack12
+                : planPrices.individual,
           date: manualDate,
           time: manualTime,
           customerName: manualName,
@@ -387,6 +403,7 @@ export default function AdminPage() {
   const handleSaveConfig = async () => {
     setSaveStatus("Guardando...");
     localStorage.setItem(LOCAL_STORAGE_SCHEDULE_KEY, JSON.stringify(config));
+    localStorage.setItem("pravilo_plan_prices", JSON.stringify(planPrices));
 
     try {
       const res = await fetch("/api/admin/config", {
@@ -396,7 +413,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.ok) {
-        setSaveStatus("✓ ¡Configuración guardada con éxito!");
+        setSaveStatus("✓ ¡Configuración y precios guardados con éxito!");
       } else {
         setSaveStatus("✓ Guardado localmente.");
       }
@@ -428,7 +445,6 @@ export default function AdminPage() {
       )
       .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
 
-    // Plan count
     const planCounts: { [key: string]: number } = {};
     bookings.forEach((b) => {
       planCounts[b.planTitle] = (planCounts[b.planTitle] || 0) + 1;
@@ -451,6 +467,64 @@ export default function AdminPage() {
       topPlan,
     };
   }, [bookings, todayStr]);
+
+  // Unique Alumnos Directory aggregation
+  const alumnosList = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        name: string;
+        phone: string;
+        totalBookings: number;
+        totalSpent: number;
+        lastDate: string;
+        notes: string;
+      }
+    >();
+
+    bookings.forEach((b) => {
+      const key = (b.customerPhone || b.customerName).toLowerCase().trim();
+      const existing = map.get(key);
+      const spent = parsePriceToNumber(b.planPrice);
+      if (existing) {
+        existing.totalBookings += 1;
+        existing.totalSpent += spent;
+        if (b.date > existing.lastDate) existing.lastDate = b.date;
+        if (b.internalNotes) existing.notes = b.internalNotes;
+      } else {
+        map.set(key, {
+          name: b.customerName,
+          phone: b.customerPhone || "",
+          totalBookings: 1,
+          totalSpent: spent,
+          lastDate: b.date,
+          notes: b.internalNotes || "",
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [bookings]);
+
+  // Analytics breakdown
+  const analyticsData = useMemo(() => {
+    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+    const hourCounts: { [hour: string]: number } = {};
+
+    bookings.forEach((b) => {
+      if (b.date) {
+        const [y, m, d] = b.date.split("-").map(Number);
+        const dayIdx = new Date(y, m - 1, d).getDay();
+        dayCounts[dayIdx] = (dayCounts[dayIdx] || 0) + 1;
+      }
+      if (b.time) {
+        hourCounts[b.time] = (hourCounts[b.time] || 0) + 1;
+      }
+    });
+
+    return { dayNames, dayCounts, hourCounts };
+  }, [bookings]);
 
   // Filtered Bookings
   const filteredBookings = bookings.filter((b) => {
@@ -728,7 +802,18 @@ export default function AdminPage() {
                 : "border border-border bg-surface text-muted hover:text-foreground"
             }`}
           >
-            📋 Registro de Clientes & Turnos ({bookings.length})
+            📋 Registro de Turnos ({bookings.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("alumnos")}
+            className={`rounded-full px-5 py-2 font-condensed text-sm font-bold transition-all ${
+              activeTab === "alumnos"
+                ? "bg-accent text-accent-foreground shadow-md"
+                : "border border-border bg-surface text-muted hover:text-foreground"
+            }`}
+          >
+            👥 Directorio de Alumnos ({alumnosList.length})
           </button>
           <button
             type="button"
@@ -743,6 +828,17 @@ export default function AdminPage() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab("analiticas")}
+            className={`rounded-full px-5 py-2 font-condensed text-sm font-bold transition-all ${
+              activeTab === "analiticas"
+                ? "bg-accent text-accent-foreground shadow-md"
+                : "border border-border bg-surface text-muted hover:text-foreground"
+            }`}
+          >
+            📊 Demanda & Horarios
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab("horarios")}
             className={`rounded-full px-5 py-2 font-condensed text-sm font-bold transition-all ${
               activeTab === "horarios"
@@ -750,7 +846,7 @@ export default function AdminPage() {
                 : "border border-border bg-surface text-muted hover:text-foreground"
             }`}
           >
-            ⚙️ Configurar Días & Horarios
+            ⚙️ Días, Horarios & Precios
           </button>
         </div>
 
@@ -764,13 +860,12 @@ export default function AdminPage() {
                 </h1>
                 <p className="text-xs text-muted">
                   Visualizá cuándo ingresó cada reserva, sincronizá con Google
-                  Calendar y gestioná pagos.
+                  Calendar y enviá mensajes automáticos.
                 </p>
               </div>
 
               {/* Filtros */}
               <div className="flex flex-wrap items-center gap-2">
-                {/* Filtro de día rápido */}
                 <div className="flex rounded-xl border border-border bg-surface p-1">
                   <button
                     type="button"
@@ -860,7 +955,7 @@ export default function AdminPage() {
                       className="flex flex-col justify-between rounded-3xl border border-border bg-surface p-5 shadow-sm transition-all hover:border-accent/40"
                     >
                       <div>
-                        {/* Cabecera con estado y precio */}
+                        {/* Cabecera */}
                         <div className="flex items-start justify-between">
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-[11px] font-condensed font-bold uppercase ${
@@ -880,7 +975,6 @@ export default function AdminPage() {
                           </span>
                         </div>
 
-                        {/* Nombre del cliente */}
                         <h2 className="mt-3 font-condensed text-xl font-bold text-foreground">
                           {b.customerName}
                         </h2>
@@ -888,7 +982,6 @@ export default function AdminPage() {
                           {b.planTitle}
                         </p>
 
-                        {/* Hora exacta de solicitud */}
                         {b.createdAt && (
                           <div className="mt-2 flex items-center gap-1.5 rounded-xl bg-background/60 px-2.5 py-1 text-[11px] text-muted">
                             <svg
@@ -908,7 +1001,6 @@ export default function AdminPage() {
                           </div>
                         )}
 
-                        {/* Datos del Turno */}
                         <div className="mt-3 space-y-1.5 text-xs text-muted border-t border-border/60 pt-3">
                           <p>
                             📅 <strong>Fecha del turno:</strong> {b.date}
@@ -957,7 +1049,6 @@ export default function AdminPage() {
                           </select>
                         </div>
 
-                        {/* Contador de sesiones completadas si es pack */}
                         {isMultiSession && (
                           <div className="mt-3 rounded-2xl border border-accent/20 bg-accent/5 p-2.5 text-xs">
                             <div className="flex items-center justify-between">
@@ -987,7 +1078,7 @@ export default function AdminPage() {
                           </div>
                         )}
 
-                        {/* Notas del Instructor / Ficha Médica */}
+                        {/* Notas del Instructor */}
                         <div className="mt-3 rounded-2xl border border-border bg-background p-2.5 text-xs">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-semibold text-muted text-[11px] uppercase tracking-wider">
@@ -1049,7 +1140,7 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Botones de acción & Respuestas Rápidas de WhatsApp */}
+                      {/* Botones de acción rápidos */}
                       <div className="mt-4 space-y-2 border-t border-border/60 pt-3">
                         <div className="flex flex-wrap gap-1.5">
                           {b.customerPhone && (
@@ -1060,7 +1151,7 @@ export default function AdminPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90"
                               >
-                                ✓ Confirmar Turno
+                                ✓ Confirmar
                               </a>
                               <a
                                 href={buildQuickWhatsAppMessage(
@@ -1073,10 +1164,20 @@ export default function AdminPage() {
                               >
                                 ⏰ Recordatorio 24h
                               </a>
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "seguimiento_post",
+                                  b,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full border border-purple-500/40 bg-purple-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-purple-400 transition-colors hover:bg-purple-500/20"
+                              >
+                                💬 Post-Sesión
+                              </a>
                             </>
                           )}
 
-                          {/* Sincronizar Google Calendar */}
                           <a
                             href={buildGoogleCalendarUrl(b)}
                             target="_blank"
@@ -1122,7 +1223,77 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 2: CALENDARIO / AGENDA */}
+        {/* TAB 2: DIRECTORIO DE ALUMNOS */}
+        {activeTab === "alumnos" && (
+          <div className="mt-8 space-y-6">
+            <div>
+              <h1 className="font-condensed text-3xl font-extrabold">
+                Directorio de Alumnos & Clientes
+              </h1>
+              <p className="text-xs text-muted">
+                Historial agrupado por persona, total de sesiones tomadas y ficha médica.
+              </p>
+            </div>
+
+            {alumnosList.length === 0 ? (
+              <div className="rounded-3xl border border-border bg-surface p-12 text-center text-muted">
+                No hay alumnos registrados todavía.
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-3xl border border-border bg-surface">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-border bg-background/50 font-condensed text-xs font-bold uppercase text-muted">
+                    <tr>
+                      <th className="p-4">Alumno</th>
+                      <th className="p-4">Teléfono</th>
+                      <th className="p-4">Total Turnos</th>
+                      <th className="p-4">Inversión Total</th>
+                      <th className="p-4">Última Visita</th>
+                      <th className="p-4">Notas Físicas</th>
+                      <th className="p-4 text-right">Contacto</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {alumnosList.map((a, i) => (
+                      <tr key={i} className="hover:bg-background/40">
+                        <td className="p-4 font-semibold text-foreground">
+                          {a.name}
+                        </td>
+                        <td className="p-4 text-muted">{a.phone || "-"}</td>
+                        <td className="p-4 font-condensed font-bold text-accent-text">
+                          {a.totalBookings} sesión(es)
+                        </td>
+                        <td className="p-4 font-bold text-foreground">
+                          ${a.totalSpent.toLocaleString("es-AR")}
+                        </td>
+                        <td className="p-4 text-muted">{a.lastDate}</td>
+                        <td className="p-4 text-muted max-w-xs truncate">
+                          {a.notes || "-"}
+                        </td>
+                        <td className="p-4 text-right">
+                          {a.phone ? (
+                            <a
+                              href={`https://wa.me/${a.phone.replace(/\D/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full bg-emerald-600 px-3 py-1 font-condensed font-bold text-white hover:opacity-90"
+                            >
+                              WhatsApp →
+                            </a>
+                          ) : (
+                            <span className="text-muted">-</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: CALENDARIO / AGENDA */}
         {activeTab === "agenda" && (
           <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_1fr]">
             <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
@@ -1169,7 +1340,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Calendar Grid */}
               <div className="mb-2 grid grid-cols-7 text-center font-condensed text-xs font-bold text-muted">
                 <span>Lun</span>
                 <span>Mar</span>
@@ -1184,7 +1354,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Turnos del día seleccionado */}
             <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
               <h2 className="font-condensed text-xl font-bold">
                 Turnos del {selectedCalendarDate}
@@ -1260,17 +1429,88 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 3: CONFIGURAR HORARIOS */}
+        {/* TAB 4: ANALÍTICAS */}
+        {activeTab === "analiticas" && (
+          <div className="mt-8 space-y-8">
+            <div>
+              <h1 className="font-condensed text-3xl font-extrabold">
+                Demanda por Día y Horario
+              </h1>
+              <p className="text-xs text-muted">
+                Estadísticas de ocupación para saber qué días y franjas horarias son las más pedidas.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-3xl border border-border bg-surface p-6">
+                <h3 className="font-condensed text-xl font-bold mb-4">
+                  Distribución por Día de la Semana
+                </h3>
+                <div className="space-y-3">
+                  {analyticsData.dayNames.map((name, idx) => {
+                    const count = analyticsData.dayCounts[idx] || 0;
+                    const max = Math.max(...analyticsData.dayCounts, 1);
+                    const pct = Math.round((count / max) * 100);
+
+                    return (
+                      <div key={name}>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="font-semibold">{name}</span>
+                          <span className="text-muted">{count} turnos</span>
+                        </div>
+                        <div className="h-3 w-full rounded-full bg-background overflow-hidden border border-border/50">
+                          <div
+                            className="h-full bg-accent transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-surface p-6">
+                <h3 className="font-condensed text-xl font-bold mb-4">
+                  Horarios más Solicitados
+                </h3>
+                <div className="space-y-2">
+                  {Object.keys(analyticsData.hourCounts).length === 0 ? (
+                    <p className="text-xs text-muted italic">Sin datos aún.</p>
+                  ) : (
+                    Object.entries(analyticsData.hourCounts)
+                      .sort((a, b) => b[1] - a[1])
+                      .slice(0, 6)
+                      .map(([hour, count]) => (
+                        <div
+                          key={hour}
+                          className="flex items-center justify-between rounded-xl border border-border bg-background p-3 text-xs"
+                        >
+                          <span className="font-condensed font-bold text-base text-accent-text">
+                            {hour} hs
+                          </span>
+                          <span className="font-semibold text-foreground">
+                            {count} turno(s) pedidos
+                          </span>
+                        </div>
+                      ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: CONFIGURAR HORARIOS & PRECIOS */}
         {activeTab === "horarios" && (
           <div className="mt-8 space-y-8">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="font-condensed text-3xl font-black md:text-4xl">
-                  Configuración de Días y Horarios
+                  Configuración de Días, Horarios & Precios
                 </h1>
                 <p className="text-sm text-muted">
-                  Habilitá los días de la semana y los horarios que los clientes
-                  pueden elegir al reservar en la web.
+                  Habilitá los días de la semana, horarios y editá el valor de los planes.
                 </p>
               </div>
 
@@ -1281,6 +1521,69 @@ export default function AdminPage() {
               >
                 Copiar horarios de Lunes a Lun-Vie
               </button>
+            </div>
+
+            {/* Editor de Precios */}
+            <div className="rounded-3xl border border-border bg-surface p-6">
+              <h2 className="font-condensed text-xl font-bold">
+                Valores de los Planes
+              </h2>
+              <p className="mt-1 text-xs text-muted">
+                Modificá los precios de los planes directamente aquí.
+              </p>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    1 Sesión Individual
+                  </label>
+                  <input
+                    type="text"
+                    value={planPrices.individual}
+                    onChange={(e) =>
+                      setPlanPrices((prev) => ({
+                        ...prev,
+                        individual: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    8 Sesiones (2x/sem)
+                  </label>
+                  <input
+                    type="text"
+                    value={planPrices.pack8}
+                    onChange={(e) =>
+                      setPlanPrices((prev) => ({
+                        ...prev,
+                        pack8: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    12 Sesiones (3x/sem)
+                  </label>
+                  <input
+                    type="text"
+                    value={planPrices.pack12}
+                    onChange={(e) =>
+                      setPlanPrices((prev) => ({
+                        ...prev,
+                        pack12: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Días y Horarios */}
@@ -1396,14 +1699,13 @@ export default function AdminPage() {
               ))}
             </div>
 
-            {/* Bloqueo de Fechas Específicas / Feriados */}
+            {/* Bloqueo de Fechas */}
             <div className="rounded-3xl border border-border bg-surface p-6">
               <h2 className="font-condensed text-xl font-bold">
                 Días Bloqueados / Feriados / Vacaciones
               </h2>
               <p className="mt-1 text-xs text-muted">
-                Los días agregados aquí aparecerán inhabilitados en el
-                calendario de reservas.
+                Los días agregados aquí aparecerán inhabilitados en el calendario de reservas.
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -1518,10 +1820,14 @@ export default function AdminPage() {
                     className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="1 Sesión Individual">
-                      1 Sesión Individual
+                      1 Sesión ({planPrices.individual})
                     </option>
-                    <option value="8 Sesiones (2x/sem)">8 Sesiones</option>
-                    <option value="12 Sesiones (3x/sem)">12 Sesiones</option>
+                    <option value="8 Sesiones (2x/sem)">
+                      8 Sesiones ({planPrices.pack8})
+                    </option>
+                    <option value="12 Sesiones (3x/sem)">
+                      12 Sesiones ({planPrices.pack12})
+                    </option>
                   </select>
                 </div>
               </div>

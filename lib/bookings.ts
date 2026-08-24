@@ -69,7 +69,7 @@ export function parsePriceToNumber(priceStr: string): number {
 }
 
 export function buildQuickWhatsAppMessage(
-  type: "confirmar" | "recordatorio" | "reagendar",
+  type: "confirmar" | "recordatorio" | "reagendar" | "seguimiento_post",
   booking: Booking,
 ): string {
   const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
@@ -89,6 +89,9 @@ export function buildQuickWhatsAppMessage(
   } else if (type === "reagendar") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te escribo de *PRAVILO ARG* con respecto a tu turno del ${booking.date} a las ${booking.time} hs.\n\n`;
     text += `¿Tendrías disponibilidad para coordinar un nuevo día u horario? ¡Avisame y lo acomodamos!`;
+  } else if (type === "seguimiento_post") {
+    text = `¡Hola ${booking.customerName.trim()}! 👋 ¿Cómo amaneció tu cuerpo hoy después de la sesión de PRAVILO?\n\n`;
+    text += `Recordá tomar bastante agua hoy para acompañar la hidratación fascial y no dudes en avisarme si tenés alguna duda o consulta. ¡Te esperamos pronto en el estudio! 🙌`;
   }
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
@@ -97,12 +100,11 @@ export function buildQuickWhatsAppMessage(
 export function buildGoogleCalendarUrl(booking: Booking): string {
   if (!booking.date || !booking.time) return "";
   try {
-    // date: YYYY-MM-DD, time: HH:mm
     const [year, month, day] = booking.date.split("-").map(Number);
     const [hour, min] = booking.time.split(":").map(Number);
 
     const startDate = new Date(year, month - 1, day, hour, min, 0);
-    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 60 min session
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
 
     const formatCalDate = (d: Date) =>
       d.toISOString().replace(/-|:|\.\d+/g, "");

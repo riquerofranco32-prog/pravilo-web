@@ -13,6 +13,9 @@ import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import GoogleReviews from "@/components/GoogleReviews";
 import FAQAccordion from "@/components/FAQAccordion";
+import BodyQuiz from "@/components/BodyQuiz";
+import GiftCardModal from "@/components/GiftCardModal";
+import LiveSocialProof from "@/components/LiveSocialProof";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -609,8 +612,71 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Anatomía y Fases de los 60 Minutos */}
+        <section className="border-t border-border bg-surface px-6 py-24">
+          <div className="mx-auto max-w-6xl">
+            <RevealOnScroll className="text-center mb-12">
+              <span className="eyebrow mx-auto w-fit">Metodología</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+                ¿Qué pasa en tu cuerpo durante los 60 minutos?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-muted text-sm md:text-base">
+                Un proceso secuencial diseñado para desinflamar, descomprimir y reeducar tu estructura.
+              </p>
+            </RevealOnScroll>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-3xl border border-border bg-background p-6 shadow-sm">
+                <span className="font-condensed text-xs font-bold text-accent-text uppercase tracking-wider">Min 00 - 15</span>
+                <h3 className="mt-2 font-condensed text-xl font-bold">1. Evaluación & Entrada en calor</h3>
+                <p className="mt-2 text-xs text-muted leading-relaxed">
+                  Lectura postural, movilidad articular y preparación fascial guiada de forma 100% personalizada por Juan.
+                </p>
+              </div>
+              <div className="rounded-3xl border border-border bg-background p-6 shadow-sm">
+                <span className="font-condensed text-xs font-bold text-accent-text uppercase tracking-wider">Min 15 - 35</span>
+                <h3 className="mt-2 font-condensed text-xl font-bold">2. Tracción & Descompresión</h3>
+                <p className="mt-2 text-xs text-muted leading-relaxed">
+                  Ingreso en el aparato PRAVILO. Suspensión suave en 4 puntos y apertura axial liberando presión intervertebral.
+                </p>
+              </div>
+              <div className="rounded-3xl border border-border bg-background p-6 shadow-sm">
+                <span className="font-condensed text-xs font-bold text-accent-text uppercase tracking-wider">Min 35 - 50</span>
+                <h3 className="mt-2 font-condensed text-xl font-bold">3. Expansión Fascial</h3>
+                <p className="mt-2 text-xs text-muted leading-relaxed">
+                  Trabajo tridimensional en múltiples planos de movimiento. Ganancia de rango articular y elongación sin impacto.
+                </p>
+              </div>
+              <div className="rounded-3xl border border-border bg-background p-6 shadow-sm">
+                <span className="font-condensed text-xs font-bold text-accent-text uppercase tracking-wider">Min 50 - 60</span>
+                <h3 className="mt-2 font-condensed text-xl font-bold">4. Integración & Ligereza</h3>
+                <p className="mt-2 text-xs text-muted leading-relaxed">
+                  Descarga en piso, reseteo del sistema nervioso y asimilación postural para volver a tu día completamente renovado.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Test Interactivo: ¿Qué necesita tu cuerpo? */}
+        <section className="border-t border-border px-6 py-24 bg-background">
+          <div className="mx-auto max-w-6xl">
+            <RevealOnScroll className="text-center mb-10">
+              <span className="eyebrow mx-auto w-fit">Test Interactivo</span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+                ¿Qué experiencia es ideal para tu cuerpo?
+              </h2>
+              <p className="mx-auto mt-3 max-w-lg text-muted text-sm">
+                Respondé 3 preguntas en 30 segundos y descubrí el plan que mejor se adapta a tus necesidades.
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll>
+              <BodyQuiz />
+            </RevealOnScroll>
+          </div>
+        </section>
+
         {/* Precios */}
-        <section id="precios" className="mx-auto max-w-6xl px-6 py-24">
+        <section id="precios" className="mx-auto max-w-6xl px-6 py-24 border-t border-border">
           <RevealOnScroll>
             <span className="eyebrow mx-auto w-fit">Elegí tu experiencia</span>
             <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
@@ -675,6 +741,19 @@ export default function Home() {
                 </SpotlightCard>
               </RevealOnScroll>
             ))}
+          </div>
+
+          {/* Gift Card Banner */}
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-accent/30 bg-accent/5 p-6 text-center sm:flex-row sm:text-left">
+            <div>
+              <h3 className="font-condensed text-xl font-bold text-foreground">
+                ¿Querés hacer un regalo diferente?
+              </h3>
+              <p className="mt-1 text-xs text-muted">
+                Encargá un voucher digital de PRAVILO para un cumpleaños o fecha especial.
+              </p>
+            </div>
+            <GiftCardModal />
           </div>
 
           <p className="mt-6 text-center text-xs text-muted">
@@ -951,6 +1030,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Notificaciones flotantes de prueba social */}
+      <LiveSocialProof />
     </>
   );
 }
