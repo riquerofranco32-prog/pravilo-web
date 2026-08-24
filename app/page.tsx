@@ -11,6 +11,8 @@ import BenefitIcon from "@/components/BenefitIcon";
 import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
+import GoogleReviews from "@/components/GoogleReviews";
+import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
   INSTAGRAM_URL,
@@ -29,6 +31,7 @@ const NAV = [
   { href: "#instructor", label: "Instructor" },
   { href: "#galeria", label: "Galería" },
   { href: "#precios", label: "Precios" },
+  { href: "#testimonios", label: "Reseñas" },
   { href: "#faq", label: "FAQ" },
   { href: "#ubicacion", label: "Ubicación" },
 ];
@@ -204,7 +207,28 @@ export default function Home() {
       addressRegion: "Neuquén",
       addressCountry: "AR",
     },
-    sameAs: [INSTAGRAM_URL],
+    sameAs: [INSTAGRAM_URL, GOOGLE_REVIEWS_URL],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5.0",
+      reviewCount: String(GOOGLE_REVIEWS.length),
+      bestRating: "5",
+      worstRating: "1",
+    },
+    review: GOOGLE_REVIEWS.map((r) => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: r.author,
+      },
+      datePublished: "2026-08-20",
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: String(r.rating),
+        bestRating: "5",
+      },
+      reviewBody: r.content,
+    })),
   };
 
   const faqJsonLd = {
@@ -264,13 +288,24 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <ParallaxHero>
-          <section className="grain px-6 pt-28 pb-20 md:pt-36 md:pb-28">
-            <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+          <section className="grain px-6 pt-20 pb-16 md:pt-28 md:pb-24">
+            <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
               <RevealOnScroll>
-                <span className="eyebrow">
-                  1° Centro PRAVILO de Argentina · Plottier, Neuquén
-                </span>
-                <h1 className="mt-6 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="eyebrow">
+                    1° Centro PRAVILO de Argentina · Plottier, Neuquén
+                  </span>
+                  <a
+                    href="#testimonios"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/80 px-3 py-1 text-xs text-muted backdrop-blur transition-colors hover:border-accent hover:text-foreground"
+                  >
+                    <span className="text-amber-400">★★★★★</span>
+                    <span className="font-semibold text-foreground">5.0</span>
+                    <span>en Google</span>
+                    <span className="text-accent-text">→</span>
+                  </a>
+                </div>
+                <h1 className="mt-5 font-condensed text-[15vw] leading-[0.85] font-extrabold tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
                   <span className="hero-line" style={{ animationDelay: "0ms" }}>
                     Explorá
                   </span>
@@ -287,8 +322,8 @@ export default function Home() {
                     a otro nivel.
                   </span>
                 </h1>
-                <p className="mt-6 max-w-lg text-lg text-muted text-balance">
-                  Entrenamiento y terapia de movilidad con el método Pravilo,
+                <p className="mt-5 max-w-lg text-lg text-muted text-balance">
+                  Entrenamiento | Terapia de movilidad con el método Pravilo,
                   tradición eslava, ahora en Plottier.
                 </p>
                 <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -443,14 +478,14 @@ export default function Home() {
         </section>
 
         {/* La práctica */}
-        <section id="practica" className="bg-surface px-6 py-24">
+        <section id="practica" className="bg-surface px-6 py-20 md:py-24">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll>
               <span className="eyebrow mx-auto w-fit">La práctica</span>
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 Individual y adaptada a vos
               </h2>
-              <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted">
+              <p className="mx-auto mt-5 max-w-2xl text-center text-lg leading-relaxed text-muted">
                 El trabajo comienza con una evaluación que permite conocer tus
                 características, necesidades y objetivos para establecer un
                 proceso progresivo y personalizado. La intensidad, el nivel de
@@ -459,21 +494,15 @@ export default function Home() {
               </p>
             </RevealOnScroll>
             <RevealOnScroll>
-              <div className="relative mt-10 aspect-3/2 overflow-hidden rounded-sm border border-border">
-                <video
-                  poster="/images/promo-naranja.jpg"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 h-full w-full object-cover"
-                >
-                  <source
-                    src="/videos/practica-suspension.mp4"
-                    type="video/mp4"
-                  />
-                </video>
+              <div className="relative mt-8 aspect-16/9 overflow-hidden rounded-2xl border border-border shadow-[0_0_50px_-20px_var(--accent)]">
+                <Image
+                  src="/images/foto-img-3448.jpg"
+                  alt="Sesión de práctica en el aparato PRAVILO"
+                  fill
+                  sizes="(min-width: 1024px) 1000px, 100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               </div>
             </RevealOnScroll>
           </div>
@@ -578,13 +607,13 @@ export default function Home() {
         {/* Precios */}
         <section id="precios" className="mx-auto max-w-6xl px-6 py-24">
           <RevealOnScroll>
-            <span className="eyebrow mx-auto w-fit">Planes</span>
+            <span className="eyebrow mx-auto w-fit">Elegí tu experiencia</span>
             <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-              Elegí tu formato
+              Experiencia PRAVILO
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-center text-muted">
-              Elegí el formato que mejor se adapte a tu objetivo. Podés
-              cambiarlo antes de confirmar.
+            <p className="mx-auto mt-4 max-w-2xl text-center text-muted">
+              Sesiones uno a uno guiadas por el Instructor en la máquina Pravilo.
+              Duración de la sesión: 60 minutos.
             </p>
           </RevealOnScroll>
           <div className="mt-12 grid gap-6 lg:grid-cols-3 lg:items-center">
@@ -777,62 +806,29 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonios */}
-        <section id="testimonios" className="bg-surface px-6 py-24">
-          <RevealOnScroll className="mx-auto max-w-2xl rounded-3xl border border-border bg-background p-10 text-center md:p-14">
-            <div className="mx-auto flex w-fit gap-1.5" aria-hidden>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <svg
-                  key={i}
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5 text-accent-text"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3.5l2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8L12 3.5Z"
-                  />
-                </svg>
-              ))}
-            </div>
-            <span className="eyebrow mx-auto mt-4 w-fit">Reseña en Google</span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-              &ldquo;Excelente&rdquo;
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-              Javier Garrafa calificó a PRAVILO ARG con 5 estrellas en Google.
-              Somos el primer centro de este método en el país — reservá tu
-              sesión y sé de los próximos en compartir tu experiencia.
-            </p>
-            <a
-              href={GOOGLE_REVIEWS_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-block text-sm font-semibold text-accent-text underline underline-offset-4"
-            >
-              Ver reseña en Google Maps →
-            </a>
-          </RevealOnScroll>
+        {/* Reseñas de Google */}
+        <GoogleReviews />
 
-          <RevealOnScroll className="mt-14 space-y-3">
-            <Marquee
-              variant="cards"
-              items={TRUST_CARDS.map((card) => (
-                <TrustCard key={card.title} {...card} />
-              ))}
-            />
-            <Marquee
-              variant="cards"
-              reverse
-              items={TRUST_CARDS.map((card) => (
-                <TrustCard key={card.title} {...card} />
-              ))}
-            />
-          </RevealOnScroll>
-        </section>
+        {/* Marquee de Confianza */}
+        <div className="border-t border-border bg-surface py-10">
+          <div className="mx-auto max-w-6xl px-6">
+            <RevealOnScroll className="space-y-3">
+              <Marquee
+                variant="cards"
+                items={TRUST_CARDS.map((card) => (
+                  <TrustCard key={card.title} {...card} />
+                ))}
+              />
+              <Marquee
+                variant="cards"
+                reverse
+                items={TRUST_CARDS.map((card) => (
+                  <TrustCard key={card.title} {...card} />
+                ))}
+              />
+            </RevealOnScroll>
+          </div>
+        </div>
 
         {/* CTA final */}
         <section className="grain relative overflow-hidden px-6 py-32 text-center">
