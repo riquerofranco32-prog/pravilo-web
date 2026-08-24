@@ -36,7 +36,7 @@ function StarRating({ rating = 5, size = "h-4 w-4" }: { rating?: number; size?: 
         <svg
           key={i}
           viewBox="0 0 20 20"
-          className={`${size} fill-amber-400 text-amber-400`}
+          className={`${size} fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]`}
         >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
@@ -47,19 +47,19 @@ function StarRating({ rating = 5, size = "h-4 w-4" }: { rating?: number; size?: 
 
 export default function GoogleReviews() {
   return (
-    <section id="testimonios" className="relative bg-surface px-6 py-24">
-      {/* Glow de fondo */}
+    <section id="testimonios" className="relative bg-surface px-6 py-28 overflow-hidden">
+      {/* Glow ambiental de fondo */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[120px]"
+        className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[140px]"
       />
 
       <div className="relative mx-auto max-w-6xl">
         {/* Cabecera */}
         <RevealOnScroll className="text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-1.5 shadow-sm">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-border-highlight bg-surface-raised px-4 py-1.5 shadow-md">
             <GoogleIcon className="h-4 w-4" />
-            <span className="text-xs font-semibold tracking-wide uppercase text-foreground/90">
+            <span className="text-xs font-condensed font-bold tracking-wider uppercase text-foreground">
               Reseñas en Google Maps
             </span>
           </div>
@@ -73,20 +73,20 @@ export default function GoogleReviews() {
           </p>
 
           {/* Badge de Score Principal */}
-          <div className="mx-auto mt-8 flex max-w-md flex-col items-center justify-between gap-4 rounded-2xl border border-border bg-background p-5 shadow-lg sm:flex-row">
-            <div className="flex items-center gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface shadow-inner">
-                <GoogleIcon className="h-6 w-6" />
+          <div className="mx-auto mt-9 flex max-w-md flex-col items-center justify-between gap-5 rounded-3xl border border-border-highlight bg-surface-raised/80 p-6 shadow-2xl backdrop-blur-xl sm:flex-row">
+            <div className="flex items-center gap-4">
+              <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-border bg-background shadow-inner">
+                <GoogleIcon className="h-7 w-7" />
               </div>
               <div className="text-left">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <span className="font-condensed text-3xl font-black text-foreground">
                     5.0
                   </span>
-                  <StarRating rating={5} size="h-4.5 w-4.5" />
+                  <StarRating rating={5} size="h-5 w-5" />
                 </div>
-                <p className="text-xs font-medium text-muted">
-                  Calificación 5 estrellas en Google
+                <p className="text-xs font-medium text-muted mt-0.5">
+                  Calificación perfecta 5 estrellas
                 </p>
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function GoogleReviews() {
                 href={GOOGLE_REVIEWS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold text-foreground transition-colors hover:border-accent hover:text-accent-text"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2.5 text-xs font-condensed font-bold text-foreground transition-all hover:border-accent hover:text-accent-text"
               >
                 <span>Ver en Google</span>
                 <span aria-hidden className="text-xs">↗</span>
@@ -105,7 +105,7 @@ export default function GoogleReviews() {
                 href={GOOGLE_WRITE_REVIEW_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+                className="btn-shiny inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-xs font-condensed font-bold text-accent-foreground shadow-sm hover:opacity-95"
               >
                 <span>Calificanos</span>
                 <span aria-hidden className="text-xs">★</span>
@@ -121,24 +121,24 @@ export default function GoogleReviews() {
               key={review.id}
               style={{ transitionDelay: `${idx * 80}ms` }}
             >
-              <SpotlightCard className="relative flex h-full flex-col justify-between rounded-3xl border border-border bg-background p-7 transition-all duration-300 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_36px_-15px_var(--accent)]">
+              <SpotlightCard className="relative flex h-full flex-col justify-between rounded-3xl border border-border bg-surface-raised/70 p-7 transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_16px_40px_-15px_rgba(160,26,26,0.35)]">
                 <div>
                   {/* Top Bar: Autor + Badge de Google */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3.5">
                       <div
-                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-condensed font-bold text-white shadow ${review.avatarBg}`}
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-condensed font-bold text-white shadow-md ${review.avatarBg}`}
                       >
                         {review.initials}
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <h3 className="font-semibold text-foreground">
+                          <h3 className="font-semibold text-foreground text-base">
                             {review.author}
                           </h3>
                           <span
-                            title="Usuario verificado"
-                            className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-500/20 text-[10px] text-blue-400"
+                            title="Usuario verificado de Google"
+                            className="inline-flex h-4.5 w-4.5 items-center justify-center rounded-full bg-blue-500/20 text-[10px] text-blue-400 font-bold"
                           >
                             ✓
                           </span>
@@ -149,7 +149,7 @@ export default function GoogleReviews() {
                       </div>
                     </div>
 
-                    <div className="flex shrink-0 items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-muted">
+                    <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-[11px] font-medium text-muted">
                       <GoogleIcon className="h-3.5 w-3.5" />
                       <span>Google</span>
                     </div>
@@ -163,20 +163,20 @@ export default function GoogleReviews() {
 
                   {/* Highlight */}
                   {review.highlight && (
-                    <p className="mt-3 font-condensed text-base font-bold text-accent-text">
+                    <p className="mt-3.5 font-condensed text-lg font-bold text-accent-text leading-snug">
                       &ldquo;{review.highlight}&rdquo;
                     </p>
                   )}
 
                   {/* Texto */}
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/90">
+                  <p className="mt-2.5 text-sm leading-relaxed text-foreground/90">
                     {review.content}
                   </p>
                 </div>
 
                 {/* Footer de tarjeta */}
-                <div className="mt-6 flex items-center justify-between border-t border-border/70 pt-4 text-xs text-muted">
-                  <span className="flex items-center gap-1 text-emerald-400">
+                <div className="mt-7 flex items-center justify-between border-t border-border/70 pt-4 text-xs text-muted">
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
                     <svg
                       viewBox="0 0 20 20"
                       className="h-3.5 w-3.5 fill-current"
@@ -187,15 +187,15 @@ export default function GoogleReviews() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Experiencia verificada
+                    Experiencia verificada en Plottier
                   </span>
                   <a
                     href={GOOGLE_REVIEWS_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium hover:text-accent-text hover:underline"
+                    className="font-condensed text-xs font-bold text-muted hover:text-accent-text hover:underline transition-colors"
                   >
-                    Ver en Google Maps →
+                    Ver en Maps →
                   </a>
                 </div>
               </SpotlightCard>
@@ -205,17 +205,17 @@ export default function GoogleReviews() {
 
         {/* Barra de métricas y confianza */}
         <RevealOnScroll className="mt-14">
-          <div className="grid grid-cols-2 gap-4 rounded-3xl border border-border bg-background p-6 shadow-md sm:grid-cols-4 sm:p-8">
+          <div className="grid grid-cols-2 gap-4 rounded-3xl border border-border-highlight bg-surface-raised p-6 shadow-xl sm:grid-cols-4 sm:p-8">
             <div className="text-center">
-              <p className="font-condensed text-3xl font-extrabold text-accent-text sm:text-4xl">
+              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
                 5.0 ★
               </p>
               <p className="mt-1 text-xs text-muted sm:text-sm">
-                Calificación en Google
+                Calificación en Google Maps
               </p>
             </div>
             <div className="text-center">
-              <p className="font-condensed text-3xl font-extrabold text-accent-text sm:text-4xl">
+              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
                 1°
               </p>
               <p className="mt-1 text-xs text-muted sm:text-sm">
@@ -223,7 +223,7 @@ export default function GoogleReviews() {
               </p>
             </div>
             <div className="text-center">
-              <p className="font-condensed text-3xl font-extrabold text-accent-text sm:text-4xl">
+              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
                 100%
               </p>
               <p className="mt-1 text-xs text-muted sm:text-sm">
@@ -231,11 +231,11 @@ export default function GoogleReviews() {
               </p>
             </div>
             <div className="text-center">
-              <p className="font-condensed text-3xl font-extrabold text-accent-text sm:text-4xl">
+              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
                 60 min
               </p>
               <p className="mt-1 text-xs text-muted sm:text-sm">
-                Movilidad + Tracción
+                Movilidad + Tracción Axial
               </p>
             </div>
           </div>
@@ -246,13 +246,13 @@ export default function GoogleReviews() {
           <p className="text-sm text-muted">
             ¿Ya tuviste tu sesión en PRAVILO ARG?
           </p>
-          <div className="mt-3 flex justify-center">
+          <div className="mt-3.5 flex justify-center">
             <MagneticButton>
               <a
                 href={GOOGLE_WRITE_REVIEW_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-6 py-2.5 font-condensed text-sm font-semibold transition-colors hover:border-accent hover:text-accent-text"
+                className="inline-flex items-center gap-2 rounded-full border border-border-highlight bg-surface-raised px-7 py-3 font-condensed text-sm font-bold text-foreground transition-all hover:border-accent hover:text-accent-text hover:scale-105 shadow-md"
               >
                 <GoogleIcon className="h-4 w-4" />
                 <span>Dejá tu reseña en Google Maps</span>
@@ -265,3 +265,4 @@ export default function GoogleReviews() {
     </section>
   );
 }
+
