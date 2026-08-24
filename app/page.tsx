@@ -16,6 +16,7 @@ import FAQAccordion from "@/components/FAQAccordion";
 import BodyQuiz from "@/components/BodyQuiz";
 import GiftCardModal from "@/components/GiftCardModal";
 import LiveSocialProof from "@/components/LiveSocialProof";
+import BiomechanicalComparison from "@/components/BiomechanicalComparison";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -510,6 +511,9 @@ export default function Home() {
             </RevealOnScroll>
           </div>
         </section>
+
+        {/* COMPARACIÓN BIOMECÁNICA INTERACTIVA */}
+        <BiomechanicalComparison />
 
         {/* METODOLOGÍA: ANATOMÍA DE LOS 60 MINUTOS */}
         <section id="metodologia" className="border-t border-border bg-surface px-6 py-28 relative overflow-hidden">
