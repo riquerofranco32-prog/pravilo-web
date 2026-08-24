@@ -5,103 +5,163 @@ import { useState } from "react";
 interface FAQItem {
   question: string;
   answer: string;
+  category: "general" | "dolor" | "sesion" | "pagos";
 }
+
+const CATEGORIES = [
+  { id: "todos", label: "Todas las preguntas" },
+  { id: "dolor", label: "Dolores & Hernias" },
+  { id: "sesion", label: "Primera Sesión" },
+  { id: "general", label: "El Método PRAVILO" },
+  { id: "pagos", label: "Precios & Formas de Pago" },
+];
 
 const FAQS: FAQItem[] = [
   {
+    category: "general",
     question: "¿Qué es exactamente PRAVILO y cómo se siente la sesión?",
     answer:
-      "PRAVILO es un método milenario de entrenamiento y descompresión originario de la tradición eslava. Mediante un sistema específico de poleas y tracción suave en cuatro puntos (manos y pies), el cuerpo se eleva y elonga sin impacto. La sensación durante la sesión es de alivio inmediato, apertura en el pecho y caderas, y una profunda descompresión en toda la columna vertebral.",
+      "PRAVILO es un método ancestral de entrenamiento y descompresión originario de la tradición eslava. Mediante un sistema específico de poleas y tracción suave en cuatro puntos (manos y pies), el cuerpo se eleva y elonga sin impacto. La sensación durante la sesión es de alivio inmediato, apertura en el pecho y caderas, y una profunda descompresión en toda la columna vertebral.",
   },
   {
-    question: "¿Es seguro si tengo dolor lumbar, ciático o hernias de disco?",
+    category: "dolor",
+    question: "¿Es seguro si tengo dolor lumbar crónico, ciático o hernias de disco?",
     answer:
-      "Sí, es uno de los mayores beneficios del método. Al generar tracción axial controlada, se crea espacio entre las vértebras, aliviando la compresión de los discos y nervios. Las sesiones son 1 a 1 y guiadas en todo momento por Juan, profesor de educación física y primer instructor oficial de Pravilo en Argentina, graduando la tensión milimétricamente.",
+      "Sí, es uno de los mayores beneficios del método. Al generar tracción axial controlada, se crea espacio entre las vértebras, aliviando la compresión de los discos y raíces nerviosas. Las sesiones son 1 a 1 y guiadas en todo momento por Juan Garrafa, profesor de educación física y primer instructor oficial de Pravilo en Argentina, graduando la tensión milimétricamente.",
   },
   {
-    question: "¿Qué indumentaria necesito para asistir?",
+    category: "sesion",
+    question: "¿Qué indumentaria y preparación necesito para asistir?",
     answer:
-      "Solo necesitás ropa deportiva cómoda (remera y calza o jogging). La práctica se realiza descalzo o con medias en un entorno cálido, cuidado y acondicionado.",
+      "Solo necesitás ropa deportiva cómoda (remera y calza o jogging) y una botella de agua para hidratarte. La práctica se realiza descalzo o con medias en un estudio privado, cálido y acondicionado exclusivamente para vos.",
   },
   {
-    question: "¿Cuánto dura cada sesión y cuándo se notan los resultados?",
+    category: "sesion",
+    question: "¿Cuánto dura cada sesión y con qué frecuencia se recomienda venir?",
     answer:
-      "Cada sesión dura 60 minutos completos e incluye movilidad preparatoria, trabajo en suspensión Pravilo y descarga articular. La sensación de liviandad, mayor rango de movimiento y menor dolor se nota desde la primera sesión. Para cambios posturales duraderos y reeducación fascial, recomendamos los packs mensuales de 8 o 12 sesiones.",
+      "Cada sesión dura 60 minutos completos e incluye movilidad preparatoria articular, trabajo en suspensión Pravilo y descarga en piso. Para mantenimiento se recomienda 1 sesión semanal; para dolor crónico o reeducación postural profunda, 2 sesiones por semana (Pack de 8 sesiones).",
   },
   {
-    question: "¿Dónde queda el estudio y cómo coordino mi turno?",
+    category: "dolor",
+    question: "¿Hay límite de edad o contraindicaciones para practicarlo?",
     answer:
-      "El centro está ubicado en Plottier, Neuquén, a pocos minutos de Neuquén Capital y Cipolletti. Podés elegir tu plan, día y horario disponible directamente tocando el botón 'Reservar turno' en esta web, y coordinarás al instante por WhatsApp.",
+      "No hay límite de edad estricto. Practican desde jóvenes deportistas hasta adultos mayores de 65+ años. En la primera sesión se realiza una evaluación biomecánica previa para conocer cualquier antecedente médico y adaptar la intensidad al 100%.",
+  },
+  {
+    category: "pagos",
+    question: "¿Qué formas de pago aceptan y cómo reservo mi turno?",
+    answer:
+      "Aceptamos transferencia bancaria, Mercado Pago (tarjetas de crédito/débito) y efectivo en el estudio. Podés iniciar tu reserva seleccionando el día y horario directamente en esta web y coordinar al instante con Juan por WhatsApp.",
+  },
+  {
+    category: "general",
+    question: "¿Dónde queda el estudio en Plottier?",
+    answer:
+      "El centro está ubicado en Plottier, Neuquén, en una zona de fácil acceso y estacionamiento cómodo, a solo 15 minutos de Neuquén Capital y Cipolletti.",
   },
 ];
 
 export default function FAQAccordion() {
+  const [activeCategory, setActiveCategory] = useState<string>("todos");
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const filteredFaqs =
+    activeCategory === "todos"
+      ? FAQS
+      : FAQS.filter((f) => f.category === activeCategory);
 
   const handleToggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-3.5">
-      {FAQS.map((faq, index) => {
-        const isOpen = openIndex === index;
-        return (
-          <div
-            key={faq.question}
-            className={`rounded-2xl border transition-all duration-300 ${
-              isOpen
-                ? "border-accent/50 bg-surface-raised shadow-[0_8px_30px_-10px_rgba(160,26,26,0.35)]"
-                : "border-border bg-surface/80 hover:border-border-highlight hover:bg-surface-raised"
-            }`}
-          >
+    <div className="mx-auto max-w-3xl space-y-6">
+      {/* Category Pills */}
+      <div className="flex flex-wrap justify-center gap-2">
+        {CATEGORIES.map((cat) => {
+          const isSelected = activeCategory === cat.id;
+          return (
             <button
+              key={cat.id}
               type="button"
-              onClick={() => handleToggle(index)}
-              aria-expanded={isOpen}
-              className="flex w-full items-center justify-between p-5 text-left transition-colors sm:p-6"
+              onClick={() => {
+                setActiveCategory(cat.id);
+                setOpenIndex(0);
+              }}
+              className={`rounded-full px-4 py-1.5 font-condensed text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isSelected
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/30 scale-105"
+                  : "border border-border bg-surface-raised/80 text-muted hover:border-border-highlight hover:text-foreground"
+              }`}
             >
-              <div className="flex items-center gap-3.5 pr-2">
+              {cat.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Accordion Items */}
+      <div className="space-y-3.5 pt-2">
+        {filteredFaqs.map((faq, index) => {
+          const isOpen = openIndex === index;
+          return (
+            <div
+              key={faq.question}
+              className={`rounded-2xl border transition-all duration-300 ${
+                isOpen
+                  ? "border-accent/50 bg-surface-raised shadow-[0_8px_30px_-10px_rgba(160,26,26,0.35)]"
+                  : "border-border bg-surface/80 hover:border-border-highlight hover:bg-surface-raised"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => handleToggle(index)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between p-5 text-left transition-colors sm:p-6"
+              >
+                <div className="flex items-center gap-3.5 pr-2">
+                  <span
+                    className={`font-condensed text-sm font-bold transition-colors ${
+                      isOpen ? "text-accent-text" : "text-muted/60"
+                    }`}
+                  >
+                    0{index + 1}
+                  </span>
+                  <span className="font-condensed text-lg font-bold text-foreground sm:text-xl">
+                    {faq.question}
+                  </span>
+                </div>
                 <span
-                  className={`font-condensed text-sm font-bold transition-colors ${
-                    isOpen ? "text-accent-text" : "text-muted/60"
+                  className={`ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                    isOpen
+                      ? "rotate-180 border-accent bg-accent text-accent-foreground shadow-[0_0_15px_-3px_var(--accent)]"
+                      : "border-border bg-background text-muted"
                   }`}
                 >
-                  0{index + 1}
+                  <svg
+                    viewBox="0 0 20 20"
+                    className="h-4 w-4 fill-current"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </span>
-                <span className="font-condensed text-lg font-bold text-foreground sm:text-xl">
-                  {faq.question}
-                </span>
-              </div>
-              <span
-                className={`ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                  isOpen
-                    ? "rotate-180 border-accent bg-accent text-accent-foreground shadow-[0_0_15px_-3px_var(--accent)]"
-                    : "border-border bg-background text-muted"
-                }`}
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="h-4 w-4 fill-current"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
-            </button>
+              </button>
 
-            {isOpen && (
-              <div className="border-t border-border/60 px-5 pt-3 pb-5 text-sm leading-relaxed text-muted sm:px-6 sm:pb-6">
-                <p>{faq.answer}</p>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              {isOpen && (
+                <div className="border-t border-border/60 px-5 pt-3 pb-5 text-sm leading-relaxed text-muted sm:px-6 sm:pb-6 animate-fadeIn">
+                  <p>{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
+
 
