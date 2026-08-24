@@ -931,22 +931,40 @@ export default function Home() {
             </svg>
           </a>
         </div>
-        <div className="mt-8 flex flex-col items-center gap-2 border-t border-border pt-6 sm:flex-row sm:justify-between">
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted sm:flex-row">
           <p>&copy; {new Date().getFullYear()} PRAVILO ARG. Todos los derechos reservados.</p>
-          <a
-            href="https://se7endev.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-1 transition-colors hover:text-accent-text"
-          >
-            Hecho por{" "}
-            <span className="font-semibold text-foreground/70 transition-colors group-hover:text-accent-text">
-              Se7en Studio
-            </span>
-            <span className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-              &nearr;
-            </span>
-          </a>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-condensed text-xs font-semibold text-muted transition-colors hover:border-accent hover:text-accent-text"
+            >
+              <svg
+                viewBox="0 0 20 20"
+                className="h-3.5 w-3.5 fill-current opacity-70"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 2a4 4 0 0 0-4 4v2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4Zm2 6V6a2 2 0 1 0-4 0v2h4Zm-2 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>Acceso Administrador / Turnos</span>
+            </Link>
+            <a
+              href="https://se7endev.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-1 transition-colors hover:text-accent-text"
+            >
+              Hecho por{" "}
+              <span className="font-semibold text-foreground/70 transition-colors group-hover:text-accent-text">
+                Se7en Studio
+              </span>
+              <span className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                &nearr;
+              </span>
+            </a>
+          </div>
         </div>
       </footer>
     </>

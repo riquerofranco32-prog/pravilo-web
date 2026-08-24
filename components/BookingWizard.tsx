@@ -81,8 +81,33 @@ export default function BookingWizard({
     setOpen(false);
   };
 
-  const handleConfirmAndSend = () => {
+  const handleConfirmAndSend = async () => {
     if (!selectedDate || !selectedTime || !customerName.trim()) return;
+
+    // Registrar el turno en el panel / sistema
+    try {
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const day = String(selectedDate.getDate()).padStart(2, "0");
+      const dateStr = `${year}-${month}-${day}`;
+
+      fetch("/api/admin/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planTitle: selectedPlan.title,
+          planPrice: selectedPlan.price,
+          date: dateStr,
+          time: selectedTime,
+          customerName,
+          customerPhone,
+          customerNotes,
+          status: "pendiente",
+        }),
+      }).catch(() => {});
+    } catch {
+      // ignore
+    }
 
     const url = buildWhatsAppBookingUrl(
       {
