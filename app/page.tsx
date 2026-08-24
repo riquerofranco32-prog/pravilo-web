@@ -20,12 +20,11 @@ import {
   SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
-import { PLANES_EXPERIENCIA, PLANES_FUNCIONAL } from "@/lib/plans";
+import { PLANES_EXPERIENCIA } from "@/lib/plans";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
   { href: "#practica", label: "La práctica" },
-  { href: "#experiencias", label: "Experiencias" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#instructor", label: "Instructor" },
   { href: "#galeria", label: "Galería" },
@@ -70,49 +69,6 @@ const GALERIA_ACCION = [
   { src: "/images/foto-img-3447.jpg", alt: "Sesión de tracción en PRAVILO" },
   { src: "/images/foto-img-3448.jpg", alt: "Movimiento y eje en PRAVILO" },
   { src: "/images/foto-img-3449.jpg", alt: "Práctica completa en PRAVILO" },
-];
-
-const METODO = [
-  {
-    n: "01",
-    title: "Eje",
-    desc: "Todo el trabajo se organiza sobre un eje vertical.",
-  },
-  {
-    n: "02",
-    title: "Tracción",
-    desc: "La suspensión con cuerdas genera tracción controlada.",
-  },
-  {
-    n: "03",
-    title: "Simetría",
-    desc: "Extensión pareja de los dos lados del cuerpo.",
-  },
-];
-
-const TIPOS_EXPERIENCIA = [
-  {
-    icon: "isotipo" as const,
-    title: "Experiencia PRAVILO",
-    tagline: "Individual · Suspensión y tracción",
-    desc: "Sesiones uno a uno guiadas por el instructor sobre el aparato de suspensión: trabajo profundo de fascia, movilidad y eje corporal. Empieza con una evaluación inicial.",
-    bullets: [
-      "Evaluación inicial incluida",
-      "1h 30m por sesión",
-      "A tu ritmo, sin grupo",
-    ],
-  },
-  {
-    icon: "funcional" as const,
-    title: "Entrenamiento Funcional",
-    tagline: "Semanal · Fuerza y resistencia",
-    desc: "Rutinas funcionales de piso pensadas para complementar el trabajo de movilidad: fuerza, resistencia y control, con la misma mirada personalizada.",
-    bullets: [
-      "2 o 3 sesiones por semana",
-      "Complementa cualquier deporte",
-      "Seguimiento mensual",
-    ],
-  },
 ];
 
 const BENEFICIOS = [
@@ -468,23 +424,6 @@ export default function Home() {
                 capacidades y objetivos de cada persona, siempre bajo la guía de
                 un profesional capacitado.
               </p>
-              <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                {[
-                  { label: "Movilidad", desc: "Rango real de movimiento" },
-                  { label: "Tracción", desc: "Suspensión controlada" },
-                  { label: "Fascia", desc: "Memoria del cuerpo" },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-border bg-surface p-5"
-                  >
-                    <p className="font-condensed text-lg font-bold text-accent-text">
-                      {item.label}
-                    </p>
-                    <p className="mt-1 text-sm text-muted">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
             </RevealOnScroll>
             {/* Foto lateral */}
             <RevealOnScroll className="hidden lg:block" style={{ transitionDelay: "150ms" }}>
@@ -503,40 +442,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Simetría / Vitruvio */}
-        <section className="grain relative overflow-hidden bg-black px-6 py-24 text-center">
-          <video
-            poster="/images/vitruvian-poster.jpg"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 h-full w-full object-cover opacity-70"
-          >
-            <source src="/videos/vitruvian.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-black" />
-          <RevealOnScroll className="relative mx-auto max-w-2xl">
-            <span className="eyebrow mx-auto w-fit">Proporción y simetría</span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-              El cuerpo, en equilibrio
-            </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              Como el hombre de Vitruvio, PRAVILO trabaja tu cuerpo como un
-              sistema de proporciones: eje, tracción y simetría trabajando en
-              conjunto, no partes aisladas.
-            </p>
-          </RevealOnScroll>
-        </section>
-
-        {/* La práctica / método */}
+        {/* La práctica */}
         <section id="practica" className="bg-surface px-6 py-24">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll>
               <span className="eyebrow mx-auto w-fit">La práctica</span>
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-                Individual, guiada y adaptada a vos
+                Individual y adaptada a vos
               </h2>
               <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-muted">
                 El trabajo comienza con una evaluación que permite conocer tus
@@ -564,94 +476,6 @@ export default function Home() {
                 </video>
               </div>
             </RevealOnScroll>
-            <div className="mt-10 grid gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-3">
-              {METODO.map((step, i) => (
-                <RevealOnScroll
-                  key={step.title}
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="h-full bg-background p-6">
-                    <span className="font-condensed text-3xl font-extrabold text-accent-text">
-                      {step.n}
-                    </span>
-                    <h3 className="mt-2 text-xl font-bold">{step.title}</h3>
-                    <p className="mt-2 text-sm text-muted">{step.desc}</p>
-                  </div>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Tipos de experiencia */}
-        <section id="experiencias" className="mx-auto max-w-5xl px-6 py-24">
-          <RevealOnScroll>
-            <span className="eyebrow mx-auto w-fit">Elegí tu camino</span>
-            <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-              Dos formas de moverte mejor
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-center text-muted">
-              Se complementan, pero podés empezar por la que más te resuene.
-            </p>
-          </RevealOnScroll>
-          <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
-            {TIPOS_EXPERIENCIA.map((t, i) => (
-              <RevealOnScroll
-                key={t.title}
-                style={{ transitionDelay: `${i * 120}ms` }}
-              >
-                <SpotlightCard className="group flex h-full flex-col bg-background p-8 transition-colors hover:bg-surface">
-                  {t.icon === "isotipo" ? (
-                    <svg
-                      viewBox="0 0 24 40"
-                      className="h-10 w-auto text-accent-text"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    >
-                      <path d="M12 2v36" />
-                      <path d="M4 15c4 3 12 3 16 0" />
-                      <path d="M4 25c4-3 12-3 16 0" />
-                    </svg>
-                  ) : (
-                    <svg
-                      viewBox="0 0 40 24"
-                      className="h-10 w-auto text-accent-text"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    >
-                      <path d="M4 12h32" />
-                      <path d="M4 6v12M9 8v8" />
-                      <path d="M36 6v12M31 8v8" />
-                    </svg>
-                  )}
-                  <h3 className="mt-5 text-xl font-bold">{t.title}</h3>
-                  <p className="mt-1 font-condensed text-xs font-bold tracking-wide text-accent-text uppercase">
-                    {t.tagline}
-                  </p>
-                  <p className="mt-4 text-sm leading-relaxed text-muted">
-                    {t.desc}
-                  </p>
-                  <ul className="mt-5 space-y-2 border-t border-border pt-5 text-sm text-muted">
-                    {t.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2">
-                        <span className="h-1 w-1 rounded-full bg-accent" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href="#precios"
-                    className="mt-6 inline-flex items-center gap-2 font-condensed text-sm font-bold text-accent-text transition-transform group-hover:translate-x-1"
-                  >
-                    Ver planes →
-                  </a>
-                </SpotlightCard>
-              </RevealOnScroll>
-            ))}
           </div>
         </section>
 
@@ -743,9 +567,6 @@ export default function Home() {
               <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight md:text-4xl">
                 En acción
               </h2>
-              <p className="mx-auto mt-4 max-w-xl text-center text-muted">
-                Tocá una foto para verla en grande.
-              </p>
             </RevealOnScroll>
             <Gallery
               images={GALERIA_ACCION}
@@ -788,40 +609,6 @@ export default function Home() {
                     </span>
                   </p>
                   <ul className="mt-5 flex-1 space-y-2.5 border-t border-border pt-5 text-sm">
-                    {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2.5">
-                        <svg
-                          viewBox="0 0 20 20"
-                          className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4 10.5l4 4 8-9"
-                          />
-                        </svg>
-                        <span className="text-muted">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </SpotlightCard>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-          <p className="eyebrow mx-auto mt-14 w-fit">Entrenamiento funcional</p>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {PLANES_FUNCIONAL.map((p) => (
-              <RevealOnScroll key={p.title}>
-                <SpotlightCard className="flex h-full flex-col rounded-2xl border border-border bg-background p-7">
-                  <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="mt-2 font-condensed text-3xl font-extrabold text-accent-text">
-                    {p.price}
-                  </p>
-                  <ul className="mt-5 space-y-2.5 border-t border-border pt-5 text-sm">
                     {p.features.map((f) => (
                       <li key={f} className="flex items-start gap-2.5">
                         <svg

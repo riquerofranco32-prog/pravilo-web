@@ -36,29 +36,5 @@ export const PLANES_EXPERIENCIA: Plan[] = [
   },
 ];
 
-export const PLANES_FUNCIONAL: Plan[] = [
-  {
-    title: "Funcional 2x semana",
-    price: "$55.000/mes",
-    priceNumber: 55000,
-    desc: "Entrenamiento funcional, dos sesiones semanales.",
-    features: [
-      "Dos sesiones semanales",
-      "Grupos reducidos",
-      "Complementa cualquier deporte",
-    ],
-  },
-  {
-    title: "Funcional 3x semana",
-    price: "$70.000/mes",
-    priceNumber: 70000,
-    desc: "Entrenamiento funcional, tres sesiones semanales.",
-    features: [
-      "Tres sesiones semanales",
-      "Mayor progresión",
-      "Seguimiento más cercano",
-    ],
-  },
-];
+export const PLANES: Plan[] = PLANES_EXPERIENCIA;
 
-export const PLANES: Plan[] = [...PLANES_EXPERIENCIA, ...PLANES_FUNCIONAL];
