@@ -69,7 +69,13 @@ export function parsePriceToNumber(priceStr: string): number {
 }
 
 export function buildQuickWhatsAppMessage(
-  type: "confirmar" | "recordatorio" | "reagendar" | "seguimiento_post",
+  type:
+    | "confirmar"
+    | "recordatorio"
+    | "reagendar"
+    | "seguimiento_post"
+    | "pago"
+    | "ubicacion",
   booking: Booking,
 ): string {
   const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
@@ -92,6 +98,16 @@ export function buildQuickWhatsAppMessage(
   } else if (type === "seguimiento_post") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 ¿Cómo amaneció tu cuerpo hoy después de la sesión de PRAVILO?\n\n`;
     text += `Recordá tomar bastante agua hoy para acompañar la hidratación fascial y no dudes en avisarme si tenés alguna duda o consulta. ¡Te esperamos pronto en el estudio! 🙌`;
+  } else if (type === "pago") {
+    text = `¡Hola ${booking.customerName.trim()}! 👋 Te paso los datos para abonar tu sesión/pack de *PRAVILO ARG*:\n\n`;
+    text += `💰 *Monto:* ${booking.planPrice}\n`;
+    text += `💳 *Alias:* PRAVILO.ARG (o consultar por transferencia bancaria / efectivo en el estudio)\n\n`;
+    text += `Una vez realizada la transferencia, envianos el comprobante por acá. ¡Muchas gracias! 🙌`;
+  } else if (type === "ubicacion") {
+    text = `¡Hola ${booking.customerName.trim()}! 👋 Te comparto la ubicación y referencias para llegar al estudio de *PRAVILO ARG* en Plottier:\n\n`;
+    text += `📍 *Dirección:* Plottier, Neuquén\n`;
+    text += `🗺️ *Google Maps:* https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6\n\n`;
+    text += `Cualquier duda al llegar, avisanos por este medio. ¡Buen viaje! 🚗`;
   }
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;

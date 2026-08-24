@@ -1141,7 +1141,7 @@ export default function AdminPage() {
                       </div>
 
                       {/* Botones de acción rápidos */}
-                      <div className="mt-4 space-y-2 border-t border-border/60 pt-3">
+                      <div className="mt-4 space-y-2.5 border-t border-border/60 pt-3">
                         <div className="flex flex-wrap gap-1.5">
                           {b.customerPhone && (
                             <>
@@ -1149,7 +1149,7 @@ export default function AdminPage() {
                                 href={buildQuickWhatsAppMessage("confirmar", b)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90"
+                                className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white transition-opacity hover:opacity-90 shadow-sm"
                               >
                                 ✓ Confirmar
                               </a>
@@ -1163,6 +1163,28 @@ export default function AdminPage() {
                                 className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-emerald-400 transition-colors hover:bg-emerald-500/20"
                               >
                                 ⏰ Recordatorio 24h
+                              </a>
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "pago",
+                                  b,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-amber-400 transition-colors hover:bg-amber-500/20"
+                              >
+                                💰 Pedir Pago
+                              </a>
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "ubicacion",
+                                  b,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full border border-sky-500/40 bg-sky-500/10 px-2.5 py-1 font-condensed text-[11px] font-bold text-sky-400 transition-colors hover:bg-sky-500/20"
+                              >
+                                📍 Enviar Mapa
                               </a>
                               <a
                                 href={buildQuickWhatsAppMessage(
