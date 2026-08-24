@@ -18,6 +18,7 @@ import GiftCardModal from "@/components/GiftCardModal";
 import LiveSocialProof from "@/components/LiveSocialProof";
 import BiomechanicalComparison from "@/components/BiomechanicalComparison";
 import PosturalProgressionCalculator from "@/components/PosturalProgressionCalculator";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -613,6 +614,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* COMPARADOR ANTES / DESPUÉS POSTURAL */}
+        <BeforeAfterSlider />
 
         {/* BENEFICIOS */}
         <section id="beneficios" className="px-6 py-28">
