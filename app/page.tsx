@@ -16,6 +16,8 @@ import FAQAccordion from "@/components/FAQAccordion";
 import GiftCardModal from "@/components/GiftCardModal";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import PlanPerkIcon from "@/components/BenefitIcon";
+import { PricingSection } from "@/components/PricingSection";
+import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -708,114 +710,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PRECIOS Y EXPERIENCIAS */}
-        <section id="precios" className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-          <RevealOnScroll className="text-center">
-            <span className="eyebrow mx-auto w-fit">Elegí tu experiencia</span>
-            <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-              Experiencias PRAVILO
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-              Sesiones 1 a 1 guiadas en todo momento por Juan en el aparato
-              Pravilo oficial. Duración completa: 60 minutos.
-            </p>
-          </RevealOnScroll>
+        {/* AUTODIAGNÓSTICO POSTURAL INTERACTIVO */}
+        <PosturalDiagnosticQuiz />
 
-          <div className="mt-14 grid gap-7 lg:grid-cols-3 lg:items-stretch">
-            {PLANES_EXPERIENCIA.map((p) => {
-              const perSessionText = p.title.includes("8")
-                ? "$30.000 / sesión"
-                : p.title.includes("12")
-                  ? "$25.000 / sesión"
-                  : "$35.000 / sesión";
+        {/* PRECIOS Y EXPERIENCIAS (DINÁMICOS Y SINCRONIZADOS CON ADMIN) */}
+        <PricingSection />
 
-              const savingsText = p.title.includes("8")
-                ? "Ahorrás $40.000"
-                : p.title.includes("12")
-                  ? "Ahorrás $120.000"
-                  : null;
-
-              return (
-                <RevealOnScroll key={p.title}>
-                  <SpotlightCard
-                    className={`flex h-full flex-col justify-between rounded-3xl border p-8 transition-all duration-300 ${
-                      p.highlight
-                        ? "border-accent bg-gradient-to-b from-accent/15 via-surface-raised to-surface-raised shadow-[0_0_60px_-15px_rgba(160,26,26,0.6)] lg:-translate-y-3"
-                        : "border-border bg-surface-raised/70 hover:border-border-highlight"
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        {p.highlight ? (
-                          <span className="inline-block rounded-full bg-accent px-3.5 py-1 font-condensed text-xs font-black tracking-wider text-accent-foreground uppercase shadow-md">
-                            Plan Más Elegido
-                          </span>
-                        ) : (
-                          <span className="inline-block rounded-full border border-border bg-background px-3 py-0.5 font-condensed text-xs font-semibold text-muted">
-                            {p.title.includes("12")
-                              ? "Mayor Descuento"
-                              : "Sesión Única"}
-                          </span>
-                        )}
-
-                        {savingsText && (
-                          <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 font-condensed text-[11px] font-bold text-emerald-400">
-                            {savingsText}
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="font-condensed text-2xl font-bold text-foreground">
-                        {p.title}
-                      </h3>
-                      <div className="mt-3 flex items-baseline gap-2">
-                        <span className="font-condensed text-4xl font-black text-accent-text">
-                          {p.price}
-                        </span>
-                        <span className="font-condensed text-xs font-bold text-muted uppercase tracking-wider">
-                          ({perSessionText})
-                        </span>
-                      </div>
-
-                      <ul className="mt-6 space-y-3 border-t border-border/80 pt-6 text-sm">
-                        {p.features.map((f) => (
-                          <li key={f} className="flex items-start gap-3">
-                            <svg
-                              viewBox="0 0 20 20"
-                              className="mt-0.5 h-4 w-4 shrink-0 text-accent-text"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.5"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4 10.5l4 4 8-9"
-                              />
-                            </svg>
-                            <span className="text-muted leading-relaxed text-xs sm:text-sm">
-                              {f}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-8 pt-5 border-t border-border/80">
-                      <BookingWizard
-                        buttonText="Reservar turno ahora →"
-                        className={`btn-shiny w-full rounded-full py-3.5 font-condensed text-base font-bold uppercase tracking-wider transition-all ${
-                          p.highlight
-                            ? "bg-accent text-accent-foreground shadow-lg hover:bg-accent/90"
-                            : "border border-border bg-background text-foreground hover:border-accent hover:text-accent-text"
-                        }`}
-                      />
-                    </div>
-                  </SpotlightCard>
-                </RevealOnScroll>
-              );
-            })}
-          </div>
+        <section className="mx-auto max-w-6xl px-6 pb-16">
 
           {/* Bloque Compromiso de Bienestar */}
           <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">

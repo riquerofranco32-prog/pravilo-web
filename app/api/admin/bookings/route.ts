@@ -17,6 +17,10 @@ export async function POST(req: NextRequest) {
     const {
       planTitle,
       planPrice,
+      totalAmount,
+      amountPaid,
+      paymentMethod,
+      tags,
       date,
       time,
       customerName,
@@ -46,6 +50,10 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
       planTitle: planTitle || "1 Sesión Individual",
       planPrice: planPrice || "$35.000",
+      totalAmount: totalAmount ?? undefined,
+      amountPaid: amountPaid ?? undefined,
+      paymentMethod: paymentMethod ?? undefined,
+      tags: Array.isArray(tags) ? tags : undefined,
       date,
       time,
       customerName,
@@ -77,7 +85,17 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, status, paymentStatus, internalNotes, sessionsCompleted } = body;
+    const {
+      id,
+      status,
+      paymentStatus,
+      amountPaid,
+      totalAmount,
+      paymentMethod,
+      tags,
+      internalNotes,
+      sessionsCompleted,
+    } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -92,6 +110,10 @@ export async function PATCH(req: NextRequest) {
         ...b,
         ...(status !== undefined ? { status } : {}),
         ...(paymentStatus !== undefined ? { paymentStatus } : {}),
+        ...(amountPaid !== undefined ? { amountPaid } : {}),
+        ...(totalAmount !== undefined ? { totalAmount } : {}),
+        ...(paymentMethod !== undefined ? { paymentMethod } : {}),
+        ...(tags !== undefined ? { tags } : {}),
         ...(internalNotes !== undefined ? { internalNotes } : {}),
         ...(sessionsCompleted !== undefined ? { sessionsCompleted } : {}),
       };

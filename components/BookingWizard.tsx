@@ -136,6 +136,15 @@ export default function BookingWizard({
     // Abrir WhatsApp en nueva pestaña
     window.open(url, "_blank");
     handleClose();
+
+    // Redirigir a la página de confirmación enriquecida
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const dateStr = `${year}-${month}-${day}`;
+
+    const confirmUrl = `/reserva-confirmada?plan=${encodeURIComponent(selectedPlan.title)}&price=${encodeURIComponent(selectedPlan.price)}&date=${dateStr}&time=${encodeURIComponent(selectedTime)}&name=${encodeURIComponent(customerName)}`;
+    window.location.href = confirmUrl;
   };
 
   // Generar días del mes actual para el calendario

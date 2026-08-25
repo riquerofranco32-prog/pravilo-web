@@ -11,6 +11,7 @@ export interface DaySchedule {
 export interface ScheduleConfig {
   days: DaySchedule[];
   blockedDates: string[]; // YYYY-MM-DD
+  blockedDateReasons?: Record<string, string>; // YYYY-MM-DD -> "Feriado / Motivo"
   whatsappNumber: string;
   sessionDurationMinutes: number;
 }
@@ -19,6 +20,7 @@ export const DEFAULT_SCHEDULE_CONFIG: ScheduleConfig = {
   sessionDurationMinutes: 60,
   whatsappNumber: WHATSAPP_NUMBER,
   blockedDates: [],
+  blockedDateReasons: {},
   days: [
     {
       dayIndex: 0,

@@ -5,11 +5,27 @@ export type PaymentStatus =
   | "pagado_transferencia"
   | "pagado_mp";
 
+export type PaymentMethod = "efectivo" | "transferencia" | "mercadopago" | "otro";
+
+export interface ClinicalEvolutionLog {
+  date: string;
+  sessionNumber?: number;
+  painBefore: number; // 0 a 10 (EVA)
+  painAfter: number;  // 0 a 10 (EVA)
+  tensionLevel?: "Leve" | "Moderada" | "Alta" | "Muy Alta";
+  notes: string;
+  instructor?: string;
+}
+
 export interface StudentClinicalProfile {
   conditionReason?: string; // Motivo de consulta (ej. Lumbalgia L5, Hernia, Contractura, Movilidad)
   painLevelInitial?: number; // 1 a 10
   painLevelCurrent?: number; // 1 a 10
+  tags?: string[];
+  medicalNotes?: string;
+  emergencyContact?: { name: string; phone: string; relation?: string };
   sessionLogs?: { date: string; note: string; tensionLevel?: string }[];
+  evolutionLogs?: ClinicalEvolutionLog[];
 }
 
 export interface Booking {
@@ -17,6 +33,9 @@ export interface Booking {
   createdAt: string; // ISO string
   planTitle: string;
   planPrice: string;
+  totalAmount?: number; // Valor numérico total
+  amountPaid?: number;  // Monto abonado o seña
+  paymentMethod?: PaymentMethod;
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
   customerName: string;
@@ -26,8 +45,25 @@ export interface Booking {
   paymentStatus?: PaymentStatus;
   sessionsCompleted?: number;
   totalSessions?: number;
+  tags?: string[];
   status: "pendiente" | "confirmado" | "realizado" | "cancelado";
   clinicalProfile?: StudentClinicalProfile;
+}
+
+export interface GiftCard {
+  id: string;
+  code: string;
+  recipientName: string;
+  recipientPhone?: string;
+  senderName: string;
+  senderPhone?: string;
+  planTitle: string;
+  price: string;
+  customMessage?: string;
+  createdAt: string;
+  status: "activo" | "canjeado" | "expirado";
+  redeemedAt?: string;
+  redeemedBy?: string;
 }
 
 export interface BankConfig {
@@ -47,6 +83,8 @@ export const DEFAULT_BANK_CONFIG: BankConfig = {
 export const LOCAL_STORAGE_BOOKINGS_KEY = "pravilo_bookings_data_v1";
 export const LOCAL_STORAGE_BANK_KEY = "pravilo_bank_config_v1";
 export const LOCAL_STORAGE_CLINICAL_KEY = "pravilo_student_clinical_v1";
+export const LOCAL_STORAGE_GIFTCARDS_KEY = "pravilo_giftcards_v1";
+export const LOCAL_STORAGE_PRICES_KEY = "pravilo_plan_prices_v1";
 
 export function formatDateTimeExact(isoString: string): string {
   if (!isoString) return "";
@@ -147,6 +185,43 @@ export function buildQuickWhatsAppMessage(
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
+export function buildReceiptWhatsAppMessage(
+  booking: Booking,
+  bankConfig?: BankConfig,
+): string {
+  const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
+  if (!cleanPhone) return "";
+
+  const bank = bankConfig || DEFAULT_BANK_CONFIG;
+  const total = booking.totalAmount || parsePriceToNumber(booking.planPrice);
+  const paid = booking.amountPaid || (booking.paymentStatus?.startsWith("pagado") ? total : 0);
+  const pending = Math.max(0, total - paid);
+
+  let text = `🧾 *COMPROBANTE / DETALLE DE PAGO - PRAVILO ARG*\n\n`;
+  text += `👤 *Alumno:* ${booking.customerName.trim()}\n`;
+  text += `📋 *Plan/Servicio:* ${booking.planTitle}\n`;
+  text += `📅 *Turno:* ${booking.date} - ${booking.time} hs\n`;
+  text += `──────────────────\n`;
+  text += `💰 *Total del Plan:* $${total.toLocaleString("es-AR")}\n`;
+  text += `✅ *Abonado / Seña:* $${paid.toLocaleString("es-AR")}\n`;
+  text += `⏳ *Saldo Pendiente:* $${pending.toLocaleString("es-AR")}\n`;
+  text += `──────────────────\n\n`;
+
+  if (pending > 0) {
+    text += `💳 *Datos para transferir el saldo:*\n`;
+    text += `• *Alias:* ${bank.alias || "PRAVILO.ARG"}\n`;
+    if (bank.cbu) text += `• *CBU:* ${bank.cbu}\n`;
+    if (bank.titular) text += `• *Titular:* ${bank.titular}\n`;
+    if (bank.banco) text += `• *Banco:* ${bank.banco}\n\n`;
+    text += `_El saldo también puede abonarse en efectivo o transferencia el día de la sesión._\n\n`;
+  } else {
+    text += `✨ *¡Plan abonado al 100%!* Muchas gracias por tu compromiso. 🙌\n\n`;
+  }
+
+  text += `📍 Estudio PRAVILO: Plottier, Neuquén.`;
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+}
+
 export function buildReactivationWhatsAppMessage(
   customerName: string,
   customerPhone: string,
@@ -239,17 +314,56 @@ export function exportBookingsToCSV(bookings: Booking[]): void {
   document.body.removeChild(link);
 }
 
+export function buildGoogleReviewWhatsAppMessage(
+  customerName: string,
+  customerPhone: string,
+): string {
+  const cleanPhone = (customerPhone || "").replace(/\D/g, "");
+  if (!cleanPhone) return "";
+
+  let text = `¡Hola ${customerName.trim()}! 👋 Te escribo de *PRAVILO ARG*.\n\n`;
+  text += `Queríamos agradecerte por confiar en nosotros para tu entrenamiento y descompresión corporal. 🧘‍♂️✨\n\n`;
+  text += `¿Nos ayudarías dejando una breve reseña en Google sobre tu experiencia? Nos ayuda muchísimo a que más personas descubran los beneficios del método Pravilo en Neuquén:\n\n`;
+  text += `⭐ *Dejar Reseña en Google:* https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6\n\n`;
+  text += `¡Muchas gracias por tu apoyo y nos vemos en la próxima sesión! 🙌`;
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+}
+
+export function buildGiftCardShareWhatsAppMessage(
+  giftCard: GiftCard,
+  phone?: string,
+): string {
+  const cleanPhone = (phone || giftCard.recipientPhone || giftCard.senderPhone || "").replace(/\D/g, "");
+
+  let text = `🎁 *¡VOUCHER / GIFT CARD DIGITAL PRAVILO ARG!* 🌟\n\n`;
+  text += `👤 *Para:* ${giftCard.recipientName}\n`;
+  text += `🤝 *De parte de:* ${giftCard.senderName}\n`;
+  text += `📋 *Experiencia:* ${giftCard.planTitle} (${giftCard.price})\n`;
+  text += `🎟️ *Código de Canje:* \`${giftCard.code}\`\n`;
+  if (giftCard.customMessage) {
+    text += `💌 *Mensaje:* "${giftCard.customMessage}"\n`;
+  }
+  text += `\n──────────────────\n`;
+  text += `📍 *Ubicación:* Plottier, Neuquén\n`;
+  text += `📲 Para coordinar día y horario, respondé a este mensaje mencionando tu código de canje.\n`;
+  text += `¡Que disfrutes tu sesión de descompresión y bienestar! 🙌`;
+
+  return cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}` : "";
+}
+
 export function downloadFullJSONBackup(data: {
   bookings: Booking[];
   config: unknown;
   planPrices: unknown;
   bankConfig: BankConfig;
   clinicalProfiles: Record<string, StudentClinicalProfile>;
+  giftCards?: GiftCard[];
 }): void {
   const jsonStr = JSON.stringify(
     {
       exportedAt: new Date().toISOString(),
-      version: "2.0",
+      version: "2.1",
       ...data,
     },
     null,
