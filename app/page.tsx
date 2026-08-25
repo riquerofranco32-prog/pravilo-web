@@ -326,7 +326,7 @@ export default function Home() {
       <main className="flex-1">
         {/* HERO SECTION */}
         <ParallaxHero>
-          <section className="grain relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
+          <section className="grain relative px-6 pt-16 pb-20 md:pt-20 md:pb-20 overflow-hidden">
             {/* Ambient Background Aura */}
             <div
               aria-hidden
@@ -475,7 +475,7 @@ export default function Home() {
         {/* ¿QUÉ ES PRAVILO? */}
         <section
           id="que-es"
-          className="relative mx-auto max-w-6xl px-6 py-16 md:py-28 overflow-hidden"
+          className="relative mx-auto max-w-6xl px-6 py-16 md:py-20 overflow-hidden"
         >
           <div className="grid gap-14 lg:grid-cols-[1.1fr_400px] lg:items-start">
             <RevealOnScroll>
@@ -561,7 +561,7 @@ export default function Home() {
         {/* METODOLOGÍA: ANATOMÍA DE LOS 60 MINUTOS */}
         <section
           id="metodologia"
-          className="border-t border-border bg-surface px-6 py-16 md:py-28 relative overflow-hidden"
+          className="border-t border-border bg-surface px-6 py-16 md:py-20 relative overflow-hidden"
         >
           <div
             aria-hidden
@@ -569,7 +569,7 @@ export default function Home() {
           />
 
           <div className="relative mx-auto max-w-6xl">
-            <RevealOnScroll className="text-center mb-16">
+            <RevealOnScroll className="text-center mb-10">
               <span className="eyebrow mx-auto w-fit">
                 Metodología Paso a Paso
               </span>
@@ -673,7 +673,7 @@ export default function Home() {
         <BeforeAfterSlider />
 
         {/* BENEFICIOS */}
-        <section id="beneficios" className="px-6 py-16 md:py-28">
+        <section id="beneficios" className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center">
               <span className="eyebrow mx-auto w-fit">
@@ -714,7 +714,7 @@ export default function Home() {
         {/* EL INSTRUCTOR */}
         <section
           id="instructor"
-          className="border-t border-border bg-surface px-6 py-16 md:py-28"
+          className="border-t border-border bg-surface px-6 py-16 md:py-20"
         >
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
@@ -798,7 +798,7 @@ export default function Home() {
         </section>
 
         {/* GALERÍA EN ACCIÓN */}
-        <section id="galeria" className="px-6 py-16 md:py-28">
+        <section id="galeria" className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
             <RevealOnScroll className="text-center">
               <span className="eyebrow mx-auto w-fit">Galería de Práctica</span>
@@ -816,9 +816,9 @@ export default function Home() {
         </section>
 
         {/* TEST INTERACTIVO */}
-        <section className="border-t border-border px-6 py-16 md:py-28 bg-surface">
+        <section className="border-t border-border px-6 py-16 md:py-20 bg-surface">
           <div className="mx-auto max-w-5xl">
-            <RevealOnScroll className="text-center mb-12">
+            <RevealOnScroll className="text-center mb-8">
               <span className="eyebrow mx-auto w-fit">Evaluación Rápida</span>
               <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
                 ¿Qué experiencia es ideal para tu cuerpo?
@@ -836,7 +836,7 @@ export default function Home() {
         </section>
 
         {/* PRECIOS Y EXPERIENCIAS */}
-        <section id="precios" className="mx-auto max-w-6xl px-6 py-16 md:py-28">
+        <section id="precios" className="mx-auto max-w-6xl px-6 py-16 md:py-20">
           <RevealOnScroll className="text-center">
             <span className="eyebrow mx-auto w-fit">Elegí tu experiencia</span>
             <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
@@ -1034,10 +1034,10 @@ export default function Home() {
         {/* PREGUNTAS FRECUENTES (FAQ) */}
         <section
           id="faq"
-          className="border-t border-border bg-surface px-6 py-16 md:py-28"
+          className="border-t border-border bg-surface px-6 py-16 md:py-20"
         >
           <div className="mx-auto max-w-5xl">
-            <RevealOnScroll className="text-center mb-14">
+            <RevealOnScroll className="text-center mb-10">
               <span className="eyebrow mx-auto w-fit">Respuestas Claras</span>
               <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
                 Preguntas frecuentes
@@ -1074,7 +1074,7 @@ export default function Home() {
         </section>
 
         {/* UBICACIÓN */}
-        <section id="ubicacion" className="px-6 py-16 md:py-28">
+        <section id="ubicacion" className="px-6 py-16 md:py-20">
           <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:items-center">
             <RevealOnScroll>
               <span className="eyebrow">Ubicación</span>
@@ -1175,7 +1175,7 @@ export default function Home() {
         </section>
 
         {/* CTA FINAL CINEMATOGRÁFICO */}
-        <section className="grain relative overflow-hidden px-6 py-20 md:py-36 text-center border-t border-border">
+        <section className="grain relative overflow-hidden px-6 py-20 md:py-24 text-center border-t border-border">
           {/* Foto de fondo con overlay */}
           <div className="pointer-events-none absolute inset-0">
             <Image
