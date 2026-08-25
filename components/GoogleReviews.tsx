@@ -47,7 +47,7 @@ function StarRating({ rating = 5, size = "h-4 w-4" }: { rating?: number; size?: 
 
 export default function GoogleReviews() {
   return (
-    <section id="testimonios" className="relative bg-surface px-6 py-28 overflow-hidden">
+    <section id="testimonios" className="relative bg-surface px-6 py-16 md:py-28 overflow-hidden">
       {/* Glow ambiental de fondo */}
       <div
         aria-hidden

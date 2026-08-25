@@ -475,7 +475,7 @@ export default function Home() {
         {/* ¿QUÉ ES PRAVILO? */}
         <section
           id="que-es"
-          className="relative mx-auto max-w-6xl px-6 py-28 overflow-hidden"
+          className="relative mx-auto max-w-6xl px-6 py-16 md:py-28 overflow-hidden"
         >
           <div className="grid gap-14 lg:grid-cols-[1.1fr_400px] lg:items-start">
             <RevealOnScroll>
@@ -561,7 +561,7 @@ export default function Home() {
         {/* METODOLOGÍA: ANATOMÍA DE LOS 60 MINUTOS */}
         <section
           id="metodologia"
-          className="border-t border-border bg-surface px-6 py-28 relative overflow-hidden"
+          className="border-t border-border bg-surface px-6 py-16 md:py-28 relative overflow-hidden"
         >
           <div
             aria-hidden
@@ -582,9 +582,9 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
               <RevealOnScroll style={{ transitionDelay: "0ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
+                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
                   <div className="flex items-center justify-between">
                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
                       01
@@ -605,7 +605,7 @@ export default function Home() {
               </RevealOnScroll>
 
               <RevealOnScroll style={{ transitionDelay: "100ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
+                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
                   <div className="flex items-center justify-between">
                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
                       02
@@ -625,7 +625,7 @@ export default function Home() {
               </RevealOnScroll>
 
               <RevealOnScroll style={{ transitionDelay: "200ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
+                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
                   <div className="flex items-center justify-between">
                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
                       03
@@ -646,7 +646,7 @@ export default function Home() {
               </RevealOnScroll>
 
               <RevealOnScroll style={{ transitionDelay: "300ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
+                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
                   <div className="flex items-center justify-between">
                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
                       04
@@ -673,7 +673,7 @@ export default function Home() {
         <BeforeAfterSlider />
 
         {/* BENEFICIOS */}
-        <section id="beneficios" className="px-6 py-28">
+        <section id="beneficios" className="px-6 py-16 md:py-28">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center">
               <span className="eyebrow mx-auto w-fit">
@@ -688,13 +688,13 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {BENEFICIOS.map((b, i) => (
                 <RevealOnScroll
                   key={b.title}
                   style={{ transitionDelay: `${(i % 3) * 100}ms` }}
                 >
-                  <SpotlightCard className="group h-full rounded-3xl border border-border bg-surface-raised/60 p-7 transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(160,26,26,0.35)]">
+                  <SpotlightCard className="group h-full rounded-3xl border border-border bg-surface-raised/60 p-4 sm:p-7 transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(160,26,26,0.35)]">
                     <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 shadow-inner group-hover:border-accent/60 transition-colors">
                       <BenefitIcon name={b.icon} />
                     </div>
@@ -714,7 +714,7 @@ export default function Home() {
         {/* EL INSTRUCTOR */}
         <section
           id="instructor"
-          className="border-t border-border bg-surface px-6 py-28"
+          className="border-t border-border bg-surface px-6 py-16 md:py-28"
         >
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
@@ -798,7 +798,7 @@ export default function Home() {
         </section>
 
         {/* GALERÍA EN ACCIÓN */}
-        <section id="galeria" className="px-6 py-28">
+        <section id="galeria" className="px-6 py-16 md:py-28">
           <div className="mx-auto max-w-6xl">
             <RevealOnScroll className="text-center">
               <span className="eyebrow mx-auto w-fit">Galería de Práctica</span>
@@ -816,7 +816,7 @@ export default function Home() {
         </section>
 
         {/* TEST INTERACTIVO */}
-        <section className="border-t border-border px-6 py-28 bg-surface">
+        <section className="border-t border-border px-6 py-16 md:py-28 bg-surface">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center mb-12">
               <span className="eyebrow mx-auto w-fit">Evaluación Rápida</span>
@@ -836,7 +836,7 @@ export default function Home() {
         </section>
 
         {/* PRECIOS Y EXPERIENCIAS */}
-        <section id="precios" className="mx-auto max-w-6xl px-6 py-28">
+        <section id="precios" className="mx-auto max-w-6xl px-6 py-16 md:py-28">
           <RevealOnScroll className="text-center">
             <span className="eyebrow mx-auto w-fit">Elegí tu experiencia</span>
             <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
@@ -1034,7 +1034,7 @@ export default function Home() {
         {/* PREGUNTAS FRECUENTES (FAQ) */}
         <section
           id="faq"
-          className="border-t border-border bg-surface px-6 py-28"
+          className="border-t border-border bg-surface px-6 py-16 md:py-28"
         >
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center mb-14">
@@ -1074,7 +1074,7 @@ export default function Home() {
         </section>
 
         {/* UBICACIÓN */}
-        <section id="ubicacion" className="px-6 py-28">
+        <section id="ubicacion" className="px-6 py-16 md:py-28">
           <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:items-center">
             <RevealOnScroll>
               <span className="eyebrow">Ubicación</span>
@@ -1175,7 +1175,7 @@ export default function Home() {
         </section>
 
         {/* CTA FINAL CINEMATOGRÁFICO */}
-        <section className="grain relative overflow-hidden px-6 py-36 text-center border-t border-border">
+        <section className="grain relative overflow-hidden px-6 py-20 md:py-36 text-center border-t border-border">
           {/* Foto de fondo con overlay */}
           <div className="pointer-events-none absolute inset-0">
             <Image

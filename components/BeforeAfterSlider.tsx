@@ -26,7 +26,7 @@ export default function BeforeAfterSlider() {
   };
 
   return (
-    <section className="relative mx-auto max-w-5xl px-6 py-28 overflow-hidden">
+    <section className="relative mx-auto max-w-5xl px-6 py-16 md:py-28 overflow-hidden">
       <RevealOnScroll className="text-center mb-12">
         <span className="eyebrow mx-auto w-fit">Transformación Postural</span>
         <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
