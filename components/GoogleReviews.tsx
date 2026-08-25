@@ -29,9 +29,18 @@ function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function StarRating({ rating = 5, size = "h-4 w-4" }: { rating?: number; size?: string }) {
+function StarRating({
+  rating = 5,
+  size = "h-4 w-4",
+}: {
+  rating?: number;
+  size?: string;
+}) {
   return (
-    <div className="flex items-center gap-1" aria-label={`${rating} de 5 estrellas`}>
+    <div
+      className="flex items-center gap-1"
+      aria-label={`${rating} de 5 estrellas`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
@@ -47,13 +56,10 @@ function StarRating({ rating = 5, size = "h-4 w-4" }: { rating?: number; size?: 
 
 export default function GoogleReviews() {
   return (
-    <section id="testimonios" className="relative bg-surface px-6 py-16 md:py-20 overflow-hidden">
-      {/* Glow ambiental de fondo */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[140px]"
-      />
-
+    <section
+      id="testimonios"
+      className="relative bg-surface px-6 py-16 md:py-20 overflow-hidden"
+    >
       <div className="relative mx-auto max-w-6xl">
         {/* Cabecera */}
         <RevealOnScroll className="text-center">
@@ -68,8 +74,9 @@ export default function GoogleReviews() {
             La experiencia de quienes ya entrenan con nosotros
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">
-            Somos el primer centro del método PRAVILO en Argentina. Conocé lo que
-            opinan quienes ya sintieron la descompresión y el trabajo postural.
+            Somos el primer centro del método PRAVILO en Argentina. Conocé lo
+            que opinan quienes ya sintieron la descompresión y el trabajo
+            postural.
           </p>
 
           {/* Badge de Score Principal */}
@@ -99,7 +106,9 @@ export default function GoogleReviews() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2.5 text-xs font-condensed font-bold text-foreground transition-all hover:border-accent hover:text-accent-text"
               >
                 <span>Ver en Google</span>
-                <span aria-hidden className="text-xs">↗</span>
+                <span aria-hidden className="text-xs">
+                  ↗
+                </span>
               </a>
               <a
                 href={GOOGLE_WRITE_REVIEW_URL}
@@ -108,7 +117,9 @@ export default function GoogleReviews() {
                 className="btn-shiny inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-xs font-condensed font-bold text-accent-foreground shadow-sm hover:opacity-95"
               >
                 <span>Calificanos</span>
-                <span aria-hidden className="text-xs">★</span>
+                <span aria-hidden className="text-xs">
+                  ★
+                </span>
               </a>
             </div>
           </div>
@@ -203,46 +214,8 @@ export default function GoogleReviews() {
           ))}
         </div>
 
-        {/* Barra de métricas y confianza */}
-        <RevealOnScroll className="mt-14">
-          <div className="grid grid-cols-2 gap-4 rounded-3xl border border-border-highlight bg-surface-raised p-6 shadow-xl sm:grid-cols-4 sm:p-8">
-            <div className="text-center">
-              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
-                5.0 ★
-              </p>
-              <p className="mt-1 text-xs text-muted sm:text-sm">
-                Calificación en Google Maps
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
-                1°
-              </p>
-              <p className="mt-1 text-xs text-muted sm:text-sm">
-                Centro en Argentina
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
-                100%
-              </p>
-              <p className="mt-1 text-xs text-muted sm:text-sm">
-                Sesiones individuales
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="font-condensed text-3xl font-black text-accent-text sm:text-4xl">
-                60 min
-              </p>
-              <p className="mt-1 text-xs text-muted sm:text-sm">
-                Movilidad + Tracción Axial
-              </p>
-            </div>
-          </div>
-        </RevealOnScroll>
-
         {/* CTA para dejar opinión */}
-        <RevealOnScroll className="mt-10 text-center">
+        <RevealOnScroll className="mt-14 text-center">
           <p className="text-sm text-muted">
             ¿Ya tuviste tu sesión en PRAVILO ARG?
           </p>
@@ -265,4 +238,3 @@ export default function GoogleReviews() {
     </section>
   );
 }
-
