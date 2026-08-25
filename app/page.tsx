@@ -15,10 +15,9 @@ import GoogleReviews from "@/components/GoogleReviews";
 import FAQAccordion from "@/components/FAQAccordion";
 import BodyQuiz from "@/components/BodyQuiz";
 import GiftCardModal from "@/components/GiftCardModal";
-import LiveSocialProof from "@/components/LiveSocialProof";
 import BiomechanicalComparison from "@/components/BiomechanicalComparison";
-import PosturalProgressionCalculator from "@/components/PosturalProgressionCalculator";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
+import PlanPerkIcon from "@/components/BenefitIcon";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -64,16 +63,40 @@ const GALERIA_ACCION = [
     src: "/images/pravilo-estudio-completo.jpg",
     alt: "Vista completa del estudio PRAVILO ARG",
   },
-  { src: "/images/foto-img-3392.jpg", alt: "Instructor frente al cartel PRAVILO ARG" },
-  { src: "/images/foto-img-3399.jpg", alt: "El aparato PRAVILO — estructura de cuerdas y poleas" },
-  { src: "/images/foto-img-3421.jpg", alt: "Instructor configurando el sistema de tracción" },
-  { src: "/images/foto-img-3428.jpg", alt: "Sesión guiada en el estudio PRAVILO" },
-  { src: "/images/foto-img-3433.jpg", alt: "Trabajo individual con el método PRAVILO" },
-  { src: "/images/foto-img-3437.jpg", alt: "Instructor asistiendo en sesión de movilidad" },
+  {
+    src: "/images/foto-img-3392.jpg",
+    alt: "Instructor frente al cartel PRAVILO ARG",
+  },
+  {
+    src: "/images/foto-img-3399.jpg",
+    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
+  },
+  {
+    src: "/images/foto-img-3421.jpg",
+    alt: "Instructor configurando el sistema de tracción",
+  },
+  {
+    src: "/images/foto-img-3428.jpg",
+    alt: "Sesión guiada en el estudio PRAVILO",
+  },
+  {
+    src: "/images/foto-img-3433.jpg",
+    alt: "Trabajo individual con el método PRAVILO",
+  },
+  {
+    src: "/images/foto-img-3437.jpg",
+    alt: "Instructor asistiendo en sesión de movilidad",
+  },
   { src: "/images/foto-img-3441.jpg", alt: "Tracción y simetría en PRAVILO" },
   { src: "/images/foto-img-3443.jpg", alt: "Ejercicio en el estudio PRAVILO" },
-  { src: "/images/foto-img-3444.jpg", alt: "Trabajo corporal profundo en PRAVILO" },
-  { src: "/images/foto-img-3446.jpg", alt: "Suspensión con instructor PRAVILO" },
+  {
+    src: "/images/foto-img-3444.jpg",
+    alt: "Trabajo corporal profundo en PRAVILO",
+  },
+  {
+    src: "/images/foto-img-3446.jpg",
+    alt: "Suspensión con instructor PRAVILO",
+  },
   { src: "/images/foto-img-3447.jpg", alt: "Sesión de tracción en PRAVILO" },
   { src: "/images/foto-img-3448.jpg", alt: "Movimiento y eje en PRAVILO" },
   { src: "/images/foto-img-3449.jpg", alt: "Práctica completa en PRAVILO" },
@@ -194,7 +217,9 @@ const TRUST_CARDS = [
 function TrustCard({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="h-full w-72 rounded-2xl border border-border bg-surface-raised/80 p-4 shadow-sm backdrop-blur-md">
-      <p className="font-condensed text-base font-bold text-foreground">{title}</p>
+      <p className="font-condensed text-base font-bold text-foreground">
+        {title}
+      </p>
       <p className="mt-1 text-xs text-muted leading-relaxed">{subtitle}</p>
     </div>
   );
@@ -351,9 +376,13 @@ export default function Home() {
 
                 {/* Bajada */}
                 <p className="mt-6 max-w-lg text-lg text-muted text-balance leading-relaxed">
-                  Entrenamiento y terapia de movilidad profunda con el método eslavo{" "}
-                  <strong className="text-foreground font-semibold">PRAVILO</strong>. Descompresión
-                  axial de 4 puntos, liberación fascial y alineación postural guiada en Plottier.
+                  Entrenamiento y terapia de movilidad profunda con el método
+                  eslavo{" "}
+                  <strong className="text-foreground font-semibold">
+                    PRAVILO
+                  </strong>
+                  . Descompresión axial de 4 puntos, liberación fascial y
+                  alineación postural guiada en Plottier.
                 </p>
 
                 {/* CTAs */}
@@ -375,19 +404,21 @@ export default function Home() {
 
                 {/* Trust Points */}
                 <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2.5 border-t border-border/70 pt-6">
-                  {["Evaluación inicial 1 a 1", "Sin impacto articular", "Apto para todas las edades"].map(
-                    (t) => (
-                      <span
-                        key={t}
-                        className="flex items-center gap-2 text-xs font-medium text-muted"
-                      >
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent/20 text-accent-text font-bold text-[10px]">
-                          ✓
-                        </span>
-                        {t}
+                  {[
+                    "Evaluación inicial 1 a 1",
+                    "Sin impacto articular",
+                    "Apto para todas las edades",
+                  ].map((t) => (
+                    <span
+                      key={t}
+                      className="flex items-center gap-2 text-xs font-medium text-muted"
+                    >
+                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent/20 text-accent-text font-bold text-[10px]">
+                        ✓
                       </span>
-                    ),
-                  )}
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </RevealOnScroll>
 
@@ -423,7 +454,8 @@ export default function Home() {
                       Tracción axial y descompresión 3D
                     </p>
                     <p className="text-xs text-white/70 mt-0.5">
-                      Experimentá la ligereza en tu columna desde los primeros 15 minutos.
+                      Experimentá la ligereza en tu columna desde los primeros
+                      15 minutos.
                     </p>
                   </div>
                 </div>
@@ -441,7 +473,10 @@ export default function Home() {
         </div>
 
         {/* ¿QUÉ ES PRAVILO? */}
-        <section id="que-es" className="relative mx-auto max-w-6xl px-6 py-28 overflow-hidden">
+        <section
+          id="que-es"
+          className="relative mx-auto max-w-6xl px-6 py-28 overflow-hidden"
+        >
           <div className="grid gap-14 lg:grid-cols-[1.1fr_400px] lg:items-start">
             <RevealOnScroll>
               <span className="eyebrow">¿Qué es el método?</span>
@@ -449,18 +484,20 @@ export default function Home() {
                 Movilidad, tracción axial y memoria del cuerpo
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted">
-                PRAVILO es un método ancestral eslavo de entrenamiento y recuperación que
-                utiliza un sistema de suspensión y tracción progresiva en 4 puntos.
-                Al interactuar con la gravedad y el propio peso, se libera la presión
-                intervertebral y se expanden las cadenas miofasciales profundas que no
-                alcanza el estiramiento convencional.
+                PRAVILO es un método ancestral eslavo de entrenamiento y
+                recuperación que utiliza un sistema de suspensión y tracción
+                progresiva en 4 puntos. Al interactuar con la gravedad y el
+                propio peso, se libera la presión intervertebral y se expanden
+                las cadenas miofasciales profundas que no alcanza el
+                estiramiento convencional.
               </p>
 
               {/* Pull quote destacado */}
               <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 shadow-inner relative overflow-hidden">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-accent to-accent-glow" />
                 <p className="font-condensed text-2xl font-bold leading-snug text-foreground md:text-3xl pl-2">
-                  &ldquo;Tu fascia guarda más que tensión: guarda tu historia postural.&rdquo;
+                  &ldquo;Tu fascia guarda más que tensión: guarda tu historia
+                  postural.&rdquo;
                 </p>
               </div>
 
@@ -483,14 +520,18 @@ export default function Home() {
               </div>
 
               <p className="mt-8 text-lg leading-relaxed text-muted">
-                Detrás de cada sesión existe una metodología milimétricamente adaptada
-                a las características, lesiones previas y objetivos de cada persona,
-                siempre bajo la guía constante y personalizada de Juan Garrafa.
+                Detrás de cada sesión existe una metodología milimétricamente
+                adaptada a las características, lesiones previas y objetivos de
+                cada persona, siempre bajo la guía constante y personalizada de
+                Juan Garrafa.
               </p>
             </RevealOnScroll>
 
             {/* Foto lateral fija en desktop */}
-            <RevealOnScroll className="hidden lg:block" style={{ transitionDelay: "150ms" }}>
+            <RevealOnScroll
+              className="hidden lg:block"
+              style={{ transitionDelay: "150ms" }}
+            >
               <div className="sticky top-28 overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_60px_-20px_rgba(160,26,26,0.45)] group">
                 <Image
                   src="/images/pravilo-sign-suspension.jpg"
@@ -518,7 +559,10 @@ export default function Home() {
         <BiomechanicalComparison />
 
         {/* METODOLOGÍA: ANATOMÍA DE LOS 60 MINUTOS */}
-        <section id="metodologia" className="border-t border-border bg-surface px-6 py-28 relative overflow-hidden">
+        <section
+          id="metodologia"
+          className="border-t border-border bg-surface px-6 py-28 relative overflow-hidden"
+        >
           <div
             aria-hidden
             className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-full max-w-4xl bg-[radial-gradient(circle,rgba(160,26,26,0.12),transparent_70%)]"
@@ -526,12 +570,15 @@ export default function Home() {
 
           <div className="relative mx-auto max-w-6xl">
             <RevealOnScroll className="text-center mb-16">
-              <span className="eyebrow mx-auto w-fit">Metodología Paso a Paso</span>
+              <span className="eyebrow mx-auto w-fit">
+                Metodología Paso a Paso
+              </span>
               <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
                 ¿Qué pasa en tu cuerpo durante los 60 minutos?
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-                Un circuito biomecánico secuencial diseñado para desinflamar, descomprimir vértebras y reeducar tu estructura.
+                Un circuito biomecánico secuencial diseñado para desinflamar,
+                descomprimir vértebras y reeducar tu estructura.
               </p>
             </RevealOnScroll>
 
@@ -550,7 +597,9 @@ export default function Home() {
                     1. Evaluación & Entrada en Calor
                   </h3>
                   <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Lectura postural estática y dinámica, movilidad articular y preparación fascial guiada de forma 100% personalizada por Juan.
+                    Lectura postural estática y dinámica, movilidad articular y
+                    preparación fascial guiada de forma 100% personalizada por
+                    Juan.
                   </p>
                 </div>
               </RevealOnScroll>
@@ -569,7 +618,8 @@ export default function Home() {
                     2. Tracción & Descompresión
                   </h3>
                   <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Ingreso al dispositivo PRAVILO. Suspensión suave en 4 puntos y apertura axial milimétrica liberando compresión de discos.
+                    Ingreso al dispositivo PRAVILO. Suspensión suave en 4 puntos
+                    y apertura axial milimétrica liberando compresión de discos.
                   </p>
                 </div>
               </RevealOnScroll>
@@ -588,7 +638,9 @@ export default function Home() {
                     3. Expansión Fascial 3D
                   </h3>
                   <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Trabajo tridimensional en múltiples planos de movimiento. Ganancia de rango articular y elongación sin tensión forzada.
+                    Trabajo tridimensional en múltiples planos de movimiento.
+                    Ganancia de rango articular y elongación sin tensión
+                    forzada.
                   </p>
                 </div>
               </RevealOnScroll>
@@ -607,7 +659,9 @@ export default function Home() {
                     4. Integración & Ligereza
                   </h3>
                   <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Descarga en piso, reseteo del sistema nervioso y asimilación postural para salir renovado, liviano y con mayor eje corporal.
+                    Descarga en piso, reseteo del sistema nervioso y asimilación
+                    postural para salir renovado, liviano y con mayor eje
+                    corporal.
                   </p>
                 </div>
               </RevealOnScroll>
@@ -622,12 +676,15 @@ export default function Home() {
         <section id="beneficios" className="px-6 py-28">
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center">
-              <span className="eyebrow mx-auto w-fit">Beneficios Comprobados</span>
+              <span className="eyebrow mx-auto w-fit">
+                Beneficios Comprobados
+              </span>
               <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
                 Lo que cambia en tu cuerpo
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-                Beneficios inmediatos desde la primera sesión y cambios estructurales duraderos.
+                Beneficios inmediatos desde la primera sesión y cambios
+                estructurales duraderos.
               </p>
             </RevealOnScroll>
 
@@ -644,7 +701,9 @@ export default function Home() {
                     <h3 className="mt-5 font-condensed text-xl font-bold text-foreground group-hover:text-accent-text transition-colors">
                       {b.title}
                     </h3>
-                    <p className="mt-2 text-xs text-muted leading-relaxed">{b.desc}</p>
+                    <p className="mt-2 text-xs text-muted leading-relaxed">
+                      {b.desc}
+                    </p>
                   </SpotlightCard>
                 </RevealOnScroll>
               ))}
@@ -653,7 +712,10 @@ export default function Home() {
         </section>
 
         {/* EL INSTRUCTOR */}
-        <section id="instructor" className="border-t border-border bg-surface px-6 py-28">
+        <section
+          id="instructor"
+          className="border-t border-border bg-surface px-6 py-28"
+        >
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
               {/* Fotografía del Instructor con Marco de Estudio */}
@@ -680,7 +742,10 @@ export default function Home() {
               </RevealOnScroll>
 
               {/* Biografía y Declaración */}
-              <RevealOnScroll className="flex-1 text-center md:text-left" style={{ transitionDelay: "120ms" }}>
+              <RevealOnScroll
+                className="flex-1 text-center md:text-left"
+                style={{ transitionDelay: "120ms" }}
+              >
                 <span className="eyebrow">Tu Guía en PRAVILO</span>
                 <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
                   Juan I. Garrafa
@@ -715,7 +780,9 @@ export default function Home() {
                 <div className="mt-8 flex justify-center md:justify-start">
                   <MagneticButton>
                     <a
-                      href={whatsappLink("Hola Juan! Me gustaría hacerte una consulta sobre el método PRAVILO.")}
+                      href={whatsappLink(
+                        "Hola Juan! Me gustaría hacerte una consulta sobre el método PRAVILO.",
+                      )}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-shiny inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-condensed text-sm font-bold uppercase tracking-wider text-accent-foreground shadow-md hover:opacity-95"
@@ -739,7 +806,8 @@ export default function Home() {
                 El Estudio & En Acción
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-muted text-base">
-                Conocé las instalaciones, el dispositivo de tracción y las posiciones de suspensión en el estudio de Plottier.
+                Conocé las instalaciones, el dispositivo de tracción y las
+                posiciones de suspensión en el estudio de Plottier.
               </p>
             </RevealOnScroll>
 
@@ -756,7 +824,8 @@ export default function Home() {
                 ¿Qué experiencia es ideal para tu cuerpo?
               </h2>
               <p className="mx-auto mt-4 max-w-lg text-muted text-base">
-                Respondé 3 preguntas en 30 segundos y descubrí el plan que mejor se adapta a tus necesidades biomecánicas.
+                Respondé 3 preguntas en 30 segundos y descubrí el plan que mejor
+                se adapta a tus necesidades biomecánicas.
               </p>
             </RevealOnScroll>
 
@@ -766,9 +835,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SIMULADOR DE PROGRESIÓN POSTURAL */}
-        <PosturalProgressionCalculator />
-
         {/* PRECIOS Y EXPERIENCIAS */}
         <section id="precios" className="mx-auto max-w-6xl px-6 py-28">
           <RevealOnScroll className="text-center">
@@ -777,26 +843,24 @@ export default function Home() {
               Experiencias PRAVILO
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-              Sesiones 1 a 1 guiadas en todo momento por Juan en el aparato Pravilo oficial.
-              Duración completa: 60 minutos.
+              Sesiones 1 a 1 guiadas en todo momento por Juan en el aparato
+              Pravilo oficial. Duración completa: 60 minutos.
             </p>
           </RevealOnScroll>
 
           <div className="mt-14 grid gap-7 lg:grid-cols-3 lg:items-stretch">
             {PLANES_EXPERIENCIA.map((p) => {
-              const perSessionText =
-                p.title.includes("8")
-                  ? "$30.000 / sesión"
-                  : p.title.includes("12")
-                    ? "$25.000 / sesión"
-                    : "$35.000 / sesión";
+              const perSessionText = p.title.includes("8")
+                ? "$30.000 / sesión"
+                : p.title.includes("12")
+                  ? "$25.000 / sesión"
+                  : "$35.000 / sesión";
 
-              const savingsText =
-                p.title.includes("8")
-                  ? "Ahorrás $40.000"
-                  : p.title.includes("12")
-                    ? "Ahorrás $120.000"
-                    : null;
+              const savingsText = p.title.includes("8")
+                ? "Ahorrás $40.000"
+                : p.title.includes("12")
+                  ? "Ahorrás $120.000"
+                  : null;
 
               return (
                 <RevealOnScroll key={p.title}>
@@ -815,7 +879,9 @@ export default function Home() {
                           </span>
                         ) : (
                           <span className="inline-block rounded-full border border-border bg-background px-3 py-0.5 font-condensed text-xs font-semibold text-muted">
-                            {p.title.includes("12") ? "Mayor Descuento" : "Sesión Única"}
+                            {p.title.includes("12")
+                              ? "Mayor Descuento"
+                              : "Sesión Única"}
                           </span>
                         )}
 
@@ -826,7 +892,9 @@ export default function Home() {
                         )}
                       </div>
 
-                      <h3 className="font-condensed text-2xl font-bold text-foreground">{p.title}</h3>
+                      <h3 className="font-condensed text-2xl font-bold text-foreground">
+                        {p.title}
+                      </h3>
                       <div className="mt-3 flex items-baseline gap-2">
                         <span className="font-condensed text-4xl font-black text-accent-text">
                           {p.price}
@@ -852,7 +920,9 @@ export default function Home() {
                                 d="M4 10.5l4 4 8-9"
                               />
                             </svg>
-                            <span className="text-muted leading-relaxed text-xs sm:text-sm">{f}</span>
+                            <span className="text-muted leading-relaxed text-xs sm:text-sm">
+                              {f}
+                            </span>
                           </li>
                         ))}
                       </ul>
@@ -879,31 +949,34 @@ export default function Home() {
             <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
               <div className="space-y-1">
                 <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <span>🛡️</span>
+                  <PlanPerkIcon name="shield" className="h-4 w-4" />
                   <span>Estudio 100% Privado</span>
                 </span>
                 <p className="text-xs text-muted">
-                  Sin ruidos de gimnasio ni distracciones. El espacio completo está reservado exclusivamente para vos.
+                  Sin ruidos de gimnasio ni distracciones. El espacio completo
+                  está reservado exclusivamente para vos.
                 </p>
               </div>
 
               <div className="space-y-1">
                 <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <span>🧘</span>
+                  <PlanPerkIcon name="tension" className="h-4 w-4" />
                   <span>Tensión Milimétrica</span>
                 </span>
                 <p className="text-xs text-muted">
-                  La carga e intensidad se adaptan paso a paso a tu nivel de confort, sin forzar ninguna articulación.
+                  La carga e intensidad se adaptan paso a paso a tu nivel de
+                  confort, sin forzar ninguna articulación.
                 </p>
               </div>
 
               <div className="space-y-1">
                 <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <span>✨</span>
+                  <PlanPerkIcon name="clipboard" className="h-4 w-4" />
                   <span>Evaluación Biomecánica</span>
                 </span>
                 <p className="text-xs text-muted">
-                  Juan analiza tu postura, rango de movimiento y antecedentes previos antes de iniciar la tracción.
+                  Juan analiza tu postura, rango de movimiento y antecedentes
+                  previos antes de iniciar la tracción.
                 </p>
               </div>
             </div>
@@ -919,7 +992,8 @@ export default function Home() {
                 ¿Buscás hacer un regalo diferente y memorable?
               </h3>
               <p className="mt-1 text-sm text-muted">
-                Encargá un voucher digital de PRAVILO para un cumpleaños o fecha especial con dedicatoria personalizada.
+                Encargá un voucher digital de PRAVILO para un cumpleaños o fecha
+                especial con dedicatoria personalizada.
               </p>
             </div>
             <div className="shrink-0">
@@ -928,7 +1002,8 @@ export default function Home() {
           </div>
 
           <p className="mt-6 text-center text-xs text-muted">
-            Precios de referencia para el estudio de Plottier. Confirmación inmediata vía WhatsApp.
+            Precios de referencia para el estudio de Plottier. Confirmación
+            inmediata vía WhatsApp.
           </p>
         </section>
 
@@ -957,7 +1032,10 @@ export default function Home() {
         </div>
 
         {/* PREGUNTAS FRECUENTES (FAQ) */}
-        <section id="faq" className="border-t border-border bg-surface px-6 py-28">
+        <section
+          id="faq"
+          className="border-t border-border bg-surface px-6 py-28"
+        >
           <div className="mx-auto max-w-5xl">
             <RevealOnScroll className="text-center mb-14">
               <span className="eyebrow mx-auto w-fit">Respuestas Claras</span>
@@ -965,18 +1043,23 @@ export default function Home() {
                 Preguntas frecuentes
               </h2>
               <p className="mt-4 max-w-lg mx-auto text-muted text-base">
-                Todo lo que necesitás saber antes de asistir a tu primera sesión de PRAVILO.
+                Todo lo que necesitás saber antes de asistir a tu primera sesión
+                de PRAVILO.
               </p>
             </RevealOnScroll>
 
             <FAQAccordion />
 
             <div className="mt-12 text-center">
-              <p className="text-sm text-muted">¿Tenés alguna consulta puntual sobre tu estado físico?</p>
+              <p className="text-sm text-muted">
+                ¿Tenés alguna consulta puntual sobre tu estado físico?
+              </p>
               <div className="mt-3.5 flex justify-center">
                 <MagneticButton>
                   <a
-                    href={whatsappLink("Hola Juan! Tengo una consulta previa a reservar mi turno de PRAVILO.")}
+                    href={whatsappLink(
+                      "Hola Juan! Tengo una consulta previa a reservar mi turno de PRAVILO.",
+                    )}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border border-border-highlight bg-surface-raised px-7 py-3 font-condensed text-sm font-bold text-foreground transition-all hover:border-accent hover:text-accent-text shadow-md"
@@ -999,7 +1082,8 @@ export default function Home() {
                 {LOCATION_SHORT}
               </h2>
               <p className="mt-4 max-w-md text-lg text-muted">
-                Estudio privado acondicionado y equipado con el método oficial PRAVILO en Plottier, a minutos de Neuquén Capital y Cipolletti.
+                Estudio privado acondicionado y equipado con el método oficial
+                PRAVILO en Plottier, a minutos de Neuquén Capital y Cipolletti.
               </p>
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface-raised p-4 shadow-sm">
@@ -1020,8 +1104,12 @@ export default function Home() {
                     </svg>
                   </span>
                   <div className="text-left">
-                    <p className="font-condensed text-sm font-bold uppercase tracking-wider text-muted">Dirección</p>
-                    <p className="text-sm font-medium text-foreground">{LOCATION}</p>
+                    <p className="font-condensed text-sm font-bold uppercase tracking-wider text-muted">
+                      Dirección
+                    </p>
+                    <p className="text-sm font-medium text-foreground">
+                      {LOCATION}
+                    </p>
                   </div>
                 </div>
 
@@ -1039,7 +1127,9 @@ export default function Home() {
                     </svg>
                   </span>
                   <div className="text-left">
-                    <p className="font-condensed text-sm font-bold uppercase tracking-wider text-muted">Horarios de Atención</p>
+                    <p className="font-condensed text-sm font-bold uppercase tracking-wider text-muted">
+                      Horarios de Atención
+                    </p>
                     <p className="text-sm font-medium text-foreground">
                       Lunes a Sábados (con turno previo reservado)
                     </p>
@@ -1057,7 +1147,9 @@ export default function Home() {
                   Abrir en Google Maps →
                 </a>
                 <a
-                  href={whatsappLink("Hola! ¿Me pasás la ubicación exacta del centro para llegar?")}
+                  href={whatsappLink(
+                    "Hola! ¿Me pasás la ubicación exacta del centro para llegar?",
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-full border border-border-highlight bg-surface px-6 py-3 font-condensed text-sm font-bold text-foreground transition-all hover:border-accent hover:text-accent-text"
@@ -1110,7 +1202,8 @@ export default function Home() {
               DESCOMPRIMÍ TU CUERPO.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-lg text-muted leading-relaxed">
-              Reservá tu primera sesión en el primer centro oficial de PRAVILO de Argentina y sentí la diferencia desde el primer día.
+              Reservá tu primera sesión en el primer centro oficial de PRAVILO
+              de Argentina y sentí la diferencia desde el primer día.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton>
@@ -1134,7 +1227,10 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="border-t border-border bg-background px-6 py-14 text-center text-sm text-muted">
         <div className="mx-auto max-w-6xl">
-          <Link href="/" className="inline-block transition-opacity hover:opacity-90">
+          <Link
+            href="/"
+            className="inline-block transition-opacity hover:opacity-90"
+          >
             <Image
               src="/images/logo-transparent.png"
               alt="PRAVILO ARG"
@@ -1144,7 +1240,9 @@ export default function Home() {
             />
           </Link>
           <p className="mt-3 font-medium text-foreground/80">{LOCATION}</p>
-          <p className="text-xs text-muted mt-1">Primer Centro Oficial del método PRAVILO en Argentina</p>
+          <p className="text-xs text-muted mt-1">
+            Primer Centro Oficial del método PRAVILO en Argentina
+          </p>
 
           <div className="mt-6 flex justify-center gap-3">
             <Link
@@ -1172,18 +1270,17 @@ export default function Home() {
               aria-label="WhatsApp de PRAVILO ARG"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface-raised transition-all hover:border-accent hover:text-accent-text hover:scale-110 shadow-sm"
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="currentColor"
-              >
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
                 <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3Z" />
               </svg>
             </a>
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted sm:flex-row">
-            <p>&copy; {new Date().getFullYear()} PRAVILO ARG. Todos los derechos reservados.</p>
+            <p>
+              &copy; {new Date().getFullYear()} PRAVILO ARG. Todos los derechos
+              reservados.
+            </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/admin"
@@ -1219,9 +1316,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Notificaciones flotantes de prueba social */}
-      <LiveSocialProof />
     </>
   );
 }

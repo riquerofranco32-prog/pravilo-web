@@ -33,7 +33,8 @@ export default function BeforeAfterSlider() {
           El Cambio en tu Eje Corporal
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-muted text-base">
-          Deslizá el control para comparar el patrón postural antes vs. después de descomprimir tu cuerpo en PRAVILO.
+          Deslizá el control para comparar el patrón postural antes vs. después
+          de descomprimir tu cuerpo en PRAVILO.
         </p>
       </RevealOnScroll>
 
@@ -52,7 +53,7 @@ export default function BeforeAfterSlider() {
             <div className="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-br from-emerald-950/30 via-surface to-background">
               <div className="flex justify-end">
                 <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3.5 py-1 font-condensed text-xs font-bold uppercase tracking-wider text-emerald-400 backdrop-blur-md">
-                  ✨ Después de PRAVILO
+                  Después de PRAVILO
                 </span>
               </div>
               <div className="space-y-2 text-right">
@@ -71,11 +72,13 @@ export default function BeforeAfterSlider() {
             {/* LADO IZQUIERDO: ANTES DE PRAVILO (Clipped) */}
             <div
               className="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-br from-amber-950/40 via-surface to-background border-r border-accent"
-              style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+              style={{
+                clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
+              }}
             >
               <div className="flex justify-start">
                 <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-3.5 py-1 font-condensed text-xs font-bold uppercase tracking-wider text-amber-400 backdrop-blur-md">
-                  ⚠️ Antes de la Sesión
+                  Antes de la Sesión
                 </span>
               </div>
               <div className="space-y-2 text-left">
@@ -109,18 +112,20 @@ export default function BeforeAfterSlider() {
               Sentí la diferencia desde la primera sesión
             </h3>
             <p className="text-sm text-muted leading-relaxed">
-              La tracción axial en suspensión 1 a 1 de PRAVILO revierte en 60 minutos
-              las semanas de sobrecarga gravitacional, reseteando la memoria postural
-              y aliviando la compresión sobre raíces nerviosas y articulaciones.
+              La tracción axial en suspensión 1 a 1 de PRAVILO revierte en 60
+              minutos las semanas de sobrecarga gravitacional, reseteando la
+              memoria postural y aliviando la compresión sobre raíces nerviosas
+              y articulaciones.
             </p>
 
             <div className="rounded-2xl border border-border bg-background p-4 text-xs space-y-2">
               <div className="flex items-center gap-2 text-foreground font-semibold">
-                <span className="text-accent-text">⚡</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 <span>Sesión 100% individual y personalizada con Juan</span>
               </div>
               <p className="text-muted leading-relaxed">
-                Cada persona recibe un ajuste de tensión a medida según su estado físico y nivel de flexibilidad.
+                Cada persona recibe un ajuste de tensión a medida según su
+                estado físico y nivel de flexibilidad.
               </p>
             </div>
 

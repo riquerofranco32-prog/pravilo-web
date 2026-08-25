@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 interface QuizAnswer {
   goal: string;
@@ -22,25 +23,25 @@ export default function BodyQuiz() {
       id: "dolor",
       label: "Aliviar dolor de espalda o ciático",
       desc: "Descompresión axial suave para liberar presión intervertebral y raíz nerviosa.",
-      icon: "⚡",
+      icon: "rendimiento",
     },
     {
       id: "postura",
       label: "Mejorar postura y movilidad corporal",
       desc: "Alineación de hombros, columna y apertura profunda de cadera.",
-      icon: "🧘",
+      icon: "movilidad",
     },
     {
       id: "estres",
       label: "Descompresión profunda y anti-estrés",
       desc: "Liberación de tensiones miofasciales acumuladas en el cuerpo.",
-      icon: "🌿",
+      icon: "bienestar",
     },
     {
       id: "deporte",
       label: "Rendimiento y recuperación deportiva",
       desc: "Ganancia de rango articular y elongación sin impacto para atletas.",
-      icon: "🔥",
+      icon: "recuperacion",
     },
   ];
 
@@ -176,8 +177,8 @@ export default function BodyQuiz() {
                 onClick={() => handleSelectGoal(g.label)}
                 className="group flex flex-col rounded-2xl border border-border bg-surface-raised/70 p-4 text-left transition-all duration-200 hover:border-accent hover:bg-accent/10 hover:shadow-[0_8px_25px_-10px_rgba(160,26,26,0.3)] hover:scale-[1.02]"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background text-xl shadow-inner group-hover:border-accent/40">
-                  {g.icon}
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background shadow-inner group-hover:border-accent/40">
+                  <BenefitIcon name={g.icon} />
                 </div>
                 <span className="mt-3 font-semibold text-foreground text-sm group-hover:text-accent-text transition-colors">
                   {g.label}
@@ -209,7 +210,9 @@ export default function BodyQuiz() {
                   <span className="font-semibold text-foreground text-sm group-hover:text-accent-text transition-colors">
                     {a.label}
                   </span>
-                  <p className="mt-0.5 text-xs text-muted leading-relaxed">{a.desc}</p>
+                  <p className="mt-0.5 text-xs text-muted leading-relaxed">
+                    {a.desc}
+                  </p>
                 </div>
                 <span className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background font-bold text-accent-text shadow-sm group-hover:border-accent group-hover:bg-accent group-hover:text-white transition-all">
                   →
@@ -247,7 +250,9 @@ export default function BodyQuiz() {
                   <span className="font-semibold text-foreground text-sm group-hover:text-accent-text transition-colors">
                     {e.label}
                   </span>
-                  <p className="mt-0.5 text-xs text-muted leading-relaxed">{e.desc}</p>
+                  <p className="mt-0.5 text-xs text-muted leading-relaxed">
+                    {e.desc}
+                  </p>
                 </div>
                 <span className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background font-bold text-accent-text shadow-sm group-hover:border-accent group-hover:bg-accent group-hover:text-white transition-all">
                   →
@@ -321,4 +326,3 @@ export default function BodyQuiz() {
     </div>
   );
 }
-

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { PLANES } from "@/lib/plans";
+import BenefitIcon from "./BenefitIcon";
 
 export default function GiftCardModal() {
   const [open, setOpen] = useState(false);
@@ -15,12 +16,12 @@ export default function GiftCardModal() {
   const handleSendGift = () => {
     if (!recipientName.trim() || !senderName.trim()) return;
 
-    let text = `¡Hola Juan! 👋 Quiero encargar una *Gift Card / Tarjeta de Regalo PRAVILO*:\n\n`;
-    text += `🎁 *Para:* ${recipientName.trim()}\n`;
-    text += `✍️ *De parte de:* ${senderName.trim()}\n`;
-    text += `📋 *Experiencia:* ${selectedPlan}\n`;
+    let text = `¡Hola Juan! Quiero encargar una *Gift Card / Tarjeta de Regalo PRAVILO*:\n\n`;
+    text += `*Para:* ${recipientName.trim()}\n`;
+    text += `*De parte de:* ${senderName.trim()}\n`;
+    text += `*Experiencia:* ${selectedPlan}\n`;
     if (customMessage.trim()) {
-      text += `💌 *Dedicatoria:* "${customMessage.trim()}"\n`;
+      text += `*Dedicatoria:* "${customMessage.trim()}"\n`;
     }
     text += `\n¿Cómo coordinamos el pago y la entrega del voucher digital? ¡Muchas gracias!`;
 
@@ -36,7 +37,7 @@ export default function GiftCardModal() {
         onClick={() => setOpen(true)}
         className="btn-shiny inline-flex items-center gap-2.5 rounded-full border border-accent/50 bg-gradient-to-r from-accent/20 to-accent/10 px-6 py-3 font-condensed text-sm font-bold text-accent-foreground shadow-md transition-all hover:border-accent hover:bg-accent hover:text-accent-foreground hover:scale-105"
       >
-        <span className="text-base">🎁</span>
+        <BenefitIcon name="gift" className="h-4 w-4" />
         <span>Regalar Voucher Digital PRAVILO</span>
       </button>
 
@@ -57,14 +58,15 @@ export default function GiftCardModal() {
               </button>
 
               <div className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-3xl shadow-inner">
-                  🎁
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 shadow-inner [&_svg]:h-7 [&_svg]:w-7">
+                  <BenefitIcon name="gift" />
                 </div>
                 <h3 className="mt-3 font-condensed text-2xl font-black text-foreground">
                   Gift Card Digital PRAVILO
                 </h3>
                 <p className="mt-1 text-xs text-muted leading-relaxed">
-                  Regalá una experiencia transformadora de descompresión axial y movilidad profunda.
+                  Regalá una experiencia transformadora de descompresión axial y
+                  movilidad profunda.
                 </p>
               </div>
 
@@ -152,4 +154,3 @@ export default function GiftCardModal() {
     </>
   );
 }
-

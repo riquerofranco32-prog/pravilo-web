@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
+import BenefitIcon from "./BenefitIcon";
 
 export default function BiomechanicalComparison() {
-  const [activeTab, setActiveTab] = useState<"traccion" | "compresion">("traccion");
+  const [activeTab, setActiveTab] = useState<"traccion" | "compresion">(
+    "traccion",
+  );
 
   return (
     <section className="relative mx-auto max-w-5xl px-6 py-12">
@@ -16,7 +19,8 @@ export default function BiomechanicalComparison() {
               ¿Qué ocurre en tu estructura corporal?
             </h3>
             <p className="mt-2 max-w-xl text-xs sm:text-sm text-muted leading-relaxed">
-              Descubrí la diferencia mecánica entre la compresión gravitacional diaria y la descompresión axial en el aparato PRAVILO.
+              Descubrí la diferencia mecánica entre la compresión gravitacional
+              diaria y la descompresión axial en el aparato PRAVILO.
             </p>
           </div>
 
@@ -58,8 +62,10 @@ export default function BiomechanicalComparison() {
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background border border-border text-lg shadow-sm">
-                {activeTab === "traccion" ? "✨" : "⚠️"}
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background border border-border shadow-sm">
+                <BenefitIcon
+                  name={activeTab === "traccion" ? "recuperacion" : "warning"}
+                />
               </span>
               <div>
                 <h4 className="font-condensed text-lg font-bold text-foreground">
@@ -68,7 +74,9 @@ export default function BiomechanicalComparison() {
                     : "Presión Axial & Discos Comprimidos"}
                 </h4>
                 <span className="text-[11px] font-semibold text-muted">
-                  {activeTab === "traccion" ? "Efecto de Descompresión" : "Efecto de la Gravedad Constante"}
+                  {activeTab === "traccion"
+                    ? "Efecto de Descompresión"
+                    : "Efecto de la Gravedad Constante"}
                 </span>
               </div>
             </div>
@@ -80,8 +88,16 @@ export default function BiomechanicalComparison() {
             </p>
 
             <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3 text-xs font-condensed font-bold">
-              <span className={activeTab === "traccion" ? "text-emerald-400" : "text-amber-400"}>
-                {activeTab === "traccion" ? "✓ Ganancia de espacio y oxigenación" : "✗ Sobrecarga y desgaste articular"}
+              <span
+                className={
+                  activeTab === "traccion"
+                    ? "text-emerald-400"
+                    : "text-amber-400"
+                }
+              >
+                {activeTab === "traccion"
+                  ? "✓ Ganancia de espacio y oxigenación"
+                  : "✗ Sobrecarga y desgaste articular"}
               </span>
             </div>
           </div>
@@ -95,8 +111,10 @@ export default function BiomechanicalComparison() {
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background border border-border text-lg shadow-sm">
-                {activeTab === "traccion" ? "🧬" : "🔒"}
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background border border-border shadow-sm">
+                <BenefitIcon
+                  name={activeTab === "traccion" ? "movilidad" : "tension"}
+                />
               </span>
               <div>
                 <h4 className="font-condensed text-lg font-bold text-foreground">
@@ -105,7 +123,9 @@ export default function BiomechanicalComparison() {
                     : "Acortamiento & Contracturas Crónicas"}
                 </h4>
                 <span className="text-[11px] font-semibold text-muted">
-                  {activeTab === "traccion" ? "Alineación en 3 Dimensiones" : "Restricción de Movimiento"}
+                  {activeTab === "traccion"
+                    ? "Alineación en 3 Dimensiones"
+                    : "Restricción de Movimiento"}
                 </span>
               </div>
             </div>
@@ -117,8 +137,16 @@ export default function BiomechanicalComparison() {
             </p>
 
             <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3 text-xs font-condensed font-bold">
-              <span className={activeTab === "traccion" ? "text-emerald-400" : "text-amber-400"}>
-                {activeTab === "traccion" ? "✓ Reeducación postural duradera" : "✗ Patrones compensatorios rígidos"}
+              <span
+                className={
+                  activeTab === "traccion"
+                    ? "text-emerald-400"
+                    : "text-amber-400"
+                }
+              >
+                {activeTab === "traccion"
+                  ? "✓ Reeducación postural duradera"
+                  : "✗ Patrones compensatorios rígidos"}
               </span>
             </div>
           </div>
