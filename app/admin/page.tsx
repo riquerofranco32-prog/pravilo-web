@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   DEFAULT_SCHEDULE_CONFIG,
@@ -8,10 +8,17 @@ import {
   ScheduleConfig,
 } from "@/lib/availability";
 import {
+  BankConfig,
   Booking,
+  DEFAULT_BANK_CONFIG,
+  LOCAL_STORAGE_BANK_KEY,
+  LOCAL_STORAGE_CLINICAL_KEY,
   PaymentStatus,
+  StudentClinicalProfile,
   buildGoogleCalendarUrl,
   buildQuickWhatsAppMessage,
+  buildReactivationWhatsAppMessage,
+  downloadFullJSONBackup,
   exportBookingsToCSV,
   formatDateTimeExact,
   formatRelativeTime,
@@ -85,8 +92,13 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pinError, setPinError] = useState("");
   const [activeTab, setActiveTab] = useState<
-    "clientes" | "alumnos" | "agenda" | "analiticas" | "horarios"
+    "clientes" | "alumnos" | "agenda" | "analiticas" | "horarios" | "banco"
   >("clientes");
+
+  // View mode in Turnos tab: "cards" vs "table"
+  const [turnosViewMode, setTurnosViewMode] = useState<"cards" | "table">(
+    "cards",
+  );
 
   // Live time in Neuquén, Argentina
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -115,8 +127,12 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Config State
+  // Config & Bank State
   const [config, setConfig] = useState<ScheduleConfig>(DEFAULT_SCHEDULE_CONFIG);
+  const [bankConfig, setBankConfig] = useState<BankConfig>(DEFAULT_BANK_CONFIG);
+  const [clinicalProfiles, setClinicalProfiles] = useState<
+    Record<string, StudentClinicalProfile>
+  >({});
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [newSlotTime, setNewSlotTime] = useState<{ [dayIndex: number]: string }>(
     {},
@@ -143,6 +159,11 @@ export default function AdminPage() {
   );
   const [agendaMonth, setAgendaMonth] = useState<Date>(new Date());
 
+  // Analytics Period Selector
+  const [analyticsPeriod, setAnalyticsPeriod] = useState<
+    "todo" | "este_mes" | "mes_pasado"
+  >("todo");
+
   // Editing Note State
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState("");
@@ -155,6 +176,15 @@ export default function AdminPage() {
     string | null
   >(null);
 
+  // Clinical profile editing within modal
+  const [editingClinicalReason, setEditingClinicalReason] = useState("");
+  const [editingPainInitial, setEditingPainInitial] = useState<number>(5);
+  const [editingPainCurrent, setEditingPainCurrent] = useState<number>(3);
+  const [newClinicalNote, setNewClinicalNote] = useState("");
+
+  // Smart alert panel open/collapsed
+  const [showAlertsDrawer, setShowAlertsDrawer] = useState(false);
+
   // Manual booking modal
   const [showManualModal, setShowManualModal] = useState(false);
   const [manualName, setManualName] = useState("");
@@ -166,6 +196,8 @@ export default function AdminPage() {
   const [manualTime, setManualTime] = useState("16:00");
   const [manualPayment, setManualPayment] = useState<PaymentStatus>("pendiente");
   const [manualNotes, setManualNotes] = useState("");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
   const tomorrowStr = useMemo(() => {
@@ -181,8 +213,8 @@ export default function AdminPage() {
         setShowManualModal(false);
         setSelectedStudentPhone(null);
         setActiveWaMenuId(null);
+        setShowAlertsDrawer(false);
       }
-      // Press "/" to focus search when not in an input
       if (
         e.key === "/" &&
         document.activeElement?.tagName !== "INPUT" &&
@@ -199,7 +231,7 @@ export default function AdminPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Load config & bookings on mount
+  // Load config, bank & bookings on mount
   useEffect(() => {
     const savedPin = localStorage.getItem("pravilo_admin_auth");
     if (savedPin) {
@@ -212,6 +244,26 @@ export default function AdminPage() {
     if (storedConfig) {
       try {
         setConfig(JSON.parse(storedConfig));
+      } catch {
+        // ignore
+      }
+    }
+
+    // Bank Config
+    const storedBank = localStorage.getItem(LOCAL_STORAGE_BANK_KEY);
+    if (storedBank) {
+      try {
+        setBankConfig(JSON.parse(storedBank));
+      } catch {
+        // ignore
+      }
+    }
+
+    // Clinical Profiles
+    const storedClinical = localStorage.getItem(LOCAL_STORAGE_CLINICAL_KEY);
+    if (storedClinical) {
+      try {
+        setClinicalProfiles(JSON.parse(storedClinical));
       } catch {
         // ignore
       }
@@ -524,6 +576,7 @@ export default function AdminPage() {
     setSaveStatus("Guardando...");
     localStorage.setItem(LOCAL_STORAGE_SCHEDULE_KEY, JSON.stringify(config));
     localStorage.setItem("pravilo_plan_prices", JSON.stringify(planPrices));
+    localStorage.setItem(LOCAL_STORAGE_BANK_KEY, JSON.stringify(bankConfig));
 
     try {
       const res = await fetch("/api/admin/config", {
@@ -533,7 +586,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.ok) {
-        setSaveStatus("✓ ¡Configuración y precios guardados con éxito!");
+        setSaveStatus("✓ ¡Configuración, banco y precios guardados con éxito!");
       } else {
         setSaveStatus("✓ Guardado localmente.");
       }
@@ -544,6 +597,89 @@ export default function AdminPage() {
     setTimeout(() => setSaveStatus(null), 3500);
   };
 
+  // Save Clinical Profile for a Student
+  const handleSaveClinicalProfile = (studentKey: string) => {
+    const updated = {
+      ...clinicalProfiles,
+      [studentKey]: {
+        conditionReason: editingClinicalReason,
+        painLevelInitial: editingPainInitial,
+        painLevelCurrent: editingPainCurrent,
+        sessionLogs: [
+          ...(clinicalProfiles[studentKey]?.sessionLogs || []),
+          ...(newClinicalNote.trim()
+            ? [
+                {
+                  date: new Date().toISOString().split("T")[0],
+                  note: newClinicalNote.trim(),
+                },
+              ]
+            : []),
+        ],
+      },
+    };
+
+    setClinicalProfiles(updated);
+    localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(updated));
+    setNewClinicalNote("");
+    setSaveStatus("✓ Ficha clínica actualizada.");
+    setTimeout(() => setSaveStatus(null), 3000);
+  };
+
+  // Backup & Restore
+  const handleDownloadBackup = () => {
+    downloadFullJSONBackup({
+      bookings,
+      config,
+      planPrices,
+      bankConfig,
+      clinicalProfiles,
+    });
+  };
+
+  const handleRestoreFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const text = event.target?.result as string;
+        const parsed = JSON.parse(text);
+        if (parsed.bookings && Array.isArray(parsed.bookings)) {
+          setBookings(parsed.bookings);
+        }
+        if (parsed.config) {
+          setConfig(parsed.config);
+          localStorage.setItem(
+            LOCAL_STORAGE_SCHEDULE_KEY,
+            JSON.stringify(parsed.config),
+          );
+        }
+        if (parsed.bankConfig) {
+          setBankConfig(parsed.bankConfig);
+          localStorage.setItem(
+            LOCAL_STORAGE_BANK_KEY,
+            JSON.stringify(parsed.bankConfig),
+          );
+        }
+        if (parsed.clinicalProfiles) {
+          setClinicalProfiles(parsed.clinicalProfiles);
+          localStorage.setItem(
+            LOCAL_STORAGE_CLINICAL_KEY,
+            JSON.stringify(parsed.clinicalProfiles),
+          );
+        }
+        setSaveStatus("✓ Copia de seguridad restaurada con éxito.");
+        setTimeout(() => setSaveStatus(null), 4000);
+      } catch {
+        alert("Error al leer el archivo JSON de respaldo.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
   // Open manual modal pre-filled for a specific date and time from calendar
   const handleAssignEmptySlot = (date: string, time: string) => {
     setManualDate(date);
@@ -551,63 +687,7 @@ export default function AdminPage() {
     setShowManualModal(true);
   };
 
-  // KPIs & Stats
-  const stats = useMemo(() => {
-    const todayBookings = bookings.filter((b) => b.date === todayStr);
-    const todayCount = todayBookings.length;
-    const pendingCount = bookings.filter((b) => b.status === "pendiente").length;
-    const confirmedCount = bookings.filter(
-      (b) => b.status === "confirmado" || b.status === "realizado",
-    ).length;
-
-    const projectedRevenue = bookings
-      .filter((b) => b.status !== "cancelado")
-      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
-
-    const paidRevenue = bookings
-      .filter(
-        (b) =>
-          b.paymentStatus === "pagado_efectivo" ||
-          b.paymentStatus === "pagado_transferencia" ||
-          b.paymentStatus === "pagado_mp",
-      )
-      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
-
-    const pendingPaymentCount = bookings.filter(
-      (b) => b.status !== "cancelado" && (!b.paymentStatus || b.paymentStatus === "pendiente"),
-    ).length;
-
-    const planCounts: { [key: string]: number } = {};
-    bookings.forEach((b) => {
-      planCounts[b.planTitle] = (planCounts[b.planTitle] || 0) + 1;
-    });
-    let topPlan = "1 Sesión Individual";
-    let maxCount = 0;
-    Object.entries(planCounts).forEach(([plan, count]) => {
-      if (count > maxCount) {
-        maxCount = count;
-        topPlan = plan;
-      }
-    });
-
-    const revenuePct =
-      projectedRevenue > 0
-        ? Math.min(100, Math.round((paidRevenue / projectedRevenue) * 100))
-        : 0;
-
-    return {
-      todayCount,
-      pendingCount,
-      confirmedCount,
-      projectedRevenue,
-      paidRevenue,
-      pendingPaymentCount,
-      topPlan,
-      revenuePct,
-    };
-  }, [bookings, todayStr]);
-
-  // Unique Alumnos Directory aggregation (CRM)
+  // Alumnos Directory aggregation (CRM)
   const alumnosList = useMemo(() => {
     const map = new Map<
       string,
@@ -666,6 +746,129 @@ export default function AdminPage() {
     );
   }, [bookings]);
 
+  // SMART ALERTS COMPUTATION
+  const smartAlerts = useMemo(() => {
+    // 1. Tomorrow reminders
+    const tomorrowBookings = bookings.filter(
+      (b) => b.date === tomorrowStr && b.status !== "cancelado",
+    );
+
+    // 2. Inactive students (> 15 days without booking)
+    const now = new Date();
+    const inactiveStudents = alumnosList.filter((a) => {
+      if (!a.lastDate) return false;
+      const [y, m, d] = a.lastDate.split("-").map(Number);
+      const last = new Date(y, m - 1, d);
+      const diffDays = Math.floor(
+        (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      return diffDays >= 15;
+    });
+
+    // 3. Packs near completion (completed >= total - 1)
+    const nearFinishPacks = bookings.filter((b) => {
+      if (!b.totalSessions || b.totalSessions <= 1) return false;
+      if (b.status === "cancelado") return false;
+      const completed = b.sessionsCompleted || 0;
+      return completed >= b.totalSessions - 1 && completed < b.totalSessions;
+    });
+
+    return {
+      tomorrowBookings,
+      inactiveStudents,
+      nearFinishPacks,
+      totalCount:
+        tomorrowBookings.length +
+        inactiveStudents.length +
+        nearFinishPacks.length,
+    };
+  }, [bookings, alumnosList, tomorrowStr]);
+
+  // KPIs & Stats with Period Filter
+  const stats = useMemo(() => {
+    const now = new Date();
+    const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+    const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const prevMonthPrefix = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, "0")}`;
+
+    const periodBookings = bookings.filter((b) => {
+      if (analyticsPeriod === "este_mes") {
+        return b.date.startsWith(currentMonthPrefix);
+      }
+      if (analyticsPeriod === "mes_pasado") {
+        return b.date.startsWith(prevMonthPrefix);
+      }
+      return true;
+    });
+
+    const todayBookings = bookings.filter((b) => b.date === todayStr);
+    const todayCount = todayBookings.length;
+    const pendingCount = bookings.filter((b) => b.status === "pendiente").length;
+    const confirmedCount = bookings.filter(
+      (b) => b.status === "confirmado" || b.status === "realizado",
+    ).length;
+
+    const projectedRevenue = periodBookings
+      .filter((b) => b.status !== "cancelado")
+      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
+
+    const paidRevenue = periodBookings
+      .filter(
+        (b) =>
+          b.paymentStatus === "pagado_efectivo" ||
+          b.paymentStatus === "pagado_transferencia" ||
+          b.paymentStatus === "pagado_mp",
+      )
+      .reduce((sum, b) => sum + parsePriceToNumber(b.planPrice), 0);
+
+    const pendingPaymentCount = periodBookings.filter(
+      (b) => b.status !== "cancelado" && (!b.paymentStatus || b.paymentStatus === "pendiente"),
+    ).length;
+
+    // Average Order Value (Ticket Promedio)
+    const validCount = periodBookings.filter((b) => b.status !== "cancelado").length;
+    const avgTicket = validCount > 0 ? Math.round(projectedRevenue / validCount) : 0;
+
+    // Retention rate (% of students with > 1 booking)
+    const returningStudents = alumnosList.filter((a) => a.totalBookings > 1).length;
+    const retentionRate =
+      alumnosList.length > 0
+        ? Math.round((returningStudents / alumnosList.length) * 100)
+        : 0;
+
+    const planCounts: { [key: string]: number } = {};
+    periodBookings.forEach((b) => {
+      planCounts[b.planTitle] = (planCounts[b.planTitle] || 0) + 1;
+    });
+    let topPlan = "1 Sesión Individual";
+    let maxCount = 0;
+    Object.entries(planCounts).forEach(([plan, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        topPlan = plan;
+      }
+    });
+
+    const revenuePct =
+      projectedRevenue > 0
+        ? Math.min(100, Math.round((paidRevenue / projectedRevenue) * 100))
+        : 0;
+
+    return {
+      todayCount,
+      pendingCount,
+      confirmedCount,
+      projectedRevenue,
+      paidRevenue,
+      pendingPaymentCount,
+      topPlan,
+      revenuePct,
+      avgTicket,
+      retentionRate,
+    };
+  }, [bookings, alumnosList, todayStr, analyticsPeriod]);
+
   // Student selected for detailed modal view
   const currentSelectedStudent = useMemo(() => {
     if (!selectedStudentPhone) return null;
@@ -677,6 +880,19 @@ export default function AdminPage() {
       ) || null
     );
   }, [alumnosList, selectedStudentPhone]);
+
+  // Sync clinical state when student is selected
+  useEffect(() => {
+    if (currentSelectedStudent) {
+      const key = (
+        currentSelectedStudent.phone || currentSelectedStudent.name
+      ).toLowerCase().trim();
+      const prof = clinicalProfiles[key] || {};
+      setEditingClinicalReason(prof.conditionReason || "");
+      setEditingPainInitial(prof.painLevelInitial ?? 5);
+      setEditingPainCurrent(prof.painLevelCurrent ?? 3);
+    }
+  }, [currentSelectedStudent, clinicalProfiles]);
 
   // Analytics breakdown
   const analyticsData = useMemo(() => {
@@ -833,7 +1049,6 @@ export default function AdminPage() {
     return days;
   };
 
-  // Get slots for selected calendar date
   const selectedDateConfigSlots = useMemo(() => {
     if (!selectedCalendarDate) return [];
     const [y, m, d] = selectedCalendarDate.split("-").map(Number);
@@ -846,7 +1061,6 @@ export default function AdminPage() {
     (b) => b.date === selectedCalendarDate,
   );
 
-  // Month navigation labels
   const monthLabel = useMemo(() => {
     return new Intl.DateTimeFormat("es-AR", {
       month: "long",
@@ -878,17 +1092,15 @@ export default function AdminPage() {
               >
                 PIN de instructor / acceso
               </label>
-              <div className="relative">
-                <input
-                  id="pin"
-                  type="password"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full rounded-2xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground placeholder:text-muted/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                  autoFocus
-                />
-              </div>
+              <input
+                id="pin"
+                type="password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-2xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground placeholder:text-muted/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                autoFocus
+              />
               {pinError && (
                 <p className="mt-2 text-xs font-medium text-red-400 flex items-center gap-1">
                   <span>⚠️</span> {pinError}
@@ -919,6 +1131,15 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24 grain selection:bg-accent/40 selection:text-white">
+      {/* Hidden File Input for Restore */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleRestoreFileChange}
+        accept=".json"
+        className="hidden"
+      />
+
       {/* Top Application Bar */}
       <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
@@ -935,7 +1156,7 @@ export default function AdminPage() {
                 PRAVILO ARG
               </span>
               <span className="rounded-md bg-accent/15 border border-accent/30 px-2 py-0.5 font-condensed text-[11px] font-bold text-accent-text uppercase tracking-wider">
-                Admin Pro
+                Admin Studio Pro
               </span>
             </div>
           </div>
@@ -950,6 +1171,27 @@ export default function AdminPage() {
               <span className="text-[10px] text-muted/70">Plottier, ARG</span>
             </div>
 
+            {/* Smart Alerts Indicator Button */}
+            <button
+              type="button"
+              onClick={() => setShowAlertsDrawer(!showAlertsDrawer)}
+              className={`relative flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
+                smartAlerts.totalCount > 0
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+                  : "border-border bg-surface text-muted hover:text-foreground"
+              }`}
+              title="Alertas automáticas de retención y recordatorios"
+            >
+              <span>🔔</span>
+              <span className="hidden sm:inline">Alertas</span>
+              {smartAlerts.totalCount > 0 && (
+                <span className="rounded-full bg-amber-500 px-1.5 py-0.2 text-[10px] font-black text-black">
+                  {smartAlerts.totalCount}
+                </span>
+              )}
+            </button>
+
+            {/* Excel Export */}
             <button
               type="button"
               onClick={() => exportBookingsToCSV(bookings)}
@@ -960,9 +1202,10 @@ export default function AdminPage() {
                 <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.69L6.53 8.72a.75.75 0 0 0-1.06 1.06l4 4a.75.75 0 0 0 1.06 0l4-4a.75.75 0 1 0-1.06-1.06l-2.72 2.72V2.75Z" />
                 <path d="M3.5 14.75a.75.75 0 0 0 0 1.5h13a.75.75 0 0 0 0-1.5h-13Z" />
               </svg>
-              <span className="hidden sm:inline">Exportar Excel</span>
+              <span className="hidden sm:inline">Excel</span>
             </button>
 
+            {/* Quick Manual Booking */}
             <button
               type="button"
               onClick={() => setShowManualModal(true)}
@@ -988,6 +1231,169 @@ export default function AdminPage() {
         <div className="fixed bottom-6 right-6 z-50 rounded-2xl border border-accent/40 bg-surface-raised px-5 py-3 text-sm font-semibold text-accent-text shadow-2xl backdrop-blur animate-bounce flex items-center gap-2">
           <span>✨</span>
           <span>{saveStatus}</span>
+        </div>
+      )}
+
+      {/* SMART ALERTS DRAWER / BANNER */}
+      {showAlertsDrawer && (
+        <div className="border-b border-amber-500/30 bg-amber-500/5 px-4 sm:px-6 py-4 animate-in slide-in-from-top duration-300">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center justify-between pb-3 border-b border-amber-500/20">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🔔</span>
+                <h3 className="font-condensed text-base font-bold text-amber-400 uppercase tracking-wider">
+                  Centro de Alertas & Retención Automática
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAlertsDrawer(false)}
+                className="text-xs text-muted hover:text-foreground"
+              >
+                Cerrar ✕
+              </button>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              {/* 1. Turnos Mañana */}
+              <div className="rounded-2xl border border-border bg-surface p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+                    ⏰ Recordatorios Mañana ({smartAlerts.tomorrowBookings.length})
+                  </span>
+                </div>
+                {smartAlerts.tomorrowBookings.length === 0 ? (
+                  <p className="text-xs text-muted italic">
+                    No hay turnos agendados para mañana.
+                  </p>
+                ) : (
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                    {smartAlerts.tomorrowBookings.map((b) => (
+                      <div
+                        key={b.id}
+                        className="flex items-center justify-between rounded-xl bg-background p-2 text-xs"
+                      >
+                        <div>
+                          <p className="font-bold text-foreground truncate max-w-[120px]">
+                            {b.customerName}
+                          </p>
+                          <span className="text-[10px] text-accent-text">
+                            {b.time} hs
+                          </span>
+                        </div>
+                        {b.customerPhone && (
+                          <a
+                            href={buildQuickWhatsAppMessage(
+                              "recordatorio",
+                              b,
+                              bankConfig,
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-full bg-emerald-600 px-2.5 py-1 font-condensed text-[10px] font-bold text-white hover:opacity-90"
+                          >
+                            Recordar →
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 2. Alumnos Inactivos */}
+              <div className="rounded-2xl border border-border bg-surface p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+                    🌟 Reactivar Alumnos ({smartAlerts.inactiveStudents.length})
+                  </span>
+                </div>
+                {smartAlerts.inactiveStudents.length === 0 ? (
+                  <p className="text-xs text-muted italic">
+                    Todos los alumnos tienen sesiones recientes.
+                  </p>
+                ) : (
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                    {smartAlerts.inactiveStudents.slice(0, 5).map((a, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between rounded-xl bg-background p-2 text-xs"
+                      >
+                        <div>
+                          <p className="font-bold text-foreground truncate max-w-[120px]">
+                            {a.name}
+                          </p>
+                          <span className="text-[10px] text-muted">
+                            Última: {a.lastDate}
+                          </span>
+                        </div>
+                        {a.phone && (
+                          <a
+                            href={buildReactivationWhatsAppMessage(
+                              a.name,
+                              a.phone,
+                              a.lastDate,
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-full bg-amber-500 px-2.5 py-1 font-condensed text-[10px] font-bold text-black hover:opacity-90"
+                          >
+                            Reactivar →
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 3. Packs por Finalizar */}
+              <div className="rounded-2xl border border-border bg-surface p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
+                    🔄 Renovar Packs ({smartAlerts.nearFinishPacks.length})
+                  </span>
+                </div>
+                {smartAlerts.nearFinishPacks.length === 0 ? (
+                  <p className="text-xs text-muted italic">
+                    Ningún alumno está por finalizar pack actualmente.
+                  </p>
+                ) : (
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                    {smartAlerts.nearFinishPacks.map((b) => (
+                      <div
+                        key={b.id}
+                        className="flex items-center justify-between rounded-xl bg-background p-2 text-xs"
+                      >
+                        <div>
+                          <p className="font-bold text-foreground truncate max-w-[120px]">
+                            {b.customerName}
+                          </p>
+                          <span className="text-[10px] font-bold text-accent-text">
+                            {b.sessionsCompleted}/{b.totalSessions} sesiones
+                          </span>
+                        </div>
+                        {b.customerPhone && (
+                          <a
+                            href={buildQuickWhatsAppMessage(
+                              "renovacion",
+                              b,
+                              bankConfig,
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-full bg-accent px-2.5 py-1 font-condensed text-[10px] font-bold text-accent-foreground hover:opacity-90"
+                          >
+                            Ofrecer Renovación →
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1034,32 +1440,27 @@ export default function AdminPage() {
 
           <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm hover:border-accent/40 transition-all">
             <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
-              Por Confirmar
+              Ticket Promedio (AOV)
             </span>
             <div className="mt-2 flex items-baseline gap-2">
-              <span
-                className={`font-condensed text-3xl sm:text-4xl font-black ${
-                  stats.pendingCount > 0 ? "text-amber-400" : "text-emerald-400"
-                }`}
-              >
-                {stats.pendingCount}
+              <span className="font-condensed text-2xl sm:text-3xl font-black text-foreground">
+                ${stats.avgTicket.toLocaleString("es-AR")}
               </span>
-              <span className="text-xs text-muted">solicitudes</span>
             </div>
             <p className="mt-1 text-[11px] text-muted/70">
-              {stats.pendingPaymentCount} con pago pendiente
+              Tasa de recompra: <strong>{stats.retentionRate}%</strong>
             </p>
           </div>
 
           <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm hover:border-accent/40 transition-all">
             <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
-              Alumnos Registrados
+              Alumnos en CRM
             </span>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="font-condensed text-3xl sm:text-4xl font-black text-foreground">
                 {alumnosList.length}
               </span>
-              <span className="text-xs text-muted">en base CRM</span>
+              <span className="text-xs text-muted">fichas activas</span>
             </div>
             <p className="mt-1 text-[11px] text-muted/70 truncate">
               Top: <strong>{stats.topPlan}</strong>
@@ -1068,84 +1469,98 @@ export default function AdminPage() {
         </div>
 
         {/* Navigation Tabs Switcher */}
-        <div className="mt-6 flex flex-wrap items-center gap-2 border-b border-border pb-3">
-          <button
-            type="button"
-            onClick={() => setActiveTab("clientes")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
-              activeTab === "clientes"
-                ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
-                : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
-            }`}
-          >
-            <span>📋 Turnos & Operaciones</span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] ${
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab("clientes")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
                 activeTab === "clientes"
-                  ? "bg-white/20 text-white"
-                  : "bg-background text-muted"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
               }`}
             >
-              {bookings.length}
-            </span>
-          </button>
+              <span>📋 Turnos & Operaciones</span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] ${
+                  activeTab === "clientes"
+                    ? "bg-white/20 text-white"
+                    : "bg-background text-muted"
+                }`}
+              >
+                {bookings.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("alumnos")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
-              activeTab === "alumnos"
-                ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
-                : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
-            }`}
-          >
-            <span>👥 Directorio CRM</span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] ${
+            <button
+              type="button"
+              onClick={() => setActiveTab("alumnos")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
                 activeTab === "alumnos"
-                  ? "bg-white/20 text-white"
-                  : "bg-background text-muted"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
               }`}
             >
-              {alumnosList.length}
-            </span>
-          </button>
+              <span>👥 CRM & Fichas Clínicas</span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] ${
+                  activeTab === "alumnos"
+                    ? "bg-white/20 text-white"
+                    : "bg-background text-muted"
+                }`}
+              >
+                {alumnosList.length}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("agenda")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
-              activeTab === "agenda"
-                ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
-                : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
-            }`}
-          >
-            <span>📅 Agenda Visual & Calendario</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("agenda")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
+                activeTab === "agenda"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
+              }`}
+            >
+              <span>📅 Agenda Visual</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("analiticas")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
-              activeTab === "analiticas"
-                ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
-                : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
-            }`}
-          >
-            <span>📊 Métricas & Demanda</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("analiticas")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
+                activeTab === "analiticas"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
+              }`}
+            >
+              <span>📊 Métricas & Finanzas</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("horarios")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
-              activeTab === "horarios"
-                ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
-                : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
-            }`}
-          >
-            <span>⚙️ Horarios & Precios</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("horarios")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
+                activeTab === "horarios"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
+              }`}
+            >
+              <span>⚙️ Horarios & Precios</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab("banco")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-condensed text-xs sm:text-sm font-bold transition-all ${
+                activeTab === "banco"
+                  ? "bg-accent text-accent-foreground shadow-md shadow-accent/25"
+                  : "border border-border bg-surface text-muted hover:text-foreground hover:border-border-highlight"
+              }`}
+            >
+              <span>💳 Datos Bancarios & Backup</span>
+            </button>
+          </div>
         </div>
 
         {/* ============================================================ */}
@@ -1163,8 +1578,36 @@ export default function AdminPage() {
                 </p>
               </div>
 
-              {/* Filtros rápidos y buscador */}
+              {/* Filtros rápidos, buscador y toggle de vista */}
               <div className="flex flex-wrap items-center gap-2">
+                {/* View Mode Toggle */}
+                <div className="flex rounded-xl border border-border bg-surface p-1">
+                  <button
+                    type="button"
+                    onClick={() => setTurnosViewMode("cards")}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-condensed font-bold transition-colors ${
+                      turnosViewMode === "cards"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                    title="Vista en tarjetas"
+                  >
+                    🗂️ Tarjetas
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTurnosViewMode("table")}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-condensed font-bold transition-colors ${
+                      turnosViewMode === "table"
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted hover:text-foreground"
+                    }`}
+                    title="Vista en tabla compacta"
+                  >
+                    📑 Tabla
+                  </button>
+                </div>
+
                 {/* Date chips */}
                 <div className="flex rounded-xl border border-border bg-surface p-1">
                   <button
@@ -1221,7 +1664,7 @@ export default function AdminPage() {
                     placeholder="Buscar alumno, tel o notas... (/)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-48 sm:w-60 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs text-foreground placeholder:text-muted/50 focus:border-accent focus:outline-none"
+                    className="w-48 sm:w-56 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs text-foreground placeholder:text-muted/50 focus:border-accent focus:outline-none"
                   />
                   {searchQuery && (
                     <button
@@ -1263,7 +1706,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Bookings Grid */}
+            {/* Bookings View Render */}
             {filteredBookings.length === 0 ? (
               <div className="rounded-3xl border border-border bg-surface p-12 text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-xl text-accent-text">
@@ -1283,7 +1726,168 @@ export default function AdminPage() {
                   + Cargar Turno Manual
                 </button>
               </div>
+            ) : turnosViewMode === "table" ? (
+              /* DENSE TABLE VIEW */
+              <div className="overflow-x-auto rounded-3xl border border-border bg-surface shadow-sm">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-border bg-background/60 font-condensed text-xs font-bold uppercase text-muted">
+                    <tr>
+                      <th className="p-3.5">Estado</th>
+                      <th className="p-3.5">Alumno</th>
+                      <th className="p-3.5">Fecha & Hora</th>
+                      <th className="p-3.5">Plan / Valor</th>
+                      <th className="p-3.5">Pago</th>
+                      <th className="p-3.5">Progreso Pack</th>
+                      <th className="p-3.5 text-right">Acciones WhatsApp</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {filteredBookings.map((b) => (
+                      <tr
+                        key={b.id}
+                        className="hover:bg-background/40 transition-colors"
+                      >
+                        <td className="p-3.5">
+                          <select
+                            value={b.status}
+                            onChange={(e) =>
+                              handleUpdateBookingStatus(
+                                b.id,
+                                e.target.value as Booking["status"],
+                              )
+                            }
+                            className="rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-bold text-foreground focus:border-accent focus:outline-none"
+                          >
+                            <option value="pendiente">⏳ Pendiente</option>
+                            <option value="confirmado">✅ Confirmado</option>
+                            <option value="realizado">🎯 Realizado</option>
+                            <option value="cancelado">❌ Cancelado</option>
+                          </select>
+                        </td>
+                        <td className="p-3.5">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setSelectedStudentPhone(
+                                b.customerPhone || b.customerName,
+                              )
+                            }
+                            className="font-bold text-foreground hover:text-accent-text transition-colors flex items-center gap-1"
+                          >
+                            <span>{b.customerName}</span>
+                            <span className="text-[10px] text-muted">↗</span>
+                          </button>
+                          {b.customerPhone && (
+                            <span className="text-[11px] text-muted font-mono block">
+                              {b.customerPhone}
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3.5">
+                          <span className="font-bold text-foreground">
+                            {b.date}
+                          </span>
+                          <span className="block font-condensed font-bold text-accent-text">
+                            {b.time} hs
+                          </span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="font-semibold text-foreground">
+                            {b.planTitle}
+                          </span>
+                          <span className="block text-[11px] text-muted font-mono">
+                            {b.planPrice}
+                          </span>
+                        </td>
+                        <td className="p-3.5">
+                          <select
+                            value={b.paymentStatus || "pendiente"}
+                            onChange={(e) =>
+                              handleUpdatePaymentStatus(
+                                b.id,
+                                e.target.value as PaymentStatus,
+                              )
+                            }
+                            className="rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-medium text-foreground focus:border-accent focus:outline-none"
+                          >
+                            <option value="pendiente">💳 Pendiente</option>
+                            <option value="seña">💳 Seña 50%</option>
+                            <option value="pagado_transferencia">
+                              📱 Transf.
+                            </option>
+                            <option value="pagado_efectivo">
+                              💵 Efectivo
+                            </option>
+                            <option value="pagado_mp">💳 MP</option>
+                          </select>
+                        </td>
+                        <td className="p-3.5">
+                          {b.totalSessions && b.totalSessions > 1 ? (
+                            <div className="flex items-center gap-2">
+                              <span className="font-condensed font-bold text-accent-text text-xs">
+                                {b.sessionsCompleted || 0}/{b.totalSessions}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleIncrementSession(
+                                    b.id,
+                                    b.sessionsCompleted || 0,
+                                    b.totalSessions || 1,
+                                  )
+                                }
+                                className="rounded-md bg-accent px-2 py-0.5 font-condensed text-[10px] font-bold text-accent-foreground hover:opacity-90"
+                              >
+                                +1
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-muted text-[11px]">
+                              1 Sesión
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {b.customerPhone && (
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "confirmar",
+                                  b,
+                                  bankConfig,
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-full bg-emerald-600 px-3 py-1 font-condensed text-[11px] font-bold text-white hover:opacity-90 shadow-sm"
+                              >
+                                WhatsApp
+                              </a>
+                            )}
+                            <a
+                              href={buildGoogleCalendarUrl(b)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full border border-blue-500/40 bg-blue-500/10 px-2 py-1 font-condensed text-[11px] font-bold text-blue-400 hover:bg-blue-500/20"
+                            >
+                              📅 Cal
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteBooking(b.id)}
+                              aria-label="Eliminar turno"
+                              className="flex h-6 w-6 items-center justify-center rounded-md text-muted hover:bg-red-500/20 hover:text-red-400"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
+              /* CARDS VIEW */
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {filteredBookings.map((b) => {
                   const exactTime = formatDateTimeExact(b.createdAt);
@@ -1428,7 +2032,6 @@ export default function AdminPage() {
                               </span>
                             </div>
 
-                            {/* Dots visual indicator */}
                             <div className="mt-2 flex items-center gap-1">
                               {Array.from({ length: total }).map((_, idx) => (
                                 <div
@@ -1522,7 +2125,11 @@ export default function AdminPage() {
                           <div className="relative">
                             <div className="flex items-center gap-1.5">
                               <a
-                                href={buildQuickWhatsAppMessage("confirmar", b)}
+                                href={buildQuickWhatsAppMessage(
+                                  "confirmar",
+                                  b,
+                                  bankConfig,
+                                )}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 font-condensed text-xs font-bold text-white transition-opacity hover:opacity-90 shadow-sm"
@@ -1563,6 +2170,7 @@ export default function AdminPage() {
                                   href={buildQuickWhatsAppMessage(
                                     "recordatorio",
                                     b,
+                                    bankConfig,
                                   )}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -1572,18 +2180,23 @@ export default function AdminPage() {
                                   ⏰ Recordatorio 24h
                                 </a>
                                 <a
-                                  href={buildQuickWhatsAppMessage("pago", b)}
+                                  href={buildQuickWhatsAppMessage(
+                                    "pago",
+                                    b,
+                                    bankConfig,
+                                  )}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   onClick={() => setActiveWaMenuId(null)}
                                   className="block rounded-lg px-2 py-1.5 text-xs text-foreground hover:bg-background transition-colors"
                                 >
-                                  💰 Pedir Datos / Comprobante
+                                  💰 Pedir Datos / Comprobante (Alias: {bankConfig.alias})
                                 </a>
                                 <a
                                   href={buildQuickWhatsAppMessage(
                                     "ubicacion",
                                     b,
+                                    bankConfig,
                                   )}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -1596,6 +2209,7 @@ export default function AdminPage() {
                                   href={buildQuickWhatsAppMessage(
                                     "seguimiento_post",
                                     b,
+                                    bankConfig,
                                   )}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -1606,8 +2220,22 @@ export default function AdminPage() {
                                 </a>
                                 <a
                                   href={buildQuickWhatsAppMessage(
+                                    "renovacion",
+                                    b,
+                                    bankConfig,
+                                  )}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setActiveWaMenuId(null)}
+                                  className="block rounded-lg px-2 py-1.5 text-xs text-foreground hover:bg-background transition-colors"
+                                >
+                                  🔄 Ofrecer Renovación de Pack
+                                </a>
+                                <a
+                                  href={buildQuickWhatsAppMessage(
                                     "reagendar",
                                     b,
+                                    bankConfig,
                                   )}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -1659,17 +2287,25 @@ export default function AdminPage() {
         )}
 
         {/* ============================================================ */}
-        {/* TAB 2: DIRECTORIO DE ALUMNOS (CRM LITE) */}
+        {/* TAB 2: CRM & FICHAS CLÍNICAS */}
         {/* ============================================================ */}
         {activeTab === "alumnos" && (
           <div className="mt-6 space-y-6">
-            <div>
-              <h1 className="font-condensed text-2xl sm:text-3xl font-extrabold text-foreground">
-                Directorio CRM de Alumnos
-              </h1>
-              <p className="text-xs text-muted">
-                Historial completo agrupado por persona, fichas técnicas, inversión acumulada y contacto directo.
-              </p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="font-condensed text-2xl sm:text-3xl font-extrabold text-foreground">
+                  Directorio CRM & Fichas Clínicas
+                </h1>
+                <p className="text-xs text-muted">
+                  Seguimiento de escala de dolor EVA, motivos de consulta, historial de sesiones y contacto directo.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted">
+                  {alumnosList.length} alumnos registrados
+                </span>
+              </div>
             </div>
 
             {alumnosList.length === 0 ? (
@@ -1687,7 +2323,7 @@ export default function AdminPage() {
                       <th className="p-4">Total Turnos</th>
                       <th className="p-4">Inversión LTV</th>
                       <th className="p-4">Última Sesión</th>
-                      <th className="p-4">Ficha / Notas</th>
+                      <th className="p-4">Dolor EVA (Ini → Act)</th>
                       <th className="p-4 text-right">Acciones</th>
                     </tr>
                   </thead>
@@ -1695,6 +2331,8 @@ export default function AdminPage() {
                     {alumnosList.map((a, i) => {
                       const isVip = a.totalBookings >= 5 || a.totalSpent >= 200000;
                       const hasActivePack = a.activePacks > 0;
+                      const studentKey = (a.phone || a.name).toLowerCase().trim();
+                      const prof = clinicalProfiles[studentKey];
 
                       return (
                         <tr
@@ -1712,6 +2350,11 @@ export default function AdminPage() {
                               <span>{a.name}</span>
                               <span className="text-muted text-[10px]">↗</span>
                             </button>
+                            {prof?.conditionReason && (
+                              <span className="text-[10px] text-muted block mt-0.5">
+                                📋 {prof.conditionReason}
+                              </span>
+                            )}
                           </td>
                           <td className="p-4">
                             {hasActivePack ? (
@@ -1738,8 +2381,20 @@ export default function AdminPage() {
                             ${a.totalSpent.toLocaleString("es-AR")}
                           </td>
                           <td className="p-4 text-muted">{a.lastDate}</td>
-                          <td className="p-4 text-muted max-w-xs truncate">
-                            {a.notes || <span className="opacity-40">-</span>}
+                          <td className="p-4">
+                            {prof?.painLevelInitial !== undefined ? (
+                              <span className="inline-flex items-center gap-1 font-condensed font-bold text-xs">
+                                <span className="text-red-400">
+                                  {prof.painLevelInitial}/10
+                                </span>
+                                <span>→</span>
+                                <span className="text-emerald-400">
+                                  {prof.painLevelCurrent ?? prof.painLevelInitial}/10
+                                </span>
+                              </span>
+                            ) : (
+                              <span className="text-muted/50">-</span>
+                            )}
                           </td>
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-2">
@@ -1748,9 +2403,9 @@ export default function AdminPage() {
                                 onClick={() =>
                                   setSelectedStudentPhone(a.phone || a.name)
                                 }
-                                className="rounded-full border border-border bg-background px-2.5 py-1 font-condensed text-[11px] font-semibold text-foreground hover:border-accent"
+                                className="rounded-full border border-border bg-background px-3 py-1 font-condensed text-[11px] font-semibold text-foreground hover:border-accent"
                               >
-                                Ver Ficha
+                                Ficha Clínica
                               </button>
                               {a.phone && (
                                 <a
@@ -1888,7 +2543,6 @@ export default function AdminPage() {
                     </button>
                   </div>
                 ) : (
-                  // Show all configured slots + any extra bookings
                   Array.from(
                     new Set([
                       ...selectedDateConfigSlots,
@@ -1946,6 +2600,7 @@ export default function AdminPage() {
                                     href={buildQuickWhatsAppMessage(
                                       "confirmar",
                                       bookingAtSlot,
+                                      bankConfig,
                                     )}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -1968,7 +2623,6 @@ export default function AdminPage() {
                         );
                       }
 
-                      // Empty Slot (Available for 1-click booking)
                       return (
                         <div
                           key={slotTime}
@@ -2005,17 +2659,56 @@ export default function AdminPage() {
         )}
 
         {/* ============================================================ */}
-        {/* TAB 4: MÉTRICAS & DEMANDA */}
+        {/* TAB 4: MÉTRICAS & FINANZAS AVANZADAS */}
         {/* ============================================================ */}
         {activeTab === "analiticas" && (
           <div className="mt-6 space-y-6">
-            <div>
-              <h1 className="font-condensed text-2xl sm:text-3xl font-extrabold text-foreground">
-                Métricas, Demanda & Métodos de Pago
-              </h1>
-              <p className="text-xs text-muted">
-                Estadísticas de ocupación para optimizar días de atención y franjas horarias con mayor afluencia.
-              </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="font-condensed text-2xl sm:text-3xl font-extrabold text-foreground">
+                  Métricas de Negocio & Finanzas
+                </h1>
+                <p className="text-xs text-muted">
+                  Ingresos por período, ticket promedio, tasa de retención y análisis de horarios con mayor demanda.
+                </p>
+              </div>
+
+              {/* Period Selector */}
+              <div className="flex rounded-xl border border-border bg-surface p-1">
+                <button
+                  type="button"
+                  onClick={() => setAnalyticsPeriod("todo")}
+                  className={`rounded-lg px-3 py-1 text-xs font-condensed font-bold transition-colors ${
+                    analyticsPeriod === "todo"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  Histórico Total
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAnalyticsPeriod("este_mes")}
+                  className={`rounded-lg px-3 py-1 text-xs font-condensed font-bold transition-colors ${
+                    analyticsPeriod === "este_mes"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  Este Mes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAnalyticsPeriod("mes_pasado")}
+                  className={`rounded-lg px-3 py-1 text-xs font-condensed font-bold transition-colors ${
+                    analyticsPeriod === "mes_pasado"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  Mes Pasado
+                </button>
+              </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -2084,7 +2777,7 @@ export default function AdminPage() {
               {/* Payment Methods Breakdown */}
               <div className="rounded-3xl border border-border bg-surface p-6 md:col-span-2">
                 <h3 className="font-condensed text-xl font-bold mb-4">
-                  Ingresos por Medio de Pago
+                  Ingresos por Medio de Pago ({analyticsPeriod.replace("_", " ")})
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="rounded-2xl border border-border bg-background p-4">
@@ -2404,6 +3097,143 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* ============================================================ */}
+        {/* TAB 6: DATOS BANCARIOS & BACKUP */}
+        {/* ============================================================ */}
+        {activeTab === "banco" && (
+          <div className="mt-6 space-y-8">
+            <div>
+              <h1 className="font-condensed text-2xl sm:text-3xl font-extrabold text-foreground">
+                Datos Bancarios & Copias de Seguridad
+              </h1>
+              <p className="text-xs text-muted">
+                Configurá los datos que se adjuntan en los mensajes automáticos de pago y gestioná backups completos del sistema.
+              </p>
+            </div>
+
+            {/* Configuración de Banco */}
+            <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm space-y-4">
+              <h2 className="font-condensed text-xl font-bold">
+                💳 Datos Bancarios para WhatsApp (&quot;Pedir Pago&quot;)
+              </h2>
+              <p className="text-xs text-muted">
+                Estos datos se pegan automáticamente cuando hacés clic en &quot;💰 Pedir Datos / Comprobante&quot; en cualquier turno.
+              </p>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    Alias de Transferencia *
+                  </label>
+                  <input
+                    type="text"
+                    value={bankConfig.alias}
+                    onChange={(e) =>
+                      setBankConfig((prev) => ({
+                        ...prev,
+                        alias: e.target.value,
+                      }))
+                    }
+                    placeholder="PRAVILO.ARG"
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    CBU / CVU (22 dígitos)
+                  </label>
+                  <input
+                    type="text"
+                    value={bankConfig.cbu}
+                    onChange={(e) =>
+                      setBankConfig((prev) => ({ ...prev, cbu: e.target.value }))
+                    }
+                    placeholder="00000031000..."
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    Titular de la Cuenta
+                  </label>
+                  <input
+                    type="text"
+                    value={bankConfig.titular}
+                    onChange={(e) =>
+                      setBankConfig((prev) => ({
+                        ...prev,
+                        titular: e.target.value,
+                      }))
+                    }
+                    placeholder="Juan Ignacio Garrafa"
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    Banco o Billetera
+                  </label>
+                  <input
+                    type="text"
+                    value={bankConfig.banco}
+                    onChange={(e) =>
+                      setBankConfig((prev) => ({
+                        ...prev,
+                        banco: e.target.value,
+                      }))
+                    }
+                    placeholder="Mercado Pago / Santander"
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={handleSaveConfig}
+                  className="btn-shiny rounded-xl bg-accent px-6 py-2.5 font-condensed text-xs font-bold text-accent-foreground shadow hover:opacity-90"
+                >
+                  💾 Guardar Datos Bancarios
+                </button>
+              </div>
+            </div>
+
+            {/* Backups y Restauración */}
+            <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm space-y-4">
+              <h2 className="font-condensed text-xl font-bold">
+                💾 Copia de Seguridad & Restauración de la Base de Datos
+              </h2>
+              <p className="text-xs text-muted">
+                Descargá un archivo JSON con todos los turnos, fichas de alumnos, notas y configuraciones para tener un respaldo seguro.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handleDownloadBackup}
+                  className="btn-shiny inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 font-condensed text-xs font-bold text-white hover:opacity-90 shadow-sm"
+                >
+                  <span>📥</span>
+                  <span>Descargar Backup Completo (.JSON)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-2.5 font-condensed text-xs font-bold text-foreground hover:border-accent transition-colors"
+                >
+                  <span>📤</span>
+                  <span>Restaurar desde Archivo Backup</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* ============================================================ */}
@@ -2569,15 +3399,15 @@ export default function AdminPage() {
       )}
 
       {/* ============================================================ */}
-      {/* MODAL: FICHA DE ALUMNO (CRM LITE) */}
+      {/* MODAL: FICHA CLÍNICA & BIOMECÁNICA DEL ALUMNO (CRM LITE) */}
       {/* ============================================================ */}
       {currentSelectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="w-full max-w-xl rounded-3xl border border-border bg-surface p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-2xl rounded-3xl border border-border bg-surface p-6 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto">
             <div className="flex items-start justify-between border-b border-border/60 pb-3">
               <div>
                 <span className="font-condensed text-xs font-bold uppercase tracking-wider text-accent-text">
-                  Ficha de Alumno CRM
+                  Ficha de Evaluación Biomecánica & CRM
                 </span>
                 <h3 className="font-condensed text-2xl font-black text-foreground">
                   {currentSelectedStudent.name}
@@ -2625,18 +3455,144 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Clinical & Physical Notes */}
-            <div className="rounded-2xl border border-border bg-background p-4 space-y-2">
-              <span className="font-condensed text-xs font-bold uppercase tracking-wider text-muted">
-                Observaciones & Ficha Médica
-              </span>
-              <p className="text-xs text-foreground/90 leading-relaxed">
-                {currentSelectedStudent.notes || (
-                  <span className="italic text-muted">
-                    No hay notas registradas para este alumno. Podés agregar notas en cada turno desde el registro.
+            {/* Clinical & Physical Assessment */}
+            <div className="rounded-2xl border border-border bg-background p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-condensed text-sm font-bold uppercase tracking-wider text-foreground">
+                  Evaluación de Movilidad & Dolor (Escala EVA)
+                </h4>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSaveClinicalProfile(
+                      (
+                        currentSelectedStudent.phone || currentSelectedStudent.name
+                      )
+                        .toLowerCase()
+                        .trim(),
+                    )
+                  }
+                  className="rounded-lg bg-accent px-3 py-1 font-condensed text-xs font-bold text-accent-foreground hover:opacity-90"
+                >
+                  Guardar Ficha
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-muted mb-1">
+                  Motivo de Consulta / Diagnóstico
+                </label>
+                <input
+                  type="text"
+                  value={editingClinicalReason}
+                  onChange={(e) => setEditingClinicalReason(e.target.value)}
+                  placeholder="Ej: Lumbalgia L4-L5, Cervicalgia postural, Rendimiento físico..."
+                  className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-foreground focus:border-accent focus:outline-none"
+                />
+              </div>
+
+              {/* EVA Pain Scale comparison */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-muted font-semibold">
+                      Dolor Inicial (1-10):
+                    </span>
+                    <span className="font-bold text-red-400">
+                      {editingPainInitial} / 10
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value={editingPainInitial}
+                    onChange={(e) =>
+                      setEditingPainInitial(Number(e.target.value))
+                    }
+                    className="w-full accent-red-500 cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-muted font-semibold">
+                      Dolor Actual (1-10):
+                    </span>
+                    <span className="font-bold text-emerald-400">
+                      {editingPainCurrent} / 10
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value={editingPainCurrent}
+                    onChange={(e) =>
+                      setEditingPainCurrent(Number(e.target.value))
+                    }
+                    className="w-full accent-emerald-500 cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* Add progress note */}
+              <div>
+                <label className="block text-xs font-semibold text-muted mb-1">
+                  + Registrar Nota de Evolución de Sesión
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newClinicalNote}
+                    onChange={(e) => setNewClinicalNote(e.target.value)}
+                    placeholder="Ej: Aumentó rango en hombro derecho sin dolor..."
+                    className="w-full rounded-xl border border-border bg-surface px-3 py-1.5 text-xs text-foreground focus:border-accent focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSaveClinicalProfile(
+                        (
+                          currentSelectedStudent.phone ||
+                          currentSelectedStudent.name
+                        )
+                          .toLowerCase()
+                          .trim(),
+                      )
+                    }
+                    className="shrink-0 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-bold hover:border-accent"
+                  >
+                    + Agregar
+                  </button>
+                </div>
+              </div>
+
+              {/* Log History */}
+              {clinicalProfiles[
+                (currentSelectedStudent.phone || currentSelectedStudent.name)
+                  .toLowerCase()
+                  .trim()
+              ]?.sessionLogs?.length ? (
+                <div className="space-y-1.5 max-h-32 overflow-y-auto pt-2 border-t border-border/50">
+                  <span className="text-[10px] font-condensed font-bold uppercase text-muted">
+                    Historial de Notas Clínicas:
                   </span>
-                )}
-              </p>
+                  {clinicalProfiles[
+                    (currentSelectedStudent.phone || currentSelectedStudent.name)
+                      .toLowerCase()
+                      .trim()
+                  ].sessionLogs?.map((log, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-lg bg-surface p-2 text-[11px] text-foreground/80"
+                    >
+                      <strong className="text-accent-text">{log.date}:</strong>{" "}
+                      {log.note}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             {/* Booking History */}
@@ -2644,7 +3600,7 @@ export default function AdminPage() {
               <h4 className="font-condensed text-sm font-bold uppercase tracking-wider text-muted mb-2">
                 Historial de Sesiones
               </h4>
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                 {currentSelectedStudent.history.map((h) => (
                   <div
                     key={h.id}

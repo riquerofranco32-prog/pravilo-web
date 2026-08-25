@@ -5,6 +5,13 @@ export type PaymentStatus =
   | "pagado_transferencia"
   | "pagado_mp";
 
+export interface StudentClinicalProfile {
+  conditionReason?: string; // Motivo de consulta (ej. Lumbalgia L5, Hernia, Contractura, Movilidad)
+  painLevelInitial?: number; // 1 a 10
+  painLevelCurrent?: number; // 1 a 10
+  sessionLogs?: { date: string; note: string; tensionLevel?: string }[];
+}
+
 export interface Booking {
   id: string;
   createdAt: string; // ISO string
@@ -20,9 +27,26 @@ export interface Booking {
   sessionsCompleted?: number;
   totalSessions?: number;
   status: "pendiente" | "confirmado" | "realizado" | "cancelado";
+  clinicalProfile?: StudentClinicalProfile;
 }
 
+export interface BankConfig {
+  alias: string;
+  cbu: string;
+  titular: string;
+  banco: string;
+}
+
+export const DEFAULT_BANK_CONFIG: BankConfig = {
+  alias: "PRAVILO.ARG",
+  cbu: "0000003100010000000000",
+  titular: "Juan Ignacio Garrafa",
+  banco: "Mercado Pago / Banco",
+};
+
 export const LOCAL_STORAGE_BOOKINGS_KEY = "pravilo_bookings_data_v1";
+export const LOCAL_STORAGE_BANK_KEY = "pravilo_bank_config_v1";
+export const LOCAL_STORAGE_CLINICAL_KEY = "pravilo_student_clinical_v1";
 
 export function formatDateTimeExact(isoString: string): string {
   if (!isoString) return "";
@@ -75,13 +99,17 @@ export function buildQuickWhatsAppMessage(
     | "reagendar"
     | "seguimiento_post"
     | "pago"
-    | "ubicacion",
+    | "ubicacion"
+    | "renovacion",
   booking: Booking,
+  bankConfig?: BankConfig,
 ): string {
   const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
   if (!cleanPhone) return "";
 
+  const bank = bankConfig || DEFAULT_BANK_CONFIG;
   let text = "";
+
   if (type === "confirmar") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te escribo de *PRAVILO ARG* para confirmarte tu turno:\n\n`;
     text += `📋 *Plan:* ${booking.planTitle}\n`;
@@ -99,16 +127,41 @@ export function buildQuickWhatsAppMessage(
     text = `¡Hola ${booking.customerName.trim()}! 👋 ¿Cómo amaneció tu cuerpo hoy después de la sesión de PRAVILO?\n\n`;
     text += `Recordá tomar bastante agua hoy para acompañar la hidratación fascial y no dudes en avisarme si tenés alguna duda o consulta. ¡Te esperamos pronto en el estudio! 🙌`;
   } else if (type === "pago") {
-    text = `¡Hola ${booking.customerName.trim()}! 👋 Te paso los datos para abonar tu sesión/pack de *PRAVILO ARG*:\n\n`;
+    text = `¡Hola ${booking.customerName.trim()}! 👋 Te paso los datos bancarios para abonar tu sesión/pack de *PRAVILO ARG*:\n\n`;
     text += `💰 *Monto:* ${booking.planPrice}\n`;
-    text += `💳 *Alias:* PRAVILO.ARG (o consultar por transferencia bancaria / efectivo en el estudio)\n\n`;
-    text += `Una vez realizada la transferencia, envianos el comprobante por acá. ¡Muchas gracias! 🙌`;
+    text += `💳 *Alias:* ${bank.alias || "PRAVILO.ARG"}\n`;
+    if (bank.cbu) text += `🔢 *CBU:* ${bank.cbu}\n`;
+    if (bank.titular) text += `👤 *Titular:* ${bank.titular}\n`;
+    if (bank.banco) text += `🏦 *Banco:* ${bank.banco}\n\n`;
+    text += `Una vez realizada la transferencia, envianos el comprobante por acá para registrarlo. ¡Muchas gracias! 🙌`;
   } else if (type === "ubicacion") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te comparto la ubicación y referencias para llegar al estudio de *PRAVILO ARG* en Plottier:\n\n`;
     text += `📍 *Dirección:* Plottier, Neuquén\n`;
     text += `🗺️ *Google Maps:* https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6\n\n`;
     text += `Cualquier duda al llegar, avisanos por este medio. ¡Buen viaje! 🚗`;
+  } else if (type === "renovacion") {
+    text = `¡Hola ${booking.customerName.trim()}! 👋 ¡Felicitaciones por el avance logrado en tus sesiones de PRAVILO! 🌟\n\n`;
+    text += `Estás completando tu pack actual. Si querés renovar para el próximo mes y asegurar tu cupo y horarios habituales, avisame y te reservo tu lugar con la tarifa del pack. ¡Seguimos trabajando en tu movilidad! 🙌`;
   }
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+}
+
+export function buildReactivationWhatsAppMessage(
+  customerName: string,
+  customerPhone: string,
+  lastDate?: string,
+): string {
+  const cleanPhone = (customerPhone || "").replace(/\D/g, "");
+  if (!cleanPhone) return "";
+
+  let text = `¡Hola ${customerName.trim()}! 👋 Te escribo desde *PRAVILO ARG* en Plottier.\n\n`;
+  if (lastDate) {
+    text += `Vi que tu última sesión fue el ${lastDate}. ¿Cómo te venís sintiendo de la espalda y movilidad en estos días?\n\n`;
+  } else {
+    text += `¿Cómo te venís sintiendo con tu postura y movilidad?\n\n`;
+  }
+  text += `Te escribo para ver si te gustaría agendar una nueva sesión esta semana para continuar liberando tensión fascial y descomprimir la columna. ¡Avisame y coordinamos! 🙌`;
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
@@ -184,4 +237,32 @@ export function exportBookingsToCSV(bookings: Booking[]): void {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export function downloadFullJSONBackup(data: {
+  bookings: Booking[];
+  config: unknown;
+  planPrices: unknown;
+  bankConfig: BankConfig;
+  clinicalProfiles: Record<string, StudentClinicalProfile>;
+}): void {
+  const jsonStr = JSON.stringify(
+    {
+      exportedAt: new Date().toISOString(),
+      version: "2.0",
+      ...data,
+    },
+    null,
+    2,
+  );
+
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `backup_pravilo_${new Date().toISOString().split("T")[0]}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
