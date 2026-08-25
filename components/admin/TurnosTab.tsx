@@ -94,12 +94,12 @@ export function TurnosTab({
   return (
     <div className="space-y-6">
       {/* Search and Filters Bar */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
             <svg
-              className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2"
+              className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -112,12 +112,12 @@ export function TurnosTab({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por alumno, teléfono, plan o tag (Atajo: presiona '/')"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs sm:text-sm text-white placeholder-white/40 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-raised border border-border text-xs sm:text-sm text-foreground placeholder-muted/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all font-sans"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-xs"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground text-xs"
               >
                 ✕
               </button>
@@ -125,13 +125,13 @@ export function TurnosTab({
           </div>
 
           {/* View Toggle */}
-          <div className="flex items-center gap-1 bg-white/[0.04] p-1 rounded-xl border border-white/[0.08] self-end sm:self-auto">
+          <div className="flex items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border self-end sm:self-auto">
             <button
               onClick={() => setViewMode("cards")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
                 viewMode === "cards"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow"
-                  : "text-white/50 hover:text-white"
+                  ? "bg-accent/20 text-accent-text border border-accent/40 shadow"
+                  : "text-muted hover:text-foreground"
               }`}
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,10 +141,10 @@ export function TurnosTab({
             </button>
             <button
               onClick={() => setViewMode("table")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
                 viewMode === "table"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow"
-                  : "text-white/50 hover:text-white"
+                  ? "bg-accent/20 text-accent-text border border-accent/40 shadow"
+                  : "text-muted hover:text-foreground"
               }`}
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,7 +156,7 @@ export function TurnosTab({
         </div>
 
         {/* Filter Badges & Selects */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.04]">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border">
           {/* Quick Date Pills */}
           <div className="flex flex-wrap items-center gap-1.5">
             {[
@@ -169,10 +169,10 @@ export function TurnosTab({
               <button
                 key={f.id}
                 onClick={() => setFilterDateMode(f.id as typeof filterDateMode)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`px-3 py-1 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider transition-all ${
                   filterDateMode === f.id
-                    ? "bg-amber-500 text-black font-semibold shadow-md shadow-amber-500/10"
-                    : "bg-white/[0.03] text-white/60 hover:text-white border border-white/[0.06]"
+                    ? "bg-accent text-accent-foreground shadow-md shadow-accent/20"
+                    : "bg-surface-raised text-muted hover:text-foreground border border-border"
                 }`}
               >
                 {f.label}
@@ -185,7 +185,7 @@ export function TurnosTab({
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-2.5 py-1 rounded-lg bg-[#18191c] border border-white/[0.1] text-xs text-white/80 focus:border-amber-500 focus:outline-none"
+              className="px-2.5 py-1 rounded-lg bg-surface-raised border border-border text-xs font-condensed uppercase tracking-wide text-foreground focus:border-accent focus:outline-none"
             >
               <option value="todos">Estado: Todos</option>
               <option value="pendiente">Pendientes</option>
@@ -197,7 +197,7 @@ export function TurnosTab({
             <select
               value={filterPayment}
               onChange={(e) => setFilterPayment(e.target.value)}
-              className="px-2.5 py-1 rounded-lg bg-[#18191c] border border-white/[0.1] text-xs text-white/80 focus:border-amber-500 focus:outline-none"
+              className="px-2.5 py-1 rounded-lg bg-surface-raised border border-border text-xs font-condensed uppercase tracking-wide text-foreground focus:border-accent focus:outline-none"
             >
               <option value="todos">Pago: Todos</option>
               <option value="pendiente">Pago Pendiente</option>
@@ -209,21 +209,21 @@ export function TurnosTab({
       </div>
 
       {/* Results Count */}
-      <div className="flex items-center justify-between text-xs text-white/50 px-1">
+      <div className="flex items-center justify-between text-xs font-condensed uppercase tracking-wider text-muted px-1">
         <span>Mostrando {filteredBookings.length} de {bookings.length} turnos</span>
         {searchQuery && <span>Filtro activo: &ldquo;{searchQuery}&rdquo;</span>}
       </div>
 
       {/* Bookings View: Cards or Table */}
       {filteredBookings.length === 0 ? (
-        <div className="text-center py-16 p-8 rounded-2xl bg-white/[0.01] border border-dashed border-white/[0.08] space-y-3">
-          <div className="w-12 h-12 rounded-full bg-white/[0.04] mx-auto flex items-center justify-center text-white/30">
+        <div className="text-center py-16 p-8 rounded-2xl bg-surface border border-dashed border-border space-y-3">
+          <div className="w-12 h-12 rounded-full bg-surface-raised mx-auto flex items-center justify-center text-muted">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <p className="text-sm font-medium text-white/60">No se encontraron turnos con los filtros actuales.</p>
-          <p className="text-xs text-white/40">Probá limpiando la búsqueda o cambiando el rango de fechas.</p>
+          <p className="text-sm font-condensed font-bold uppercase tracking-wider text-foreground">No se encontraron turnos con los filtros actuales.</p>
+          <p className="text-xs text-muted">Probá limpiando la búsqueda o cambiando el rango de fechas.</p>
         </div>
       ) : viewMode === "cards" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -238,21 +238,21 @@ export function TurnosTab({
                 key={b.id}
                 className={`relative rounded-2xl p-5 border transition-all flex flex-col justify-between ${
                   isToday
-                    ? "bg-gradient-to-b from-amber-500/[0.08] to-white/[0.02] border-amber-500/40 shadow-lg shadow-amber-500/5"
-                    : "bg-white/[0.02] border-white/[0.08] hover:border-white/[0.18]"
+                    ? "bg-surface-raised border-accent/60 shadow-lg shadow-accent/10"
+                    : "bg-surface border-border hover:border-border-highlight"
                 }`}
               >
                 <div>
                   {/* Top Bar: Date, Slot & Status */}
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold">
+                      <span className="px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 text-accent-text text-xs font-condensed font-bold">
                         {b.time} hs
                       </span>
-                      <span className="text-xs font-mono text-white/80">
+                      <span className="text-xs font-condensed font-semibold text-foreground/90">
                         {b.date}
                         {isToday && (
-                          <span className="ml-1.5 px-1.5 py-0.2 rounded bg-amber-500 text-black font-bold text-[10px]">
+                          <span className="ml-1.5 px-1.5 py-0.2 rounded bg-accent text-accent-foreground font-bold text-[10px]">
                             HOY
                           </span>
                         )}
@@ -268,7 +268,7 @@ export function TurnosTab({
                     <select
                       value={b.status}
                       onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className={`text-[11px] font-semibold uppercase font-mono px-2 py-1 rounded-lg border focus:outline-none ${
+                      className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2 py-1 rounded-lg border focus:outline-none ${
                         b.status === "confirmado"
                           ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
                           : b.status === "realizado"
@@ -290,7 +290,7 @@ export function TurnosTab({
                     <div className="flex items-center justify-between">
                       <h4
                         onClick={() => b.customerPhone && onOpenStudentCrm(b.customerPhone, b.customerName)}
-                        className="text-base font-semibold text-white hover:text-amber-300 cursor-pointer transition-colors"
+                        className="text-base font-condensed font-bold uppercase tracking-wide text-foreground hover:text-accent-text cursor-pointer transition-colors"
                         title="Ver historial / ficha clínica"
                       >
                         {b.customerName}
@@ -298,36 +298,36 @@ export function TurnosTab({
                       {b.customerPhone && (
                         <button
                           onClick={() => onOpenStudentCrm(b.customerPhone!, b.customerName)}
-                          className="text-[10px] text-white/40 hover:text-amber-300 underline font-mono"
+                          className="text-[10px] font-condensed font-bold uppercase tracking-wider text-muted hover:text-accent-text underline"
                         >
                           Ficha CRM →
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-white/60 font-mono">
+                    <p className="text-xs text-muted font-mono">
                       {b.customerPhone || "Sin teléfono registrado"}
                     </p>
                   </div>
 
                   {/* Plan & Payment Badge */}
-                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] space-y-2 mb-3">
+                  <div className="p-3 rounded-xl bg-surface-raised border border-border space-y-2 mb-3">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-white/80 font-medium">{b.planTitle}</span>
-                      <span className="font-mono text-amber-400 font-bold">{b.planPrice}</span>
+                      <span className="text-foreground font-condensed font-bold uppercase tracking-wide">{b.planTitle}</span>
+                      <span className="font-mono text-accent-text font-bold">{b.planPrice}</span>
                     </div>
 
                     {/* Pack progress if pack */}
                     {totalSess > 1 && (
                       <div className="space-y-1">
-                        <div className="flex justify-between items-center text-[11px] text-white/60">
-                          <span>Progreso de Pack:</span>
-                          <span className="font-mono text-white">
+                        <div className="flex justify-between items-center text-[11px] text-muted">
+                          <span className="font-condensed uppercase tracking-wider">Progreso de Pack:</span>
+                          <span className="font-mono text-foreground font-semibold">
                             {completedSess}/{totalSess} sesiones
                           </span>
                         </div>
-                        <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden flex">
+                        <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden flex">
                           <div
-                            className="bg-amber-400 h-full transition-all"
+                            className="bg-accent h-full transition-all"
                             style={{ width: `${(completedSess / totalSess) * 100}%` }}
                           />
                         </div>
@@ -335,7 +335,7 @@ export function TurnosTab({
                     )}
 
                     {/* Payment Status Pill */}
-                    <div className="flex items-center justify-between pt-1 border-t border-white/[0.04]">
+                    <div className="flex items-center justify-between pt-1 border-t border-border">
                       <button
                         onClick={() => onOpenReceiptModal(b)}
                         className="text-xs flex items-center gap-1.5 hover:opacity-80 transition-opacity"
@@ -346,18 +346,18 @@ export function TurnosTab({
                             b.paymentStatus?.startsWith("pagado")
                               ? "bg-emerald-400"
                               : b.paymentStatus === "seña"
-                                ? "bg-amber-400"
+                                ? "bg-accent"
                                 : "bg-rose-400 animate-pulse"
                           }`}
                         />
-                        <span className="text-white/80 font-mono capitalize">
+                        <span className="text-foreground/90 font-condensed font-bold uppercase tracking-wide">
                           {b.paymentStatus === "seña"
                             ? `Seña ($${b.amountPaid?.toLocaleString("es-AR") || "Parcial"})`
                             : b.paymentStatus?.startsWith("pagado")
                               ? "Pagado 100%"
                               : "Pago Pendiente"}
                         </span>
-                        <span className="text-[10px] text-amber-400 font-mono underline">Recibo 🧾</span>
+                        <span className="text-[10px] text-accent-text font-condensed font-bold uppercase underline">Recibo 🧾</span>
                       </button>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export function TurnosTab({
                       {b.tags.map((t) => (
                         <span
                           key={t}
-                          className="px-2 py-0.5 rounded text-[10px] font-medium bg-white/[0.04] text-white/60 border border-white/[0.06]"
+                          className="px-2 py-0.5 rounded text-[10px] font-condensed uppercase font-semibold bg-surface text-muted border border-border"
                         >
                           {t}
                         </span>
@@ -378,7 +378,7 @@ export function TurnosTab({
 
                   {/* Customer Notes */}
                   {b.customerNotes && (
-                    <p className="text-xs text-white/50 italic mb-3 bg-white/[0.01] p-2 rounded-lg border border-white/[0.03]">
+                    <p className="text-xs text-muted italic mb-3 bg-surface p-2 rounded-lg border border-border">
                       &ldquo;{b.customerNotes}&rdquo;
                     </p>
                   )}
@@ -392,12 +392,12 @@ export function TurnosTab({
                           value={tempNoteText}
                           onChange={(e) => setTempNoteText(e.target.value)}
                           placeholder="Nota privada del instructor..."
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-black/50 border border-amber-500/50 text-xs text-white focus:outline-none"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-surface border border-accent text-xs text-foreground focus:outline-none"
                         />
                         <div className="flex justify-end gap-1.5">
                           <button
                             onClick={() => setEditingNoteId(null)}
-                            className="px-2 py-1 rounded text-[10px] text-white/50 hover:text-white"
+                            className="px-2 py-1 rounded text-[10px] font-condensed uppercase text-muted hover:text-foreground"
                           >
                             Cancelar
                           </button>
@@ -406,7 +406,7 @@ export function TurnosTab({
                               onSaveInternalNote(b.id, tempNoteText);
                               setEditingNoteId(null);
                             }}
-                            className="px-2.5 py-1 rounded bg-amber-500 text-black font-semibold text-[10px]"
+                            className="btn-shiny px-2.5 py-1 rounded bg-accent text-accent-foreground font-condensed font-bold uppercase text-[10px]"
                           >
                             Guardar
                           </button>
@@ -418,10 +418,10 @@ export function TurnosTab({
                           setEditingNoteId(b.id);
                           setTempNoteText(b.internalNotes || "");
                         }}
-                        className="text-xs text-white/40 hover:text-white/70 cursor-pointer p-1.5 rounded bg-white/[0.02] border border-dashed border-white/[0.06] flex items-center justify-between"
+                        className="text-xs text-muted hover:text-foreground cursor-pointer p-1.5 rounded bg-surface border border-dashed border-border flex items-center justify-between"
                         title="Click para editar nota interna"
                       >
-                        <span className="truncate">
+                        <span className="truncate font-sans text-xs">
                           {b.internalNotes ? `📝 ${b.internalNotes}` : "+ Agregar nota interna del instructor..."}
                         </span>
                       </div>
@@ -430,13 +430,13 @@ export function TurnosTab({
                 </div>
 
                 {/* Card Actions Footer */}
-                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-border flex items-center justify-between gap-2">
                   {/* WhatsApp dropdown button */}
                   {b.customerPhone ? (
                     <div className="relative flex-1">
                       <button
                         onClick={() => setActiveWaMenuId(activeWaMenuId === b.id ? null : b.id)}
-                        className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all"
                       >
                         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />

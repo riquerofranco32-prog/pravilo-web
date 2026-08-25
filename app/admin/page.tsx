@@ -562,18 +562,18 @@ export default function AdminPage() {
   // LOGIN SCREEN
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col justify-center items-center p-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,119,6,0.1)_0,transparent_70%)] pointer-events-none" />
+      <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(160,26,26,0.15)_0,transparent_70%)] pointer-events-none" />
 
-        <div className="w-full max-w-md bg-[#121316] border border-white/[0.08] rounded-3xl p-8 shadow-2xl relative z-10 space-y-6">
+        <div className="w-full max-w-md bg-surface-raised border border-border rounded-3xl p-8 shadow-2xl relative z-10 space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-700/30 border border-amber-500/40 flex items-center justify-center text-amber-300 font-serif font-black text-2xl mx-auto shadow-lg shadow-amber-500/20">
+            <div className="w-14 h-14 rounded-2xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent-text font-condensed font-black text-2xl mx-auto shadow-lg shadow-accent/20">
               P
             </div>
-            <h1 className="text-xl font-bold tracking-tight text-white font-mono">
-              PRAVILO <span className="text-amber-400">ADMIN</span>
+            <h1 className="text-2xl font-black tracking-tight text-foreground font-condensed uppercase">
+              PRAVILO <span className="text-accent-text">ADMIN</span>
             </h1>
-            <p className="text-xs text-white/50">Ingresá el PIN de seguridad del estudio</p>
+            <p className="text-xs text-muted">Ingresá el PIN de seguridad del estudio</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -584,10 +584,10 @@ export default function AdminPage() {
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-center text-lg tracking-widest text-white placeholder-white/30 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all font-mono"
+                className="w-full px-4 py-3.5 rounded-xl bg-surface border border-border text-center text-xl tracking-widest text-foreground placeholder-muted/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all font-condensed"
               />
               {pinError && (
-                <p className="text-xs text-rose-400 text-center mt-2 font-mono">
+                <p className="text-xs text-rose-400 text-center mt-2 font-condensed">
                   {pinError}
                 </p>
               )}
@@ -595,16 +595,16 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+              className="btn-shiny w-full py-3.5 rounded-xl bg-accent hover:opacity-95 text-accent-foreground font-condensed font-bold uppercase tracking-wider text-sm shadow-lg shadow-accent/25 active:scale-95 transition-all"
             >
               Ingresar al Panel
             </button>
           </form>
 
-          <div className="pt-4 border-t border-white/[0.06] text-center">
+          <div className="pt-4 border-t border-border text-center">
             <Link
               href="/"
-              className="text-xs text-white/40 hover:text-amber-300 transition-colors font-mono"
+              className="text-xs font-condensed uppercase tracking-wider text-muted hover:text-foreground transition-colors"
             >
               ← Volver a la Web Principal
             </Link>
@@ -615,7 +615,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#090a0c] text-white flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <AdminHeader
         activeTab={activeTab}

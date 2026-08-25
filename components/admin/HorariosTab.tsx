@@ -77,15 +77,6 @@ export function HorariosTab({
     onSaveConfig(newConf);
   };
 
-  const handleApplyPreset = (dayIndex: number, slots: string[]) => {
-    const updatedDays = localConfig.days.map((d) =>
-      d.dayIndex === dayIndex ? { ...d, enabled: true, slots: [...slots] } : d,
-    );
-    const newConf = { ...localConfig, days: updatedDays };
-    setLocalConfig(newConf);
-    onSaveConfig(newConf);
-  };
-
   const handleApplyPresetToAllWeekdays = (slots: string[]) => {
     const updatedDays = localConfig.days.map((d) => {
       // 1 to 5 (Lunes a Viernes)
@@ -103,17 +94,19 @@ export function HorariosTab({
     <div className="space-y-8">
       {/* Save Status Banner */}
       {saveStatus && (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono text-center">
+        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase tracking-wider text-center">
           {saveStatus}
         </div>
       )}
 
       {/* Global Presets */}
-      <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-3">
+      <div className="p-5 rounded-2xl bg-surface border border-border space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-sm font-semibold text-white">Plantillas Rápidas para Lunes a Viernes</h3>
-            <p className="text-xs text-white/50">Aplicá una configuración estándar a todos los días de semana con 1 clic</p>
+            <h3 className="text-base font-black font-condensed uppercase tracking-tight text-foreground">
+              Plantillas Rápidas para Lunes a Viernes
+            </h3>
+            <p className="text-xs text-muted font-sans">Aplicá una configuración estándar a todos los días de semana con 1 clic</p>
           </div>
         </div>
 
@@ -122,7 +115,7 @@ export function HorariosTab({
             <button
               key={preset.name}
               onClick={() => handleApplyPresetToAllWeekdays(preset.slots)}
-              className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-amber-500/20 border border-white/[0.08] hover:border-amber-500/40 text-xs text-white/80 hover:text-amber-300 transition-all font-medium"
+              className="px-3.5 py-1.5 rounded-xl bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wide text-foreground transition-all"
             >
               ⚡ {preset.name}
             </button>
@@ -132,7 +125,7 @@ export function HorariosTab({
 
       {/* Day by Day Grid */}
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-white font-mono uppercase tracking-wider">
+        <h3 className="text-lg font-black font-condensed uppercase tracking-tight text-foreground">
           Configuración Semanal de Disponibilidad
         </h3>
 
@@ -145,8 +138,8 @@ export function HorariosTab({
                 key={day.dayIndex}
                 className={`p-5 rounded-2xl border transition-all space-y-4 ${
                   day.enabled
-                    ? "bg-white/[0.02] border-white/[0.08]"
-                    : "bg-white/[0.01] border-white/[0.04] opacity-60"
+                    ? "bg-surface border-border"
+                    : "bg-surface/50 border-border/50 opacity-60"
                 }`}
               >
                 {/* Day Header */}
@@ -154,21 +147,21 @@ export function HorariosTab({
                   <div className="flex items-center gap-3">
                     <span
                       className={`w-2.5 h-2.5 rounded-full ${
-                        day.enabled ? "bg-emerald-400" : "bg-white/20"
+                        day.enabled ? "bg-emerald-400" : "bg-surface-raised"
                       }`}
                     />
-                    <h4 className="text-sm font-bold text-white">{day.dayName}</h4>
-                    <span className="text-xs text-white/40 font-mono">
+                    <h4 className="text-base font-black font-condensed uppercase text-foreground">{day.dayName}</h4>
+                    <span className="text-xs text-muted font-condensed">
                       ({day.slots.length} turnos)
                     </span>
                   </div>
 
                   <button
                     onClick={() => handleToggleDay(day.dayIndex)}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    className={`px-3 py-1 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider transition-all ${
                       day.enabled
                         ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                        : "bg-white/[0.04] text-white/40 border border-white/[0.08]"
+                        : "bg-surface-raised text-muted border border-border"
                     }`}
                   >
                     {day.enabled ? "Abierto" : "Cerrado"}
@@ -177,17 +170,17 @@ export function HorariosTab({
 
                 {/* Slots List */}
                 {day.enabled && (
-                  <div className="space-y-3 pt-2 border-t border-white/[0.04]">
+                  <div className="space-y-3 pt-2 border-t border-border">
                     <div className="flex flex-wrap gap-1.5">
                       {day.slots.map((slot) => (
                         <span
                           key={slot}
-                          className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-medium flex items-center gap-1.5 group"
+                          className="px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 text-accent-text text-xs font-condensed font-bold flex items-center gap-1.5 group"
                         >
                           {slot} hs
                           <button
                             onClick={() => handleRemoveSlot(day.dayIndex, slot)}
-                            className="text-amber-400/50 hover:text-rose-400 text-xs"
+                            className="text-accent-text/60 hover:text-rose-400 text-xs font-sans"
                             title="Eliminar horario"
                           >
                             ×
@@ -195,7 +188,7 @@ export function HorariosTab({
                         </span>
                       ))}
                       {day.slots.length === 0 && (
-                        <span className="text-xs text-white/30 italic">Sin horarios agregados</span>
+                        <span className="text-xs text-muted italic font-sans">Sin horarios agregados</span>
                       )}
                     </div>
 
@@ -209,7 +202,7 @@ export function HorariosTab({
                             [day.dayIndex]: e.target.value,
                           }))
                         }
-                        className="px-2.5 py-1.5 rounded-lg bg-[#18191c] border border-white/[0.1] text-xs text-white font-mono focus:outline-none"
+                        className="px-2.5 py-1.5 rounded-lg bg-surface-raised border border-border text-xs text-foreground font-mono focus:outline-none"
                       >
                         {PRESET_TIMES.map((t) => (
                           <option key={t} value={t}>
@@ -219,7 +212,7 @@ export function HorariosTab({
                       </select>
                       <button
                         onClick={() => handleAddSlot(day.dayIndex)}
-                        className="px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-xs text-white font-medium transition-colors"
+                        className="px-3.5 py-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border text-xs font-condensed font-bold uppercase text-foreground transition-colors"
                       >
                         + Agregar
                       </button>

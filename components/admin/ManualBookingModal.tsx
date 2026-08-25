@@ -117,23 +117,25 @@ export function ManualBookingModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-xl bg-[#121316] border border-amber-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-amber-500/10 text-white animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl p-6 sm:p-8 shadow-2xl shadow-accent/10 text-foreground animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div className="flex items-center justify-between pb-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-300">
+            <div className="w-10 h-10 rounded-xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent-text">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Agendar Nuevo Turno Manual</h2>
-              <p className="text-xs text-white/50">Cargá reservas directas de WhatsApp o presenciales</p>
+              <h2 className="text-xl font-black font-condensed uppercase tracking-tight text-foreground">
+                Agendar Nuevo Turno Manual
+              </h2>
+              <p className="text-xs text-muted font-sans">Cargá reservas directas de WhatsApp o presenciales</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/[0.06] transition-colors"
+            className="p-2 rounded-xl text-muted hover:text-foreground hover:bg-surface-raised transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -146,7 +148,7 @@ export function ManualBookingModal({
           {/* Row 1: Nombre & Teléfono */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
                 Nombre del Alumno *
               </label>
               <input
@@ -155,11 +157,11 @@ export function ManualBookingModal({
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="Ej. Lucas Fernández"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white placeholder-white/30 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground placeholder-muted/40 focus:border-accent focus:outline-none transition-all font-sans"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
                 WhatsApp / Teléfono
               </label>
               <input
@@ -167,14 +169,14 @@ export function ManualBookingModal({
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder="Ej. +54 9 299 456-7890"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white placeholder-white/30 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground placeholder-muted/40 focus:border-accent focus:outline-none transition-all font-mono"
               />
             </div>
           </div>
 
           {/* Row 2: Plan & Tarifa */}
           <div>
-            <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
               Plan o Servicio
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -189,12 +191,12 @@ export function ManualBookingModal({
                   onClick={() => setPlanTitle(p.id)}
                   className={`p-2.5 rounded-xl border text-left transition-all ${
                     planTitle === p.id
-                      ? "bg-amber-500/15 border-amber-500/40 text-amber-300 shadow-md shadow-amber-500/10"
-                      : "bg-white/[0.02] border-white/[0.08] text-white/60 hover:text-white hover:border-white/[0.2]"
+                      ? "bg-surface-raised border-accent text-accent-text shadow-md shadow-accent/15"
+                      : "bg-surface-raised/40 border-border text-muted hover:text-foreground hover:border-border-highlight"
                   }`}
                 >
-                  <p className="text-xs font-semibold">{p.label}</p>
-                  <p className="text-[11px] font-mono text-amber-400/90">{p.price}</p>
+                  <p className="text-xs font-condensed font-bold uppercase">{p.label}</p>
+                  <p className="text-xs font-mono text-accent-text font-bold">{p.price}</p>
                 </button>
               ))}
             </div>
@@ -203,7 +205,7 @@ export function ManualBookingModal({
           {/* Row 3: Fecha & Horario */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
                 Fecha del Turno *
               </label>
               <input
@@ -211,17 +213,17 @@ export function ManualBookingModal({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all font-mono"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground focus:border-accent focus:outline-none transition-all font-mono"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
                 Horario *
               </label>
               <select
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#18191c] border border-white/[0.1] text-sm text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all font-mono"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground focus:border-accent focus:outline-none transition-all font-mono"
               >
                 {slotOptions.map((s) => (
                   <option key={s} value={s}>
@@ -233,30 +235,30 @@ export function ManualBookingModal({
           </div>
 
           {/* Row 4: Control Financiero (Seña, Método, Saldos) */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-3">
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400 flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-surface-raised border border-border space-y-3">
+            <h4 className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text flex items-center justify-between">
               <span>Control Financiero & Seña</span>
-              <span className="text-white/50 text-[11px]">Total: {currentPriceStr}</span>
+              <span className="text-muted text-[11px] font-mono">Total: {currentPriceStr}</span>
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-[11px] text-white/60 mb-1">Monto Abonado / Seña ($)</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Monto Abonado / Seña ($)</label>
                 <input
                   type="number"
                   value={amountPaid}
                   onChange={(e) => setAmountPaid(e.target.value)}
                   placeholder="Ej. 10000"
-                  className="w-full px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.1] text-sm text-white font-mono placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-lg bg-surface border border-border text-sm text-foreground font-mono placeholder-muted/40 focus:border-accent focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-white/60 mb-1">Método de Pago</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Método de Pago</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                  className="w-full px-3 py-2 rounded-lg bg-[#18191c] border border-white/[0.1] text-sm text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-lg bg-surface border border-border text-xs font-condensed uppercase text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="transferencia">Transferencia</option>
                   <option value="efectivo">Efectivo en Estudio</option>
@@ -265,11 +267,11 @@ export function ManualBookingModal({
               </div>
 
               <div>
-                <label className="block text-[11px] text-white/60 mb-1">Estado de Pago</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Estado de Pago</label>
                 <select
                   value={paymentStatus}
                   onChange={(e) => setPaymentStatus(e.target.value as PaymentStatus)}
-                  className="w-full px-3 py-2 rounded-lg bg-[#18191c] border border-white/[0.1] text-sm text-white focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-lg bg-surface border border-border text-xs font-condensed uppercase text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="pendiente">Pendiente Total</option>
                   <option value="seña">Seña Abonada</option>
@@ -281,9 +283,9 @@ export function ManualBookingModal({
             </div>
 
             {paidNum > 0 && (
-              <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.04] font-mono">
+              <div className="flex items-center justify-between text-xs pt-2 border-t border-border font-mono">
                 <span className="text-emerald-400">Abonado: ${paidNum.toLocaleString("es-AR")}</span>
-                <span className={pendingBalance > 0 ? "text-amber-400 font-bold" : "text-emerald-400"}>
+                <span className={pendingBalance > 0 ? "text-accent-text font-bold" : "text-emerald-400 font-bold"}>
                   {pendingBalance > 0 ? `Saldo restante: $${pendingBalance.toLocaleString("es-AR")}` : "¡Totalmente Saldado!"}
                 </span>
               </div>
@@ -292,7 +294,7 @@ export function ManualBookingModal({
 
           {/* Tags Biomecánicos / Rápidos */}
           <div>
-            <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1.5 font-bold">
               Etiquetas Clínicas / Tags
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -303,10 +305,10 @@ export function ManualBookingModal({
                     type="button"
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+                    className={`px-3 py-1 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider border transition-all ${
                       isSelected
-                        ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                        : "bg-white/[0.03] text-white/50 border-white/[0.06] hover:text-white"
+                        ? "bg-accent text-accent-foreground border-accent"
+                        : "bg-surface-raised text-muted border-border hover:text-foreground"
                     }`}
                   >
                     {isSelected ? `✓ ${tag}` : `+ ${tag}`}
@@ -319,7 +321,7 @@ export function ManualBookingModal({
           {/* Notas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1 font-bold">
                 Comentarios del Alumno
               </label>
               <textarea
@@ -327,11 +329,11 @@ export function ManualBookingModal({
                 value={customerNotes}
                 onChange={(e) => setCustomerNotes(e.target.value)}
                 placeholder="Motivo de consulta, dolores referidos..."
-                className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-sans"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-white/70 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-condensed uppercase tracking-wider text-muted mb-1 font-bold">
                 Nota Interna Instructor
               </label>
               <textarea
@@ -339,24 +341,24 @@ export function ManualBookingModal({
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
                 placeholder="Ajustes de arnés, precauciones..."
-                className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-sans"
               />
             </div>
           </div>
 
           {/* Submit */}
-          <div className="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-condensed font-bold uppercase text-muted hover:text-foreground hover:bg-surface-raised transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs sm:text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all disabled:opacity-50"
+              className="btn-shiny px-6 py-3 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs sm:text-sm shadow-lg shadow-accent/25 hover:opacity-95 active:scale-95 transition-all disabled:opacity-50"
             >
               {isSubmitting ? "Guardando..." : "Confirmar y Agendar Turno"}
             </button>

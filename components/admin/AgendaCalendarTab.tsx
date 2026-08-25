@@ -72,14 +72,14 @@ export function AgendaCalendarTab({
   return (
     <div className="space-y-6">
       {/* Calendar Top Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border">
         <div className="flex items-center gap-3">
-          <h3 className="text-base sm:text-lg font-bold capitalize text-white font-serif tracking-wide">
+          <h3 className="text-xl sm:text-2xl font-black capitalize text-foreground font-condensed uppercase tracking-wider">
             {monthName}
           </h3>
           <button
             onClick={handleToday}
-            className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-xs font-mono text-white/70 hover:text-white transition-colors"
+            className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border text-xs font-condensed font-bold uppercase text-foreground transition-colors"
           >
             Hoy
           </button>
@@ -88,7 +88,7 @@ export function AgendaCalendarTab({
         <div className="flex items-center gap-2">
           <button
             onClick={handlePrevMonth}
-            className="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-foreground hover:text-accent-text transition-colors"
             title="Mes anterior"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,7 +97,7 @@ export function AgendaCalendarTab({
           </button>
           <button
             onClick={handleNextMonth}
-            className="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-foreground hover:text-accent-text transition-colors"
             title="Mes siguiente"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,9 +110,9 @@ export function AgendaCalendarTab({
       {/* Grid & Day Inspector */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Monthly Grid (8 cols) */}
-        <div className="lg:col-span-8 p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
+        <div className="lg:col-span-8 p-5 rounded-2xl bg-surface border border-border space-y-4">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 gap-1 text-center font-mono text-[11px] text-white/40 uppercase">
+          <div className="grid grid-cols-7 gap-1 text-center font-condensed font-bold text-xs text-muted uppercase tracking-wider">
             <span>Dom</span>
             <span>Lun</span>
             <span>Mar</span>
@@ -145,31 +145,31 @@ export function AgendaCalendarTab({
                   onClick={() => setSelectedDateStr(dateStr)}
                   className={`h-16 sm:h-20 p-1.5 sm:p-2 rounded-xl border text-left flex flex-col justify-between transition-all relative ${
                     isSelected
-                      ? "bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/10"
+                      ? "bg-surface-raised border-accent text-accent-text shadow-lg shadow-accent/15"
                       : isBlocked
                         ? "bg-rose-500/[0.05] border-rose-500/20 text-rose-300/80 hover:border-rose-500/40"
-                        : "bg-white/[0.01] border-white/[0.04] text-white/70 hover:border-white/[0.15] hover:bg-white/[0.03]"
+                        : "bg-surface-raised/40 border-border text-foreground hover:border-border-highlight hover:bg-surface-raised"
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span
                       className={`text-xs font-mono font-bold ${
                         isToday
-                          ? "w-5 h-5 rounded-full bg-amber-500 text-black flex items-center justify-center"
+                          ? "w-5 h-5 rounded-full bg-accent text-accent-foreground flex items-center justify-center font-condensed"
                           : ""
                       }`}
                     >
                       {dayNum}
                     </span>
                     {dayBookings.length > 0 && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-300 font-semibold">
+                      <span className="text-[10px] font-condensed font-bold px-1.5 py-0.2 rounded-full bg-accent/20 text-accent-text">
                         {dayBookings.length}
                       </span>
                     )}
                   </div>
 
                   {isBlocked ? (
-                    <span className="text-[9px] font-mono text-rose-400 truncate">
+                    <span className="text-[9px] font-condensed uppercase tracking-wider text-rose-400 truncate">
                       Cerrado
                     </span>
                   ) : dayBookings.length > 0 ? (
@@ -182,7 +182,7 @@ export function AgendaCalendarTab({
                               ? "bg-emerald-400"
                               : b.status === "realizado"
                                 ? "bg-sky-400"
-                                : "bg-amber-400"
+                                : "bg-accent"
                           }`}
                         />
                       ))}
@@ -195,15 +195,15 @@ export function AgendaCalendarTab({
         </div>
 
         {/* Right: Selected Day Timeline & Details (4 cols) */}
-        <div className="lg:col-span-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-4 p-5 rounded-2xl bg-surface border border-border flex flex-col justify-between space-y-4">
           <div className="space-y-4">
             {/* Header of selected day */}
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
-                <h4 className="text-sm font-semibold text-white font-mono">
+                <h4 className="text-base font-black font-condensed uppercase text-foreground">
                   {selectedDateStr}
                 </h4>
-                <p className="text-xs text-white/50">
+                <p className="text-xs text-muted font-sans">
                   {isSelectedDateBlocked ? (
                     <span className="text-rose-400">⛔ {blockedReason || "Día Bloqueado / Feriado"}</span>
                   ) : (
@@ -215,7 +215,7 @@ export function AgendaCalendarTab({
               {!isSelectedDateBlocked && (
                 <button
                   onClick={() => onOpenManualBookingForDate(selectedDateStr)}
-                  className="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition-all"
+                  className="btn-shiny px-3 py-1 rounded-lg bg-accent text-accent-foreground text-xs font-condensed font-bold uppercase tracking-wider shadow"
                 >
                   + Turno
                 </button>
@@ -225,7 +225,7 @@ export function AgendaCalendarTab({
             {/* Slots timeline */}
             <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
               {configuredSlots.length === 0 && !isSelectedDateBlocked && (
-                <p className="text-xs text-white/40 italic py-4 text-center">
+                <p className="text-xs text-muted italic py-4 text-center font-sans">
                   Este día no tiene horarios configurados en la grilla semanal.
                 </p>
               )}
@@ -238,20 +238,20 @@ export function AgendaCalendarTab({
                     key={slot}
                     className={`p-3 rounded-xl border text-xs transition-all ${
                       bookingInSlot
-                        ? "bg-amber-500/[0.08] border-amber-500/30 shadow"
-                        : "bg-white/[0.01] border-white/[0.04] text-white/40 hover:bg-white/[0.03]"
+                        ? "bg-surface-raised border-accent/40 shadow"
+                        : "bg-surface-raised/40 border-border text-muted hover:bg-surface-raised"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono font-bold text-amber-400">{slot} hs</span>
+                      <span className="font-condensed font-bold text-accent-text text-sm">{slot} hs</span>
                       {bookingInSlot ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] uppercase font-mono bg-emerald-500/20 text-emerald-300 font-semibold">
+                        <span className="px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold bg-emerald-500/20 text-emerald-300">
                           {bookingInSlot.status}
                         </span>
                       ) : (
                         <button
                           onClick={() => onOpenManualBookingForDate(selectedDateStr, slot)}
-                          className="text-[10px] text-white/40 hover:text-amber-300 font-mono"
+                          className="text-[10px] text-muted hover:text-accent-text font-condensed font-bold uppercase tracking-wider underline"
                         >
                           + Agendar aquí
                         </button>
@@ -259,11 +259,11 @@ export function AgendaCalendarTab({
                     </div>
 
                     {bookingInSlot && (
-                      <div className="mt-2 space-y-1">
-                        <p className="font-semibold text-white">{bookingInSlot.customerName}</p>
-                        <p className="text-white/60 text-[11px]">{bookingInSlot.planTitle}</p>
+                      <div className="mt-2 space-y-0.5">
+                        <p className="font-condensed font-bold uppercase text-foreground text-sm">{bookingInSlot.customerName}</p>
+                        <p className="text-muted text-xs font-sans">{bookingInSlot.planTitle}</p>
                         {bookingInSlot.customerPhone && (
-                          <p className="text-white/40 font-mono text-[10px]">{bookingInSlot.customerPhone}</p>
+                          <p className="text-muted/60 font-mono text-[10px]">{bookingInSlot.customerPhone}</p>
                         )}
                       </div>
                     )}

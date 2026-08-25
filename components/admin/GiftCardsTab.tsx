@@ -103,19 +103,19 @@ export function GiftCardsTab({
     <div className="space-y-8">
       {/* Top Header & Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/[0.08] to-white/[0.02] border border-amber-500/20 space-y-1">
-          <span className="text-xs font-mono uppercase text-amber-400 font-semibold">Total Emitidas</span>
-          <p className="text-2xl font-bold font-mono text-white">{giftCards.length}</p>
+        <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">Total Emitidas</span>
+          <p className="text-3xl font-black font-condensed text-foreground">{giftCards.length}</p>
         </div>
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/[0.08] to-white/[0.02] border border-emerald-500/20 space-y-1">
-          <span className="text-xs font-mono uppercase text-emerald-400 font-semibold">Activas / Por Canjear</span>
-          <p className="text-2xl font-bold font-mono text-emerald-300">
+        <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-emerald-400">Activas / Por Canjear</span>
+          <p className="text-3xl font-black font-condensed text-emerald-300">
             {giftCards.filter((g) => g.status === "activo").length}
           </p>
         </div>
-        <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-1">
-          <span className="text-xs font-mono uppercase text-purple-400 font-semibold">Canjeadas en Estudio</span>
-          <p className="text-2xl font-bold font-mono text-purple-300">
+        <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-muted">Canjeadas en Estudio</span>
+          <p className="text-3xl font-black font-condensed text-foreground/80">
             {giftCards.filter((g) => g.status === "canjeado").length}
           </p>
         </div>
@@ -123,69 +123,69 @@ export function GiftCardsTab({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Form to Issue New Gift Card (5 cols) */}
-        <div className="lg:col-span-5 p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-5">
+        <div className="lg:col-span-5 p-6 rounded-2xl bg-surface border border-border space-y-5">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-black font-condensed uppercase text-foreground flex items-center gap-2">
               <span>🎁</span> Emitir Nueva Gift Card
             </h3>
-            <p className="text-xs text-white/50 mt-1">Generá un código de voucher oficial para enviar por WhatsApp</p>
+            <p className="text-xs text-muted mt-1 font-sans">Generá un código de voucher oficial para enviar por WhatsApp</p>
           </div>
 
           <form onSubmit={handleCreateGiftCard} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-mono text-white/60 mb-1">Para (Beneficiario) *</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Para (Beneficiario) *</label>
                 <input
                   type="text"
                   required
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   placeholder="Ej. Sofía Rossi"
-                  className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-mono text-white/60 mb-1">Teléfono Beneficiario</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Teléfono Beneficiario</label>
                 <input
                   type="text"
                   value={recipientPhone}
                   onChange={(e) => setRecipientPhone(e.target.value)}
                   placeholder="+54 9 299..."
-                  className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-mono"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-mono text-white/60 mb-1">De parte de *</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">De parte de *</label>
                 <input
                   type="text"
                   required
                   value={senderName}
                   onChange={(e) => setSenderName(e.target.value)}
                   placeholder="Ej. Carlos Rossi"
-                  className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-mono text-white/60 mb-1">Teléfono Remitente</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Teléfono Remitente</label>
                 <input
                   type="text"
                   value={senderPhone}
                   onChange={(e) => setSenderPhone(e.target.value)}
                   placeholder="+54 9 299..."
-                  className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-mono text-white/60 mb-1">Plan / Experiencia a Regalar</label>
+              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Plan / Experiencia a Regalar</label>
               <select
                 value={planTitle}
                 onChange={(e) => setPlanTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#18191c] border border-white/[0.1] text-xs text-white focus:border-amber-500 focus:outline-none"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs font-condensed font-bold uppercase tracking-wide text-foreground focus:border-accent focus:outline-none"
               >
                 <option value="1 Sesión Individual">1 Sesión Individual ({getPriceForPlan("1 Sesión")})</option>
                 <option value="Pack 8 Sesiones">Pack 8 Sesiones ({getPriceForPlan("Pack 8")})</option>
@@ -194,19 +194,19 @@ export function GiftCardsTab({
             </div>
 
             <div>
-              <label className="block text-[11px] font-mono text-white/60 mb-1">Dedicatoria Especial (Opcional)</label>
+              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Dedicatoria Especial (Opcional)</label>
               <textarea
                 rows={2}
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
                 placeholder="¡Feliz cumpleaños! Que disfrutes esta sesión de descompresión..."
-                className="w-full px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-sans"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+              className="btn-shiny w-full py-3 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 active:scale-95 transition-all"
             >
               Generar y Guardar Gift Card
             </button>
@@ -215,23 +215,23 @@ export function GiftCardsTab({
 
         {/* Right: List of Issued Gift Cards (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="p-4 rounded-2xl bg-surface border border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por código, beneficiario o remitente..."
-              className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-white flex-1 focus:outline-none"
+              className="px-3 py-2 rounded-xl bg-surface-raised border border-border text-xs text-foreground placeholder-muted/50 flex-1 focus:border-accent focus:outline-none"
             />
-            <div className="flex gap-1 bg-white/[0.04] p-1 rounded-xl border border-white/[0.08]">
+            <div className="flex gap-1 bg-surface-raised p-1 rounded-xl border border-border">
               {["todos", "activo", "canjeado"].map((st) => (
                 <button
                   key={st}
                   onClick={() => setFilterStatus(st as typeof filterStatus)}
-                  className={`px-3 py-1 rounded-lg text-xs capitalize transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-condensed font-bold uppercase tracking-wider transition-all ${
                     filterStatus === st
-                      ? "bg-amber-500 text-black font-bold"
-                      : "text-white/60 hover:text-white"
+                      ? "bg-accent text-accent-foreground shadow"
+                      : "text-muted hover:text-foreground"
                   }`}
                 >
                   {st}
@@ -242,7 +242,7 @@ export function GiftCardsTab({
 
           <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
             {filteredCards.length === 0 ? (
-              <p className="text-xs text-white/40 italic text-center py-12">
+              <p className="text-xs text-muted italic text-center py-12">
                 No se encontraron Gift Cards con los filtros actuales.
               </p>
             ) : (
@@ -254,8 +254,8 @@ export function GiftCardsTab({
                     key={gc.id}
                     className={`p-4 rounded-2xl border transition-all space-y-3 ${
                       gc.status === "activo"
-                        ? "bg-amber-500/[0.03] border-amber-500/30"
-                        : "bg-white/[0.01] border-white/[0.04] opacity-70"
+                        ? "bg-surface-raised border-accent/40"
+                        : "bg-surface border-border opacity-70"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -263,15 +263,15 @@ export function GiftCardsTab({
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleCopyCode(gc.code)}
-                            className="font-mono text-sm font-bold text-amber-300 hover:underline flex items-center gap-1"
+                            className="font-mono text-sm font-bold text-accent-text hover:underline flex items-center gap-1"
                           >
                             {gc.code}
-                            <span className="text-[10px] text-white/40">
+                            <span className="text-[10px] text-muted">
                               {copiedCode === gc.code ? "✓" : "📋"}
                             </span>
                           </button>
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold ${
+                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold ${
                               gc.status === "activo"
                                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                                 : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
@@ -280,27 +280,27 @@ export function GiftCardsTab({
                             {gc.status}
                           </span>
                         </div>
-                        <p className="text-xs text-white mt-1">
-                          <span className="text-white/50">Para:</span>{" "}
-                          <span className="font-semibold">{gc.recipientName}</span>{" "}
-                          <span className="text-white/50">de</span>{" "}
-                          <span className="font-semibold">{gc.senderName}</span>
+                        <p className="text-xs text-foreground mt-1">
+                          <span className="text-muted">Para:</span>{" "}
+                          <span className="font-semibold text-foreground">{gc.recipientName}</span>{" "}
+                          <span className="text-muted">de</span>{" "}
+                          <span className="font-semibold text-foreground">{gc.senderName}</span>
                         </p>
                       </div>
 
-                      <span className="font-mono text-xs font-bold text-white/90">
+                      <span className="font-mono text-xs font-bold text-accent-text">
                         {gc.price}
                       </span>
                     </div>
 
                     {gc.customMessage && (
-                      <p className="text-xs text-white/60 italic bg-white/[0.02] p-2 rounded-lg border border-white/[0.04]">
+                      <p className="text-xs text-muted italic bg-surface p-2 rounded-lg border border-border">
                         &ldquo;{gc.customMessage}&rdquo;
                       </p>
                     )}
 
-                    <div className="pt-2 border-t border-white/[0.04] flex items-center justify-between gap-2 text-xs">
-                      <span className="text-[11px] text-white/40 font-mono">
+                    <div className="pt-2 border-t border-border flex items-center justify-between gap-2 text-xs">
+                      <span className="text-[11px] text-muted font-mono">
                         Emitida: {gc.createdAt}
                         {gc.redeemedAt && ` • Canjeada: ${gc.redeemedAt}`}
                       </span>
@@ -311,7 +311,7 @@ export function GiftCardsTab({
                             href={shareUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase transition-colors"
                           >
                             WhatsApp
                           </a>
@@ -319,10 +319,10 @@ export function GiftCardsTab({
 
                         <button
                           onClick={() => handleToggleRedeemed(gc.id)}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                          className={`px-2.5 py-1 rounded-lg text-xs font-condensed font-bold uppercase transition-colors ${
                             gc.status === "activo"
                               ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
-                              : "bg-white/[0.04] text-white/60 hover:text-white"
+                              : "bg-surface-raised text-muted hover:text-foreground"
                           }`}
                         >
                           {gc.status === "activo" ? "Marcar Canjeado" : "Reactivar"}
@@ -330,7 +330,7 @@ export function GiftCardsTab({
 
                         <button
                           onClick={() => handleDelete(gc.id)}
-                          className="p-1 text-white/40 hover:text-rose-400 text-xs"
+                          className="p-1 text-muted hover:text-rose-400 text-xs"
                           title="Eliminar"
                         >
                           🗑️

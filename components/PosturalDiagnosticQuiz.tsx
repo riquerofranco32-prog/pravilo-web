@@ -124,32 +124,32 @@ export function PosturalDiagnosticQuiz() {
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
       <RevealOnScroll className="text-center space-y-3">
         <span className="eyebrow mx-auto w-fit">Autodiagnóstico Biomecánico</span>
-        <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-serif">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground font-condensed uppercase">
           ¿Qué necesita tu cuerpo hoy?
         </h2>
-        <p className="mx-auto max-w-xl text-sm sm:text-base text-white/60">
+        <p className="mx-auto max-w-xl text-base text-muted">
           Respondé 2 preguntas rápidas para descubrir cómo el método Pravilo puede ayudarte y cuál es el plan recomendado para tu caso.
         </p>
       </RevealOnScroll>
 
-      <div className="mt-10 rounded-3xl border border-white/[0.08] bg-[#121316]/80 p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-        {/* Glow ambient */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="mt-10 rounded-3xl border border-border bg-surface-raised/80 p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        {/* Glow ambient de marca (carmesí) */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-accent/15 rounded-full blur-[100px] pointer-events-none" />
 
         {!showResult ? (
           <div className="space-y-8 relative z-10">
             {/* Step 1: Zona */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold flex items-center justify-center border border-amber-500/30">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-accent/20 text-accent-text font-condensed text-xs font-black flex items-center justify-center border border-accent/40">
                   1
                 </span>
-                <h3 className="text-base sm:text-lg font-bold text-white">
+                <h3 className="text-lg sm:text-xl font-bold font-condensed uppercase tracking-wider text-foreground">
                   ¿Dónde sentís mayor molestia o querés enfocar tu trabajo?
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {ZONES.map((zone) => {
                   const isSelected = selectedZone === zone.id;
                   return (
@@ -157,17 +157,19 @@ export function PosturalDiagnosticQuiz() {
                       type="button"
                       key={zone.id}
                       onClick={() => setSelectedZone(zone.id)}
-                      className={`p-4 rounded-2xl border text-left transition-all ${
+                      className={`p-5 rounded-2xl border text-left transition-all ${
                         isSelected
-                          ? "bg-amber-500/15 border-amber-500/50 shadow-lg shadow-amber-500/5"
-                          : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04]"
+                          ? "bg-accent/15 border-accent shadow-lg shadow-accent/10"
+                          : "bg-surface border-border hover:border-border-highlight hover:bg-surface-raised"
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-xl">{zone.icon}</span>
-                        <h4 className="font-semibold text-sm text-white">{zone.label}</h4>
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{zone.icon}</span>
+                        <h4 className="font-condensed font-bold text-base uppercase tracking-wide text-foreground">
+                          {zone.label}
+                        </h4>
                       </div>
-                      <p className="text-xs text-white/50 mt-1.5 leading-relaxed">{zone.desc}</p>
+                      <p className="text-xs text-muted mt-2 leading-relaxed">{zone.desc}</p>
                     </button>
                   );
                 })}
@@ -176,17 +178,17 @@ export function PosturalDiagnosticQuiz() {
 
             {/* Step 2: Frecuencia (shows once zone is selected) */}
             {selectedZone && (
-              <div className="space-y-3 pt-4 border-t border-white/[0.06] animate-in fade-in slide-in-from-bottom-3 duration-300">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold flex items-center justify-center border border-amber-500/30">
+              <div className="space-y-4 pt-6 border-t border-border/80 animate-in fade-in slide-in-from-bottom-3 duration-300">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-accent/20 text-accent-text font-condensed text-xs font-black flex items-center justify-center border border-accent/40">
                     2
                   </span>
-                  <h3 className="text-base sm:text-lg font-bold text-white">
+                  <h3 className="text-lg sm:text-xl font-bold font-condensed uppercase tracking-wider text-foreground">
                     ¿Con qué intensidad o frecuencia se manifiesta?
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   {FREQUENCIES.map((freq) => {
                     const isSelected = selectedFreq === freq.id;
                     return (
@@ -196,15 +198,17 @@ export function PosturalDiagnosticQuiz() {
                         onClick={() => setSelectedFreq(freq.id)}
                         className={`p-4 rounded-2xl border text-left transition-all ${
                           isSelected
-                            ? "bg-amber-500/15 border-amber-500/50 shadow-lg shadow-amber-500/5"
-                            : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04]"
+                            ? "bg-accent/15 border-accent shadow-lg shadow-accent/10"
+                            : "bg-surface border-border hover:border-border-highlight hover:bg-surface-raised"
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           <span>{freq.icon}</span>
-                          <h4 className="font-semibold text-xs text-white">{freq.label}</h4>
+                          <h4 className="font-condensed font-bold text-sm uppercase tracking-wide text-foreground">
+                            {freq.label}
+                          </h4>
                         </div>
-                        <p className="text-[11px] text-white/50 mt-1">{freq.desc}</p>
+                        <p className="text-xs text-muted mt-1.5 leading-relaxed">{freq.desc}</p>
                       </button>
                     );
                   })}
@@ -218,7 +222,7 @@ export function PosturalDiagnosticQuiz() {
                 <button
                   type="button"
                   onClick={() => setShowResult(true)}
-                  className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-sm shadow-xl shadow-amber-500/20 active:scale-95 transition-all"
+                  className="btn-shiny px-8 py-3.5 rounded-full bg-accent text-accent-foreground font-condensed font-black text-sm uppercase tracking-wider shadow-lg shadow-accent/25 hover:opacity-95 active:scale-95 transition-all"
                 >
                   Ver Mi Recomendación Personalizada →
                 </button>
@@ -228,12 +232,12 @@ export function PosturalDiagnosticQuiz() {
         ) : (
           /* Result View */
           <div className="space-y-6 relative z-10 animate-in fade-in zoom-in-95 duration-300">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/80 pb-4">
               <div>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="px-3.5 py-1 rounded-full text-xs font-condensed font-black uppercase tracking-wider bg-accent/20 text-accent-text border border-accent/40">
                   {rec.badge}
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mt-2 font-serif">
+                <h3 className="text-2xl sm:text-3xl font-black font-condensed uppercase tracking-tight text-foreground mt-3">
                   {rec.title}
                 </h3>
               </div>
@@ -241,36 +245,38 @@ export function PosturalDiagnosticQuiz() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="text-xs text-white/40 hover:text-white underline font-mono self-start sm:self-auto"
+                className="text-xs font-condensed uppercase tracking-wider text-muted hover:text-foreground underline self-start sm:self-auto"
               >
-                ← Repetir test
+                ← Repetir autodiagnóstico
               </button>
             </div>
 
-            <p className="text-sm text-white/70 leading-relaxed max-w-2xl">{rec.summary}</p>
+            <p className="text-sm sm:text-base text-muted leading-relaxed max-w-2xl">{rec.summary}</p>
 
             {/* Plan card inside quiz result */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="p-6 rounded-2xl bg-surface border border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <span className="text-xs text-white/50 block">Plan Recomendado:</span>
-                <h4 className="text-lg font-bold text-amber-400 font-mono">{rec.plan}</h4>
-                <p className="text-xs font-mono text-white/80">{rec.planPrice}</p>
+                <span className="text-xs font-condensed uppercase tracking-wider text-muted block">Plan Recomendado:</span>
+                <h4 className="text-2xl font-black font-condensed text-accent-text">{rec.plan}</h4>
+                <p className="text-xs font-condensed font-bold text-foreground/80">{rec.planPrice}</p>
               </div>
 
               <BookingWizard
                 buttonText={`Reservar ${rec.plan} →`}
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all text-center"
+                className="btn-shiny w-full sm:w-auto px-8 py-3.5 rounded-full bg-accent text-accent-foreground font-condensed font-black text-sm uppercase tracking-wider shadow-lg shadow-accent/25 hover:opacity-95 active:scale-95 transition-all text-center"
               />
             </div>
 
             {/* Benefits Checklist */}
-            <div className="space-y-2 pt-2">
-              <span className="text-xs font-mono uppercase text-white/50">Beneficios clave para tu caso:</span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-white/80">
+            <div className="space-y-2.5 pt-2">
+              <span className="text-xs font-condensed uppercase tracking-wider text-muted font-bold">
+                Beneficios clave para tu caso:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-foreground">
                 {rec.benefits.map((b, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                    <span className="text-emerald-400 font-bold">✓</span>
-                    <span>{b}</span>
+                  <div key={i} className="flex items-center gap-2.5 p-3 rounded-xl bg-surface border border-border">
+                    <span className="text-accent-text font-bold">✓</span>
+                    <span className="font-condensed font-medium text-xs text-foreground/90">{b}</span>
                   </div>
                 ))}
               </div>

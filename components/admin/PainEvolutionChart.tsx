@@ -62,15 +62,15 @@ export function PainEvolutionChart({
   const totalReduction = firstBefore > 0 ? Math.round(((firstBefore - lastAfter) / firstBefore) * 100) : 0;
 
   return (
-    <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3">
+    <div className="p-4 rounded-2xl bg-surface border border-border space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
             Curva de Evolución del Dolor (EVA 0-10)
           </span>
         </div>
         {totalReduction > 0 && (
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-condensed font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             -{totalReduction}% de Dolor
           </span>
         )}
@@ -98,7 +98,7 @@ export function PainEvolutionChart({
                 <text
                   x={paddingX - 16}
                   y={y + 3}
-                  fill="rgba(255,255,255,0.4)"
+                  fill="rgba(163,151,140,0.8)"
                   fontSize="9"
                   fontFamily="monospace"
                   textAnchor="end"
@@ -110,10 +110,10 @@ export function PainEvolutionChart({
           })}
 
           {/* Lines */}
-          {/* Pre-session pain line (Rose) */}
+          {/* Pre-session pain line (Crimson Accent) */}
           <polyline
             fill="none"
-            stroke="#f43f5e"
+            stroke="#f05252"
             strokeWidth="2.5"
             strokeDasharray="4 3"
             points={beforePoints}
@@ -136,15 +136,15 @@ export function PainEvolutionChart({
             return (
               <g key={idx}>
                 {/* Pre-session point */}
-                <circle cx={x} cy={yBefore} r="4" fill="#f43f5e" />
+                <circle cx={x} cy={yBefore} r="4" fill="#f05252" />
                 {/* Post-session point */}
-                <circle cx={x} cy={yAfter} r="5" fill="#10b981" stroke="#090a0c" strokeWidth="1.5" />
+                <circle cx={x} cy={yAfter} r="5" fill="#10b981" stroke="#0d0b0a" strokeWidth="1.5" />
 
                 {/* Session label on bottom */}
                 <text
                   x={x}
                   y={height - 4}
-                  fill="rgba(255,255,255,0.6)"
+                  fill="rgba(246,241,234,0.7)"
                   fontSize="9"
                   fontFamily="monospace"
                   textAnchor="middle"
@@ -158,18 +158,18 @@ export function PainEvolutionChart({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-between text-[11px] text-white/50 pt-2 border-t border-white/[0.04]">
+      <div className="flex items-center justify-between text-[11px] text-muted pt-2 border-t border-border">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-0.5 bg-rose-500 rounded-full" />
-            <span className="text-rose-300">Dolor Pre-sesión</span>
+            <span className="w-3 h-0.5 bg-accent-text rounded-full" />
+            <span className="text-accent-text font-condensed uppercase tracking-wide">Dolor Pre-sesión</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-1 bg-emerald-500 rounded-full" />
-            <span className="text-emerald-300 font-semibold">Dolor Post-sesión (Alivio)</span>
+            <span className="text-emerald-300 font-condensed font-bold uppercase tracking-wide">Dolor Post-sesión (Alivio)</span>
           </div>
         </div>
-        <span className="font-mono text-[10px] text-white/40">Escala EVA (0=Sin dolor, 10=Máximo)</span>
+        <span className="font-condensed uppercase text-[10px] text-muted/70">Escala EVA (0=Sin dolor, 10=Máximo)</span>
       </div>
     </div>
   );

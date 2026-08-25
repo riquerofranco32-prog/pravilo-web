@@ -140,7 +140,7 @@ export function AdminHeader({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-[#0c0d0e]/90 backdrop-blur-xl border-b border-white/[0.08] shadow-2xl">
+    <header className="sticky top-0 z-30 bg-surface/90 backdrop-blur-xl border-b border-border shadow-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top bar */}
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
@@ -151,26 +151,26 @@ export function AdminHeader({
               className="flex items-center gap-2.5 group transition-transform active:scale-95 shrink-0"
               title="Volver a la landing pública"
             >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/30 border border-amber-500/40 flex items-center justify-center text-amber-300 font-serif font-black text-lg tracking-wider shadow-lg shadow-amber-500/10 group-hover:border-amber-400 group-hover:shadow-amber-500/20 transition-all">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent-text font-condensed font-black text-lg tracking-wider shadow-lg shadow-accent/15 group-hover:border-accent group-hover:shadow-accent/30 transition-all">
                 P
               </div>
               <div className="hidden sm:block text-left">
-                <span className="text-sm font-semibold tracking-wider text-white flex items-center gap-1.5 font-mono">
-                  PRAVILO <span className="text-amber-400">ADMIN</span>
-                  <span className="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-sans font-medium">
+                <span className="text-sm font-black tracking-wide text-foreground flex items-center gap-1.5 font-condensed uppercase">
+                  PRAVILO <span className="text-accent-text">ADMIN</span>
+                  <span className="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-accent/15 border border-accent/30 text-accent-text font-condensed font-bold">
                     PRO
                   </span>
                 </span>
-                <p className="text-[11px] text-white/50 tracking-tight">Estudio Biomecánico & Fascial</p>
+                <p className="text-[11px] text-muted tracking-tight font-sans">Estudio Biomecánico & Fascial</p>
               </div>
             </Link>
 
             {/* Live Time Neuquén */}
             {currentTime && (
-              <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-white/60">
+              <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface-raised border border-border text-[11px] text-muted">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-mono text-white/90">{currentTime} hs</span>
-                <span className="text-white/40">Plottier, NQN</span>
+                <span className="font-condensed font-bold text-foreground text-xs">{currentTime} hs</span>
+                <span className="text-muted/70 font-sans">Plottier, NQN</span>
               </div>
             )}
           </div>
@@ -180,7 +180,7 @@ export function AdminHeader({
             {/* New Manual Booking Button */}
             <button
               onClick={onOpenManualBooking}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs sm:text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+              className="btn-shiny flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-accent hover:opacity-95 text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs sm:text-sm shadow-lg shadow-accent/25 active:scale-95 transition-all"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -193,8 +193,8 @@ export function AdminHeader({
               onClick={onOpenAlerts}
               className={`relative p-2 rounded-xl border transition-all ${
                 alertCount > 0
-                  ? "bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20 shadow-lg shadow-amber-500/10"
-                  : "bg-white/[0.04] border-white/[0.08] text-white/60 hover:text-white hover:bg-white/[0.08]"
+                  ? "bg-accent/15 border-accent/40 text-accent-text hover:bg-accent/25 shadow-lg shadow-accent/15"
+                  : "bg-surface-raised border-border text-muted hover:text-foreground hover:bg-surface"
               }`}
               title={alertCount > 0 ? `${alertCount} alertas pendientes` : "Alertas inteligentes"}
             >
@@ -202,7 +202,7 @@ export function AdminHeader({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               {alertCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-black text-[10px] font-bold flex items-center justify-center animate-bounce">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[10px] font-condensed font-bold flex items-center justify-center animate-bounce">
                   {alertCount}
                 </span>
               )}
@@ -214,8 +214,8 @@ export function AdminHeader({
                 onClick={onToggleAudio}
                 className={`p-2 rounded-xl border transition-all ${
                   audioEnabled
-                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                    : "bg-white/[0.04] border-white/[0.08] text-white/40 hover:text-white"
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
+                    : "bg-surface-raised border-border text-muted hover:text-foreground"
                 }`}
                 title={audioEnabled ? "Avisos sonoros ACTIVADOS (chime 15 min antes)" : "Activar avisos sonoros de turnos"}
               >
@@ -224,7 +224,7 @@ export function AdminHeader({
             )}
 
             {/* Backup Dropdown / Actions */}
-            <div className="hidden md:flex items-center gap-1 bg-white/[0.03] p-1 rounded-xl border border-white/[0.06]">
+            <div className="hidden md:flex items-center gap-1 bg-surface-raised p-1 rounded-xl border border-border">
               <button
                 onClick={() =>
                   downloadFullJSONBackup({
@@ -235,10 +235,10 @@ export function AdminHeader({
                     clinicalProfiles,
                   })
                 }
-                className="px-2.5 py-1 text-xs text-white/60 hover:text-amber-300 hover:bg-white/[0.05] rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 text-xs font-condensed uppercase tracking-wider text-muted hover:text-accent-text hover:bg-surface rounded-lg transition-colors flex items-center gap-1.5"
                 title="Descargar respaldo completo en JSON"
               >
-                <svg className="w-3.5 h-3.5 text-amber-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Backup
@@ -246,10 +246,10 @@ export function AdminHeader({
 
               <button
                 onClick={() => exportBookingsToCSV(bookings)}
-                className="px-2.5 py-1 text-xs text-white/60 hover:text-emerald-300 hover:bg-white/[0.05] rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 text-xs font-condensed uppercase tracking-wider text-muted hover:text-emerald-400 hover:bg-surface rounded-lg transition-colors flex items-center gap-1.5"
                 title="Exportar registros a CSV / Excel"
               >
-                <svg className="w-3.5 h-3.5 text-emerald-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Excel
@@ -257,10 +257,10 @@ export function AdminHeader({
 
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-2.5 py-1 text-xs text-white/60 hover:text-sky-300 hover:bg-white/[0.05] rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 text-xs font-condensed uppercase tracking-wider text-muted hover:text-foreground hover:bg-surface rounded-lg transition-colors flex items-center gap-1.5"
                 title="Restaurar backup desde archivo JSON"
               >
-                <svg className="w-3.5 h-3.5 text-sky-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
                 Importar
@@ -277,7 +277,7 @@ export function AdminHeader({
             {/* Logout button */}
             <button
               onClick={onLogout}
-              className="p-2 rounded-xl bg-white/[0.04] hover:bg-rose-500/10 border border-white/[0.08] hover:border-rose-500/30 text-white/60 hover:text-rose-400 transition-all text-xs flex items-center gap-1"
+              className="p-2 rounded-xl bg-surface-raised hover:bg-rose-500/15 border border-border hover:border-rose-500/40 text-muted hover:text-rose-400 transition-all text-xs font-condensed uppercase tracking-wider flex items-center gap-1"
               title="Cerrar sesión"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -289,20 +289,20 @@ export function AdminHeader({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2 border-t border-white/[0.04]">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2 border-t border-border">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as AdminTab)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-condensed font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
                   isActive
-                    ? "bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-md shadow-amber-500/5"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                    ? "bg-accent/20 text-accent-text border border-accent/40 shadow-md shadow-accent/15"
+                    : "text-muted hover:text-foreground hover:bg-surface border border-transparent"
                 }`}
               >
-                <span className={isActive ? "text-amber-400" : "text-white/40"}>
+                <span className={isActive ? "text-accent-text" : "text-muted/60"}>
                   {tab.icon}
                 </span>
                 <span>{tab.label}</span>
@@ -310,8 +310,8 @@ export function AdminHeader({
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
                       isActive
-                        ? "bg-amber-400 text-black font-bold"
-                        : "bg-white/10 text-white/70"
+                        ? "bg-accent text-accent-foreground font-bold"
+                        : "bg-surface-raised text-muted"
                     }`}
                   >
                     {tab.count}

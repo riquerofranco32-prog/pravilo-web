@@ -167,9 +167,9 @@ export function AlumnosCrmTab({
             {Object.keys(clinicalProfiles).length}
           </span>
         </div>
-        <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-          <span className="text-[11px] font-mono uppercase text-amber-400 block">Para Reactivación</span>
-          <span className="text-xl sm:text-2xl font-bold font-mono text-amber-300 mt-1 block">
+        <div className="p-4 rounded-2xl bg-surface border border-border">
+          <span className="text-[11px] font-condensed font-bold uppercase tracking-wider text-accent-text block">Para Reactivación</span>
+          <span className="text-2xl font-black font-condensed text-foreground mt-1 block">
             {students.filter((s) => !s.hasActivePack && s.bookings.length > 0).length}
           </span>
         </div>
@@ -179,8 +179,8 @@ export function AlumnosCrmTab({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Student List (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center gap-2">
-            <svg className="w-4 h-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="p-3.5 rounded-2xl bg-surface border border-border flex items-center gap-2">
+            <svg className="w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -188,13 +188,13 @@ export function AlumnosCrmTab({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por alumno, teléfono o patología..."
-              className="w-full bg-transparent text-xs text-white placeholder-white/40 focus:outline-none"
+              className="w-full bg-transparent text-xs text-foreground placeholder-muted/50 focus:outline-none font-sans"
             />
           </div>
 
           <div className="space-y-2 max-h-[680px] overflow-y-auto pr-1">
             {filteredStudents.length === 0 ? (
-              <p className="text-xs text-white/40 text-center py-8">No se encontraron alumnos.</p>
+              <p className="text-xs text-muted text-center py-8">No se encontraron alumnos.</p>
             ) : (
               filteredStudents.map((s) => {
                 const profile = s.phone ? clinicalProfiles[s.phone] : null;
@@ -206,35 +206,35 @@ export function AlumnosCrmTab({
                     onClick={() => s.phone && onSelectStudentPhone(s.phone)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-amber-500/10 border-amber-500/40 shadow-lg shadow-amber-500/5"
-                        : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.04]"
+                        ? "bg-surface-raised border-accent/60 shadow-lg shadow-accent/10"
+                        : "bg-surface border-border hover:border-border-highlight hover:bg-surface-raised"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="text-sm font-semibold text-white flex items-center gap-1.5">
+                        <h4 className="text-sm font-condensed font-bold uppercase tracking-wide text-foreground flex items-center gap-1.5">
                           {s.name}
                           {s.hasActivePack && (
-                            <span className="w-2 h-2 rounded-full bg-purple-400" title="Pack Activo" />
+                            <span className="w-2 h-2 rounded-full bg-accent" title="Pack Activo" />
                           )}
                         </h4>
-                        <p className="text-xs text-white/50 font-mono">{s.phone || "Sin teléfono"}</p>
+                        <p className="text-xs text-muted font-mono">{s.phone || "Sin teléfono"}</p>
                       </div>
-                      <span className="text-[11px] font-mono text-white/40">
+                      <span className="text-[11px] font-condensed uppercase text-muted">
                         {s.bookings.length} sesion{s.bookings.length !== 1 ? "es" : ""}
                       </span>
                     </div>
 
                     {profile?.conditionReason && (
-                      <p className="mt-2 text-xs text-amber-300/80 truncate font-mono">
+                      <p className="mt-2 text-xs text-accent-text truncate font-sans">
                         🩺 {profile.conditionReason}
                       </p>
                     )}
 
                     {profile?.painLevelCurrent !== undefined && (
-                      <div className="mt-2 flex items-center justify-between text-[11px] text-white/60">
-                        <span>Dolor actual:</span>
-                        <span className="font-mono font-bold text-amber-400">
+                      <div className="mt-2 flex items-center justify-between text-[11px] text-muted">
+                        <span className="font-condensed uppercase tracking-wider">Dolor actual:</span>
+                        <span className="font-condensed font-bold text-accent-text text-xs">
                           {profile.painLevelCurrent}/10
                         </span>
                       </div>
@@ -249,19 +249,19 @@ export function AlumnosCrmTab({
         {/* Right Column: Student CRM Detail (7 cols) */}
         <div className="lg:col-span-7">
           {currentStudent ? (
-            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-6">
+            <div className="p-6 rounded-2xl bg-surface border border-border space-y-6">
               {/* Detail Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
                 <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h3 className="text-xl font-black font-condensed uppercase text-foreground flex items-center gap-2">
                     {currentStudent.name}
                     {currentStudent.hasActivePack && (
-                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      <span className="text-[10px] uppercase font-condensed font-bold px-2 py-0.5 rounded bg-accent/20 text-accent-text border border-accent/40">
                         Pack Activo
                       </span>
                     )}
                   </h3>
-                  <p className="text-xs text-white/50 font-mono">
+                  <p className="text-xs text-muted font-mono">
                     WhatsApp: {currentStudent.phone} • Última sesión: {currentStudent.lastDate}
                   </p>
                 </div>
@@ -269,9 +269,9 @@ export function AlumnosCrmTab({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowPrintModal(true)}
-                    className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-xs text-white/80 flex items-center gap-1.5 transition-all"
+                    className="px-3.5 py-1.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-xs font-condensed font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5 transition-all"
                   >
-                    <svg className="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-3.5 h-3.5 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                     Ficha PDF
@@ -286,7 +286,7 @@ export function AlumnosCrmTab({
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all"
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all"
                     >
                       Reactivar WA
                     </a>
@@ -296,7 +296,7 @@ export function AlumnosCrmTab({
 
               {/* Motivo de consulta & Diagnóstico */}
               <div className="space-y-2">
-                <label className="block text-xs font-mono uppercase tracking-wider text-amber-400 font-semibold">
+                <label className="block text-xs font-condensed uppercase tracking-wider text-accent-text font-bold">
                   Motivo de Consulta / Condición Biomecánica
                 </label>
                 <input
@@ -304,20 +304,20 @@ export function AlumnosCrmTab({
                   value={currentProfile.conditionReason || ""}
                   onChange={(e) => handleUpdateProfileField("conditionReason", e.target.value)}
                   placeholder="Ej. Lumbalgia L5-S1, Hernia discal, Rigidez de cadera..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs sm:text-sm text-white placeholder-white/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-xs sm:text-sm text-foreground placeholder-muted/40 focus:border-accent focus:outline-none font-sans"
                 />
               </div>
 
               {/* Escala EVA Dolor (Inicial vs Actual) */}
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-4">
-                <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-white/80">
+              <div className="p-4 rounded-xl bg-surface-raised border border-border space-y-4">
+                <h4 className="text-xs font-condensed font-bold uppercase tracking-wider text-foreground">
                   Escala de Dolor (EVA 0 a 10)
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-white/60">Dolor Inicial (Primera Sesión):</span>
-                      <span className="font-mono font-bold text-rose-400">
+                    <div className="flex justify-between text-xs mb-1 font-condensed">
+                      <span className="text-muted">Dolor Inicial (Primera Sesión):</span>
+                      <span className="font-bold text-accent-text">
                         {currentProfile.painLevelInitial ?? 5}/10
                       </span>
                     </div>
@@ -329,14 +329,14 @@ export function AlumnosCrmTab({
                       onChange={(e) =>
                         handleUpdateProfileField("painLevelInitial", Number(e.target.value))
                       }
-                      className="w-full accent-rose-500"
+                      className="w-full accent-accent"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-white/60">Dolor Actual:</span>
-                      <span className="font-mono font-bold text-emerald-400">
+                    <div className="flex justify-between text-xs mb-1 font-condensed">
+                      <span className="text-muted">Dolor Actual:</span>
+                      <span className="font-bold text-emerald-400">
                         {currentProfile.painLevelCurrent ?? 3}/10
                       </span>
                     </div>
@@ -364,50 +364,50 @@ export function AlumnosCrmTab({
               {/* Bitácora de Sesión: Registrar Nueva Entrada */}
               <form
                 onSubmit={handleAddEvolutionLog}
-                className="p-4 rounded-xl bg-amber-500/[0.03] border border-amber-500/20 space-y-3"
+                className="p-4 rounded-xl bg-surface-raised border border-accent/30 space-y-3"
               >
-                <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-300">
+                <h4 className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
                   + Registrar Evolución de Sesión
                 </h4>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <div>
-                    <label className="block text-[10px] text-white/50 mb-0.5">Fecha</label>
+                    <label className="block text-[10px] font-condensed uppercase tracking-wider text-muted mb-0.5">Fecha</label>
                     <input
                       type="date"
                       value={newLogDate}
                       onChange={(e) => setNewLogDate(e.target.value)}
-                      className="w-full px-2 py-1 rounded bg-black/40 border border-white/10 text-xs font-mono text-white"
+                      className="w-full px-2 py-1 rounded bg-surface border border-border text-xs font-mono text-foreground"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-white/50 mb-0.5">Dolor Pre (0-10)</label>
+                    <label className="block text-[10px] font-condensed uppercase tracking-wider text-muted mb-0.5">Dolor Pre (0-10)</label>
                     <input
                       type="number"
                       min={0}
                       max={10}
                       value={newLogPainBefore}
                       onChange={(e) => setNewLogPainBefore(Number(e.target.value))}
-                      className="w-full px-2 py-1 rounded bg-black/40 border border-white/10 text-xs font-mono text-rose-400"
+                      className="w-full px-2 py-1 rounded bg-surface border border-border text-xs font-mono text-accent-text font-bold"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-white/50 mb-0.5">Dolor Post (0-10)</label>
+                    <label className="block text-[10px] font-condensed uppercase tracking-wider text-muted mb-0.5">Dolor Post (0-10)</label>
                     <input
                       type="number"
                       min={0}
                       max={10}
                       value={newLogPainAfter}
                       onChange={(e) => setNewLogPainAfter(Number(e.target.value))}
-                      className="w-full px-2 py-1 rounded bg-black/40 border border-white/10 text-xs font-mono text-emerald-400"
+                      className="w-full px-2 py-1 rounded bg-surface border border-border text-xs font-mono text-emerald-400 font-bold"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-white/50 mb-0.5">Tensión</label>
+                    <label className="block text-[10px] font-condensed uppercase tracking-wider text-muted mb-0.5">Tensión</label>
                     <select
                       value={newLogTension}
                       onChange={(e) => setNewLogTension(e.target.value as any)}
-                      className="w-full px-2 py-1 rounded bg-[#18191c] border border-white/10 text-xs text-white"
+                      className="w-full px-2 py-1 rounded bg-surface border border-border text-xs font-condensed uppercase text-foreground"
                     >
                       <option value="Leve">Leve</option>
                       <option value="Moderada">Moderada</option>
@@ -423,14 +423,14 @@ export function AlumnosCrmTab({
                     value={newLogNotes}
                     onChange={(e) => setNewLogNotes(e.target.value)}
                     placeholder="Evolución fascial, ajustes de arnés, respuesta articular..."
-                    className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-xs text-foreground placeholder-muted/40 focus:outline-none focus:border-accent font-sans"
                   />
                 </div>
 
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs shadow transition-all"
+                    className="btn-shiny px-4 py-1.5 rounded-lg bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all"
                   >
                     Guardar Entrada de Sesión
                   </button>

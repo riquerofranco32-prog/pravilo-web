@@ -71,6 +71,9 @@ export interface BankConfig {
   cbu: string;
   titular: string;
   banco: string;
+  accountHolder?: string;
+  bankName?: string;
+  cuit?: string;
 }
 
 export const DEFAULT_BANK_CONFIG: BankConfig = {
@@ -78,6 +81,9 @@ export const DEFAULT_BANK_CONFIG: BankConfig = {
   cbu: "0000003100010000000000",
   titular: "Juan Ignacio Garrafa",
   banco: "Mercado Pago / Banco",
+  accountHolder: "Juan Ignacio Garrafa",
+  bankName: "Mercado Pago / Banco",
+  cuit: "20-xxxxxxxx-x",
 };
 
 export const LOCAL_STORAGE_BOOKINGS_KEY = "pravilo_bookings_data_v1";
