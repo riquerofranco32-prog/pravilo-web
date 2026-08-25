@@ -13,9 +13,7 @@ import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import GoogleReviews from "@/components/GoogleReviews";
 import FAQAccordion from "@/components/FAQAccordion";
-import BodyQuiz from "@/components/BodyQuiz";
 import GiftCardModal from "@/components/GiftCardModal";
-import BiomechanicalComparison from "@/components/BiomechanicalComparison";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import PlanPerkIcon from "@/components/BenefitIcon";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
@@ -32,7 +30,6 @@ import { PLANES_EXPERIENCIA } from "@/lib/plans";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
-  { href: "#metodologia", label: "Metodología" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#instructor", label: "Instructor" },
   { href: "#galeria", label: "Galería" },
@@ -555,120 +552,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* COMPARACIÓN BIOMECÁNICA INTERACTIVA */}
-        <BiomechanicalComparison />
-
-        {/* METODOLOGÍA: ANATOMÍA DE LOS 60 MINUTOS */}
-        <section
-          id="metodologia"
-          className="border-t border-border bg-surface px-6 py-16 md:py-20 relative overflow-hidden"
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-full max-w-4xl bg-[radial-gradient(circle,rgba(160,26,26,0.12),transparent_70%)]"
-          />
-
-          <div className="relative mx-auto max-w-6xl">
-            <RevealOnScroll className="text-center mb-10">
-              <span className="eyebrow mx-auto w-fit">
-                Metodología Paso a Paso
-              </span>
-              <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-                ¿Qué pasa en tu cuerpo durante los 60 minutos?
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-                Un circuito biomecánico secuencial diseñado para desinflamar,
-                descomprimir vértebras y reeducar tu estructura.
-              </p>
-            </RevealOnScroll>
-
-            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-              <RevealOnScroll style={{ transitionDelay: "0ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
-                      01
-                    </span>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 font-condensed text-[11px] font-bold uppercase tracking-wider text-muted">
-                      Min 00 - 15
-                    </span>
-                  </div>
-                  <h3 className="mt-5 font-condensed text-xl font-bold text-foreground">
-                    1. Evaluación & Entrada en Calor
-                  </h3>
-                  <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Lectura postural estática y dinámica, movilidad articular y
-                    preparación fascial guiada de forma 100% personalizada por
-                    Juan.
-                  </p>
-                </div>
-              </RevealOnScroll>
-
-              <RevealOnScroll style={{ transitionDelay: "100ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
-                      02
-                    </span>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 font-condensed text-[11px] font-bold uppercase tracking-wider text-muted">
-                      Min 15 - 35
-                    </span>
-                  </div>
-                  <h3 className="mt-5 font-condensed text-xl font-bold text-foreground">
-                    2. Tracción & Descompresión
-                  </h3>
-                  <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Ingreso al dispositivo PRAVILO. Suspensión suave en 4 puntos
-                    y apertura axial milimétrica liberando compresión de discos.
-                  </p>
-                </div>
-              </RevealOnScroll>
-
-              <RevealOnScroll style={{ transitionDelay: "200ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
-                      03
-                    </span>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 font-condensed text-[11px] font-bold uppercase tracking-wider text-muted">
-                      Min 35 - 50
-                    </span>
-                  </div>
-                  <h3 className="mt-5 font-condensed text-xl font-bold text-foreground">
-                    3. Expansión Fascial 3D
-                  </h3>
-                  <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Trabajo tridimensional en múltiples planos de movimiento.
-                    Ganancia de rango articular y elongación sin tensión
-                    forzada.
-                  </p>
-                </div>
-              </RevealOnScroll>
-
-              <RevealOnScroll style={{ transitionDelay: "300ms" }}>
-                <div className="h-full rounded-3xl border border-border bg-surface-raised/80 p-4 sm:p-7 shadow-lg transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(160,26,26,0.3)]">
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30 font-condensed text-base font-black text-accent-text">
-                      04
-                    </span>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 font-condensed text-[11px] font-bold uppercase tracking-wider text-muted">
-                      Min 50 - 60
-                    </span>
-                  </div>
-                  <h3 className="mt-5 font-condensed text-xl font-bold text-foreground">
-                    4. Integración & Ligereza
-                  </h3>
-                  <p className="mt-2 text-xs text-muted leading-relaxed">
-                    Descarga en piso, reseteo del sistema nervioso y asimilación
-                    postural para salir renovado, liviano y con mayor eje
-                    corporal.
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </div>
-          </div>
-        </section>
-
         {/* COMPARADOR ANTES / DESPUÉS POSTURAL */}
         <BeforeAfterSlider />
 
@@ -812,26 +695,6 @@ export default function Home() {
             </RevealOnScroll>
 
             <Gallery images={GALERIA_ACCION} />
-          </div>
-        </section>
-
-        {/* TEST INTERACTIVO */}
-        <section className="border-t border-border px-6 py-16 md:py-20 bg-surface">
-          <div className="mx-auto max-w-5xl">
-            <RevealOnScroll className="text-center mb-8">
-              <span className="eyebrow mx-auto w-fit">Evaluación Rápida</span>
-              <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-                ¿Qué experiencia es ideal para tu cuerpo?
-              </h2>
-              <p className="mx-auto mt-4 max-w-lg text-muted text-base">
-                Respondé 3 preguntas en 30 segundos y descubrí el plan que mejor
-                se adapta a tus necesidades biomecánicas.
-              </p>
-            </RevealOnScroll>
-
-            <RevealOnScroll>
-              <BodyQuiz />
-            </RevealOnScroll>
           </div>
         </section>
 
