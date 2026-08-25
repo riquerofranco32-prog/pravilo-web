@@ -32,6 +32,8 @@ export default function BookingWizard({
   const [config, setConfig] = useState<ScheduleConfig>(DEFAULT_SCHEDULE_CONFIG);
   const [mounted, setMounted] = useState(false);
 
+  const [planPrices, setPlanPrices] = useState<{ [key: string]: string }>({});
+
   useEffect(() => {
     setMounted(true);
 
@@ -40,6 +42,16 @@ export default function BookingWizard({
     if (stored) {
       try {
         setConfig(JSON.parse(stored));
+      } catch {
+        // fallback
+      }
+    }
+
+    const savedPrices = localStorage.getItem("pravilo_plan_prices");
+    if (savedPrices) {
+      try {
+        const parsed = JSON.parse(savedPrices);
+        setPlanPrices(parsed);
       } catch {
         // fallback
       }
@@ -296,12 +308,19 @@ export default function BookingWizard({
 
                   <div className="space-y-3">
                     {PLANES.map((p) => {
+                      const displayPrice = p.title.includes("12")
+                        ? planPrices.pack12 || p.price
+                        : p.title.includes("8")
+                          ? planPrices.pack8 || p.price
+                          : planPrices.individual || p.price;
                       const isSelected = selectedPlan.title === p.title;
                       return (
                         <button
                           key={p.title}
                           type="button"
-                          onClick={() => setSelectedPlan(p)}
+                          onClick={() =>
+                            setSelectedPlan({ ...p, price: displayPrice })
+                          }
                           className={`group flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all duration-200 ${
                             isSelected
                               ? "border-accent bg-accent/15 shadow-[0_0_30px_-8px_rgba(160,26,26,0.6)] scale-[1.01]"
@@ -322,7 +341,7 @@ export default function BookingWizard({
                             <p className="mt-1 text-xs text-muted leading-relaxed">{p.desc}</p>
                           </div>
                           <span className="font-condensed text-2xl font-black text-accent-text ml-3 shrink-0">
-                            {p.price}
+                            {displayPrice}
                           </span>
                         </button>
                       );
