@@ -490,11 +490,15 @@ export default function Home() {
               </p>
 
               {/* Pull quote destacado */}
-              <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 shadow-inner relative overflow-hidden">
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-accent to-accent-glow" />
-                <p className="font-condensed text-2xl font-bold leading-snug text-foreground md:text-3xl pl-2">
-                  &ldquo;Tu fascia guarda más que tensión: guarda tu historia
-                  postural.&rdquo;
+              <div className="mt-8 relative">
+                <span
+                  aria-hidden
+                  className="absolute -top-6 -left-1 font-condensed text-7xl font-black text-accent/25 select-none"
+                >
+                  &ldquo;
+                </span>
+                <p className="font-condensed text-2xl font-bold leading-snug text-foreground md:text-3xl pl-8">
+                  Tu fascia guarda más que tensión: guarda tu historia postural.
                 </p>
               </div>
 
@@ -577,11 +581,17 @@ export default function Home() {
                   key={b.title}
                   style={{ transitionDelay: `${(i % 3) * 100}ms` }}
                 >
-                  <SpotlightCard className="group h-full rounded-3xl border border-border bg-surface-raised/60 p-4 sm:p-7 transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_12px_36px_-12px_rgba(160,26,26,0.35)]">
-                    <div className="flex h-13 w-13 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 shadow-inner group-hover:border-accent/60 transition-colors">
-                      <BenefitIcon name={b.icon} />
+                  <SpotlightCard className="group h-full rounded-2xl border-t-2 border-border/80 bg-surface-raised/40 p-4 sm:p-7 transition-all duration-300 hover:border-t-accent">
+                    <div className="flex items-baseline justify-between">
+                      <BenefitIcon
+                        name={b.icon}
+                        className="h-7 w-7 sm:h-8 sm:w-8"
+                      />
+                      <span className="font-condensed text-xs font-bold text-muted/50">
+                        0{i + 1}
+                      </span>
                     </div>
-                    <h3 className="mt-5 font-condensed text-xl font-bold text-foreground group-hover:text-accent-text transition-colors">
+                    <h3 className="mt-4 font-condensed text-xl font-bold text-foreground group-hover:text-accent-text transition-colors">
                       {b.title}
                     </h3>
                     <p className="mt-2 text-xs text-muted leading-relaxed">
@@ -876,16 +886,9 @@ export default function Home() {
         {/* MARQUEE DE CONFIANZA */}
         <div className="border-t border-border bg-surface py-10">
           <div className="mx-auto max-w-6xl px-6">
-            <RevealOnScroll className="space-y-3">
+            <RevealOnScroll>
               <Marquee
                 variant="cards"
-                items={TRUST_CARDS.map((card) => (
-                  <TrustCard key={card.title} {...card} />
-                ))}
-              />
-              <Marquee
-                variant="cards"
-                reverse
                 items={TRUST_CARDS.map((card) => (
                   <TrustCard key={card.title} {...card} />
                 ))}
@@ -1052,12 +1055,6 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
             <div className="absolute inset-0 bg-accent/15" />
           </div>
-
-          {/* Glow */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 left-1/2 h-[650px] w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/30 blur-[150px]"
-          />
 
           <RevealOnScroll className="relative max-w-3xl mx-auto">
             <span className="eyebrow mx-auto w-fit">Comenzá hoy</span>
