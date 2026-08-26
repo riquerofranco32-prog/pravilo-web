@@ -45,6 +45,26 @@ const NAV = [
 
 const GALERIA_ACCION = [
   {
+    src: "/images/pravilo-practica-alumna-suspension.jpg",
+    alt: "Alumna en suspensión total y extensión miofascial en PRAVILO",
+  },
+  {
+    src: "/images/pravilo-practica-traccion-horizontal.jpg",
+    alt: "Descompresión y tracción prona frente al cartel oficial",
+  },
+  {
+    src: "/images/pravilo-practica-plancha-lateral.jpg",
+    alt: "Trabajo de estabilidad, fuerza y control articular en suspensión",
+  },
+  {
+    src: "/images/pravilo-practica-traccion-vertical.jpg",
+    alt: "Elongación axial y apertura de hombros en el sistema de poleas",
+  },
+  {
+    src: "/images/pravilo-practica-descompresion-zenital.jpg",
+    alt: "Alineación y tracción progresiva en 4 puntos desde ángulo cenital",
+  },
+  {
     src: "/images/espacio-completo.jpg",
     alt: "Vista panorámica del estudio PRAVILO ARG y estructura central",
   },
@@ -61,24 +81,8 @@ const GALERIA_ACCION = [
     alt: "Sesión de suspensión con iluminación neón en el estudio",
   },
   {
-    src: "/images/pravilo-estudio-completo.jpg",
-    alt: "Vista completa del estudio PRAVILO ARG",
-  },
-  {
     src: "/images/pravilo-mirror-suspension.jpg",
     alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
-  },
-  {
-    src: "/images/foto-img-3400.jpg",
-    alt: "Ingreso y cartel iluminado de PRAVILO ARG",
-  },
-  {
-    src: "/images/pravilo-pulley-tension.jpg",
-    alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
-  },
-  {
-    src: "/images/foto-img-3449.jpg",
-    alt: "Estructura y calibración de pesos en PRAVILO",
   },
 ];
 
