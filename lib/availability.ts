@@ -1,5 +1,6 @@
 import { WHATSAPP_NUMBER } from "./constants";
 import { Plan } from "./plans";
+import type { Booking } from "./bookings";
 
 export interface DaySchedule {
   dayIndex: number; // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
@@ -128,14 +129,71 @@ export function isDateAvailable(
   return !!(daySchedule && daySchedule.enabled && daySchedule.slots.length > 0);
 }
 
+export function getBookedSlotsForDate(
+  dateStr: string,
+  bookings: Booking[] = [],
+): Set<string> {
+  const occupied = new Set<string>();
+  bookings.forEach((b) => {
+    // Si el turno está confirmado o pendiente activo (no cancelado), ocupa el horario
+    if (b.date === dateStr && b.status !== "cancelado" && b.time) {
+      occupied.add(b.time.trim());
+    }
+  });
+  return occupied;
+}
+
+export function isDateFullyBooked(
+  date: Date,
+  config: ScheduleConfig = DEFAULT_SCHEDULE_CONFIG,
+  bookings: Booking[] = [],
+): boolean {
+  if (!isDateAvailable(date, config)) return true;
+  const iso = formatDateISO(date);
+  const dayIndex = date.getDay();
+  const daySchedule = config.days.find((d) => d.dayIndex === dayIndex);
+  if (!daySchedule || !daySchedule.enabled || daySchedule.slots.length === 0) return true;
+
+  const bookedSlots = getBookedSlotsForDate(iso, bookings);
+  return daySchedule.slots.every((slot) => bookedSlots.has(slot.trim()));
+}
+
 export function getAvailableSlots(
   date: Date,
   config: ScheduleConfig = DEFAULT_SCHEDULE_CONFIG,
+  bookings: Booking[] = [],
 ): string[] {
   if (!isDateAvailable(date, config)) return [];
+  const iso = formatDateISO(date);
   const dayIndex = date.getDay();
   const daySchedule = config.days.find((d) => d.dayIndex === dayIndex);
-  return daySchedule?.slots ?? [];
+  if (!daySchedule || !daySchedule.enabled) return [];
+
+  const bookedSlots = getBookedSlotsForDate(iso, bookings);
+  return daySchedule.slots.filter((slot) => !bookedSlots.has(slot.trim()));
+}
+
+export function getAllSlotsWithStatus(
+  date: Date,
+  config: ScheduleConfig = DEFAULT_SCHEDULE_CONFIG,
+  bookings: Booking[] = [],
+): { slot: string; isAvailable: boolean; reason?: string }[] {
+  if (!isDateAvailable(date, config)) return [];
+  const iso = formatDateISO(date);
+  const dayIndex = date.getDay();
+  const daySchedule = config.days.find((d) => d.dayIndex === dayIndex);
+  if (!daySchedule || !daySchedule.enabled) return [];
+
+  const bookedSlots = getBookedSlotsForDate(iso, bookings);
+
+  return daySchedule.slots.map((slot) => {
+    const isBooked = bookedSlots.has(slot.trim());
+    return {
+      slot,
+      isAvailable: !isBooked,
+      reason: isBooked ? "Horario ya ocupado / confirmado" : undefined,
+    };
+  });
 }
 
 const DIAS_SEMANA_ES = [

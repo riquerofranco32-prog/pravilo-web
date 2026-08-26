@@ -10,7 +10,9 @@ import {
   buildWhatsAppBookingUrl,
   formatDateSpanish,
   getAvailableSlots,
+  getAllSlotsWithStatus,
   isDateAvailable,
+  isDateFullyBooked,
 } from "@/lib/availability";
 import { Booking, LOCAL_STORAGE_BOOKINGS_KEY } from "@/lib/bookings";
 
@@ -31,12 +33,37 @@ export default function BookingWizard({
   const [customerNotes, setCustomerNotes] = useState("");
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [config, setConfig] = useState<ScheduleConfig>(DEFAULT_SCHEDULE_CONFIG);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [mounted, setMounted] = useState(false);
 
   const [planPrices, setPlanPrices] = useState<{ [key: string]: string }>({});
 
+  const loadBookings = () => {
+    // 1. From localStorage
+    try {
+      const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setBookings(parsed);
+        }
+      }
+    } catch {}
+
+    // 2. From API
+    fetch("/api/admin/bookings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
+          setBookings(data.bookings);
+        }
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     setMounted(true);
+    loadBookings();
 
     // Cargar configuración de disponibilidad
     const stored = localStorage.getItem(LOCAL_STORAGE_SCHEDULE_KEY);
@@ -85,6 +112,7 @@ export default function BookingWizard({
   }, [open]);
 
   const handleOpen = () => {
+    loadBookings();
     setStep(1);
     setSelectedTime("");
     setOpen(true);
@@ -97,13 +125,25 @@ export default function BookingWizard({
   const handleConfirmAndSend = async () => {
     if (!selectedDate || !selectedTime || !customerName.trim()) return;
 
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const dateStr = `${year}-${month}-${day}`;
+
+    // Validar que el horario no esté tomado
+    const isSlotOccupied = bookings.some(
+      (b) => b.date === dateStr && b.time === selectedTime && b.status !== "cancelado",
+    );
+
+    if (isSlotOccupied) {
+      alert("El horario seleccionado ya se encuentra confirmado u ocupado. Por favor seleccioná otro horario disponible.");
+      setStep(3);
+      setSelectedTime("");
+      return;
+    }
+
     // Registrar el turno en el panel / sistema
     try {
-      const year = selectedDate.getFullYear();
-      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
-      const day = String(selectedDate.getDate()).padStart(2, "0");
-      const dateStr = `${year}-${month}-${day}`;
-
       const newBookingObj: Booking = {
         id: `bk_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
         createdAt: new Date().toISOString(),
@@ -154,11 +194,6 @@ export default function BookingWizard({
     handleClose();
 
     // Redirigir a la página de confirmación enriquecida
-    const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
-    const day = String(selectedDate.getDate()).padStart(2, "0");
-    const dateStr = `${year}-${month}-${day}`;
-
     const confirmUrl = `/reserva-confirmada?plan=${encodeURIComponent(selectedPlan.title)}&price=${encodeURIComponent(selectedPlan.price)}&date=${dateStr}&time=${encodeURIComponent(selectedTime)}&name=${encodeURIComponent(customerName)}`;
     window.location.href = confirmUrl;
   };
@@ -184,7 +219,10 @@ export default function BookingWizard({
 
     for (let d = 1; d <= totalDaysInMonth; d++) {
       const date = new Date(year, month, d);
-      const isAvailable = isDateAvailable(date, config);
+      const isDateEnabled = isDateAvailable(date, config);
+      const isFull = isDateFullyBooked(date, config, bookings);
+      const isAvailable = isDateEnabled && !isFull;
+
       const isSelected =
         selectedDate &&
         selectedDate.getFullYear() === year &&
@@ -200,6 +238,7 @@ export default function BookingWizard({
           key={`day-${d}`}
           type="button"
           disabled={!isAvailable}
+          title={isFull ? "Sin turnos disponibles (Completo)" : !isDateEnabled ? "Día no laborable / Bloqueado" : "Disponible"}
           onClick={() => {
             setSelectedDate(date);
             setSelectedTime("");
@@ -209,7 +248,9 @@ export default function BookingWizard({
               ? "bg-accent text-accent-foreground shadow-lg shadow-accent/30 scale-105"
               : isAvailable
                 ? "bg-surface text-foreground hover:border-accent hover:border hover:text-accent-text"
-                : "text-muted/30 cursor-not-allowed bg-transparent"
+                : isFull
+                  ? "text-accent-text/40 line-through cursor-not-allowed bg-surface-raised/20"
+                  : "text-muted/30 cursor-not-allowed bg-transparent"
           } ${isToday && !isSelected ? "border border-accent/40 text-accent-text" : ""}`}
         >
           {d}
@@ -258,9 +299,10 @@ export default function BookingWizard({
     "Diciembre",
   ];
 
-  const availableSlots = selectedDate
-    ? getAvailableSlots(selectedDate, config)
+  const allSlots = selectedDate
+    ? getAllSlotsWithStatus(selectedDate, config, bookings)
     : [];
+  const hasAvailableSlots = allSlots.some((s) => s.isAvailable);
 
   return (
     <>
@@ -473,15 +515,27 @@ export default function BookingWizard({
                     :
                   </p>
 
-                  {availableSlots.length === 0 ? (
+                  {!hasAvailableSlots ? (
                     <div className="my-6 rounded-2xl border border-border bg-background p-6 text-center text-sm text-muted">
-                      No hay horarios disponibles para esta fecha. Por favor
-                      elegí otro día en el calendario.
+                      No hay horarios disponibles para esta fecha (todos los turnos se encuentran ocupados o confirmados). Por favor elegí otro día en el calendario.
                     </div>
                   ) : (
                     <div className="my-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                      {availableSlots.map((slot) => {
+                      {allSlots.map(({ slot, isAvailable }) => {
                         const isSelected = selectedTime === slot;
+                        if (!isAvailable) {
+                          return (
+                            <div
+                              key={slot}
+                              className="flex h-12 flex-col items-center justify-center rounded-xl border border-border/40 bg-surface-raised/30 opacity-40 cursor-not-allowed select-none"
+                              title="Horario ocupado / confirmado por otro alumno"
+                            >
+                              <span className="font-condensed text-xs font-bold line-through text-muted">{slot} hs</span>
+                              <span className="text-[9px] font-condensed uppercase tracking-wider text-accent-text font-black">Ocupado</span>
+                            </div>
+                          );
+                        }
+
                         return (
                           <button
                             key={slot}
