@@ -449,16 +449,6 @@ export default function Home() {
                       Sesión 1 a 1 en vivo · Plottier
                     </span>
                   </div>
-
-                  <div className="absolute bottom-4 left-4 right-4 z-10 rounded-2xl border border-white/10 bg-black/70 p-3.5 backdrop-blur-md">
-                    <p className="font-condensed text-sm font-bold text-white">
-                      Tracción axial y descompresión 3D
-                    </p>
-                    <p className="text-xs text-white/70 mt-0.5">
-                      Experimentá la ligereza en tu columna desde los primeros
-                      15 minutos.
-                    </p>
-                  </div>
                 </div>
               </RevealOnScroll>
             </div>
@@ -482,7 +472,7 @@ export default function Home() {
             <RevealOnScroll>
               <span className="eyebrow">¿Qué es el método?</span>
               <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-                Movilidad, tracción axial y memoria del cuerpo
+                El método eslavo de descompresión y alineación
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted">
                 PRAVILO es un método ancestral eslavo de entrenamiento y
