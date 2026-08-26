@@ -10,6 +10,11 @@ interface QuestionOption {
   label: string;
   desc: string;
   icon: string;
+  iconBg?: string;
+  iconBorder?: string;
+  iconColor?: string;
+  borderHover?: string;
+  glow?: string;
 }
 
 const ZONES: QuestionOption[] = [
@@ -18,24 +23,44 @@ const ZONES: QuestionOption[] = [
     label: "Zona Lumbar & Ciático",
     desc: "Molestias al estar sentado, pinzamiento, hernia o sobrecarga lumbopélvica.",
     icon: "columna",
+    iconBg: "bg-rose-500/15",
+    iconBorder: "border-rose-500/30",
+    iconColor: "text-rose-400",
+    borderHover: "hover:border-rose-500/50",
+    glow: "shadow-rose-500/10",
   },
   {
     id: "cervical",
     label: "Cuello, Cervical & Hombros",
     desc: "Tensión por pantallas, contracturas trapeciales o bruxismo.",
     icon: "cervical",
+    iconBg: "bg-amber-500/15",
+    iconBorder: "border-amber-500/30",
+    iconColor: "text-amber-400",
+    borderHover: "hover:border-amber-500/50",
+    glow: "shadow-amber-500/10",
   },
   {
     id: "deporte",
     label: "Rendimiento Deportivo & Fuerza",
     desc: "Crossfit, running, ciclismo: ganar rango articular y acelerar recuperación.",
     icon: "deporte",
+    iconBg: "bg-yellow-500/15",
+    iconBorder: "border-yellow-500/30",
+    iconColor: "text-yellow-400",
+    borderHover: "hover:border-yellow-500/50",
+    glow: "shadow-yellow-500/10",
   },
   {
     id: "integral",
     label: "Descompresión Integral & Postura",
     desc: "Sensación de compresión corporal, estrés acumulado y acortamiento general.",
     icon: "integral",
+    iconBg: "bg-emerald-500/15",
+    iconBorder: "border-emerald-500/30",
+    iconColor: "text-emerald-400",
+    borderHover: "hover:border-emerald-500/50",
+    glow: "shadow-emerald-500/10",
   },
 ];
 
@@ -179,14 +204,14 @@ export function PosturalDiagnosticQuiz() {
                           setSelectedFreq(null);
                         }
                       }}
-                      className={`p-5 rounded-2xl border text-left transition-all ${
+                      className={`p-5 rounded-2xl border text-left transition-all group ${
                         isSelected
-                          ? "bg-accent/15 border-accent shadow-lg shadow-accent/10"
-                          : "bg-surface border-border hover:border-border-highlight hover:bg-surface-raised"
+                          ? `${zone.iconBg || "bg-accent/15"} ${zone.iconBorder || "border-accent"} shadow-lg ${zone.glow || "shadow-accent/10"}`
+                          : `bg-surface border-border ${zone.borderHover || "hover:border-border-highlight"} hover:bg-surface-raised`
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent-text shrink-0">
+                        <div className={`w-10 h-10 rounded-xl ${zone.iconBg || "bg-accent/10"} border ${zone.iconBorder || "border-accent/20"} ${zone.iconColor || "text-accent-text"} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}>
                           <BenefitIcon name={zone.icon} className="w-5 h-5" />
                         </div>
                         <h4 className="font-condensed font-bold text-base uppercase tracking-wide text-foreground">
