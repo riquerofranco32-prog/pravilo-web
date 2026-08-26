@@ -164,7 +164,18 @@ export default function BookingWizard({
       try {
         const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
         const list = stored ? JSON.parse(stored) : [];
-        localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify([newBookingObj, ...list]));
+        const updatedList = [newBookingObj, ...list];
+        localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(updatedList));
+        localStorage.setItem("pravilo_last_sync_timestamp", String(Date.now()));
+      } catch {}
+
+      // Broadcast instantáneo a otras pestañas (Panel Admin)
+      try {
+        if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+          const bc = new BroadcastChannel("pravilo_sync_channel");
+          bc.postMessage({ type: "NEW_BOOKING", booking: newBookingObj });
+          setTimeout(() => bc.close(), 1000);
+        }
       } catch {}
 
       // Save to API

@@ -93,6 +93,16 @@ export default function AdminPage() {
 
   // Bookings State
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const knownBookingIdsRef = useRef<Set<string>>(new Set());
+  const isInitialLoadRef = useRef(true);
+
+  // Live Toast Notification State
+  const [liveNotification, setLiveNotification] = useState<{
+    id: string;
+    title: string;
+    subtitle: string;
+    time: string;
+  } | null>(null);
 
   // Audio & Notification State
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -100,13 +110,16 @@ export default function AdminPage() {
 
   const playChimeSound = () => {
     try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
       const ctx = new AudioCtx();
       const osc1 = ctx.createOscillator();
       const gain1 = ctx.createGain();
       osc1.type = "sine";
       osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-      gain1.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain1.gain.setValueAtTime(0.15, ctx.currentTime);
       gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
       osc1.connect(gain1);
       gain1.connect(ctx.destination);
@@ -117,12 +130,49 @@ export default function AdminPage() {
       const gain2 = ctx.createGain();
       osc2.type = "sine";
       osc2.frequency.setValueAtTime(880.0, ctx.currentTime + 0.15); // A5
-      gain2.gain.setValueAtTime(0.18, ctx.currentTime + 0.15);
+      gain2.gain.setValueAtTime(0.22, ctx.currentTime + 0.15);
       gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
       osc2.connect(gain2);
       gain2.connect(ctx.destination);
       osc2.start(ctx.currentTime + 0.15);
       osc2.stop(ctx.currentTime + 1.2);
+    } catch {}
+  };
+
+  const notifyNewBooking = (booking: Booking) => {
+    playChimeSound();
+    setLiveNotification({
+      id: booking.id,
+      title: `⚡ ¡Nuevo Turno Registrado!`,
+      subtitle: `${booking.customerName} · ${booking.planTitle} (${booking.date} a las ${booking.time} hs)`,
+      time: new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
+    });
+
+    if (
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ) {
+      new Notification(`⚡ ¡Nuevo Turno en PRAVILO!`, {
+        body: `${booking.customerName} reservó ${booking.planTitle} para el ${booking.date} a las ${booking.time} hs.`,
+        icon: "/favicon.ico",
+      });
+    }
+
+    setTimeout(() => {
+      setLiveNotification((prev) => (prev?.id === booking.id ? null : prev));
+    }, 7000);
+  };
+
+  const broadcastBookingsUpdate = (updatedList: Booking[]) => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(updatedList));
+      localStorage.setItem("pravilo_last_sync_timestamp", String(Date.now()));
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        const bc = new BroadcastChannel("pravilo_sync_channel");
+        bc.postMessage({ type: "UPDATE_BOOKINGS", count: updatedList.length });
+        setTimeout(() => bc.close(), 500);
+      }
     } catch {}
   };
 
@@ -185,12 +235,131 @@ export default function AdminPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const fetchBookings = (isSilent = false) => {
+    fetch("/api/admin/bookings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
+          const incoming: Booking[] = data.bookings;
+
+          // Detect new bookings on live refresh
+          if (!isInitialLoadRef.current && isSilent) {
+            const newOnes = incoming.filter((b) => !knownBookingIdsRef.current.has(b.id));
+            if (newOnes.length > 0) {
+              notifyNewBooking(newOnes[0]);
+            }
+          }
+
+          // Register known ids
+          incoming.forEach((b) => knownBookingIdsRef.current.add(b.id));
+          isInitialLoadRef.current = false;
+
+          setBookings(incoming);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(incoming));
+        } else if (!isSilent) {
+          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
+                isInitialLoadRef.current = false;
+                setBookings(parsed);
+                return;
+              }
+            } catch {}
+          }
+          const samples = generateSampleBookings();
+          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
+          isInitialLoadRef.current = false;
+          setBookings(samples);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
+        }
+      })
+      .catch(() => {
+        if (!isSilent) {
+          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
+                isInitialLoadRef.current = false;
+                setBookings(parsed);
+                return;
+              }
+            } catch {}
+          }
+          const samples = generateSampleBookings();
+          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
+          isInitialLoadRef.current = false;
+          setBookings(samples);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
+        }
+      });
+  };
+
+  // Real-time synchronization (Polling 3s + Tab Focus + Storage/Broadcast Events)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    // 1. Live polling every 3 seconds
+    const pollInterval = setInterval(() => {
+      fetchBookings(true);
+    }, 3000);
+
+    // 2. Window focus & visibility listener
+    const handleFocusOrVisible = () => {
+      if (document.visibilityState === "visible") {
+        fetchBookings(true);
+      }
+    };
+    window.addEventListener("focus", handleFocusOrVisible);
+    document.addEventListener("visibilitychange", handleFocusOrVisible);
+
+    // 3. Storage event listener (sync across tabs in same browser)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === LOCAL_STORAGE_BOOKINGS_KEY || e.key === "pravilo_last_sync_timestamp") {
+        fetchBookings(true);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    // 4. BroadcastChannel listener (0ms instant cross-tab sync)
+    let bc: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        bc = new BroadcastChannel("pravilo_sync_channel");
+        bc.onmessage = (event) => {
+          if (event.data?.type === "NEW_BOOKING" || event.data?.type === "UPDATE_BOOKINGS") {
+            fetchBookings(true);
+          }
+        };
+      }
+    } catch {}
+
+    return () => {
+      clearInterval(pollInterval);
+      window.removeEventListener("focus", handleFocusOrVisible);
+      document.removeEventListener("visibilitychange", handleFocusOrVisible);
+      window.removeEventListener("storage", handleStorageChange);
+      if (bc) {
+        bc.close();
+      }
+    };
+  }, [isAuthenticated]);
+
   // Load config, bank & bookings on mount
   useEffect(() => {
     const savedPin = localStorage.getItem("pravilo_admin_auth");
     if (savedPin) {
       setPin(savedPin);
       setIsAuthenticated(true);
+    }
+
+    const savedAudio = localStorage.getItem("pravilo_audio_alerts");
+    if (savedAudio === "true") {
+      setAudioEnabled(true);
     }
 
     // Schedule Config
@@ -261,55 +430,15 @@ export default function AdminPage() {
       .catch(() => {});
 
     // Bookings
-    fetchBookings();
+    fetchBookings(false);
   }, []);
-
-  const fetchBookings = () => {
-    fetch("/api/admin/bookings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.ok && data.bookings && data.bookings.length > 0) {
-          setBookings(data.bookings);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(data.bookings));
-        } else {
-          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                setBookings(parsed);
-                return;
-              }
-            } catch {}
-          }
-          const samples = generateSampleBookings();
-          setBookings(samples);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
-        }
-      })
-      .catch(() => {
-        const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
-        if (stored) {
-          try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              setBookings(parsed);
-              return;
-            }
-          } catch {}
-        }
-        const samples = generateSampleBookings();
-        setBookings(samples);
-        localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
-      });
-  };
 
   const handleReloadSamples = () => {
     const freshBookings = generateSampleBookings();
     const freshClinical = generateSampleClinicalProfiles();
     setBookings(freshBookings);
     setClinicalProfiles(freshClinical);
-    localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(freshBookings));
+    broadcastBookingsUpdate(freshBookings);
     localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(freshClinical));
 
     fetch("/api/admin/bookings", {
@@ -348,6 +477,13 @@ export default function AdminPage() {
     id: string,
     newStatus: Booking["status"],
   ) => {
+    // Optimistic instant update
+    const updated = bookings.map((b) =>
+      b.id === id ? { ...b, status: newStatus } : b,
+    );
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
@@ -357,18 +493,22 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b)),
-      );
-    }
+    } catch {}
   };
 
   const handleUpdatePaymentStatus = async (
     id: string,
     paymentStatus: PaymentStatus,
   ) => {
+    // Optimistic instant update
+    const updated = bookings.map((b) =>
+      b.id === id ? { ...b, paymentStatus } : b,
+    );
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
@@ -378,12 +518,9 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, paymentStatus } : b)),
-      );
-    }
+    } catch {}
   };
 
   const handleSavePaymentDetail = async (
@@ -394,6 +531,13 @@ export default function AdminPage() {
       paymentMethod?: PaymentMethod;
     },
   ) => {
+    // Optimistic instant update
+    const updated = bookings.map((b) =>
+      b.id === id ? { ...b, ...updates } : b,
+    );
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
@@ -403,15 +547,19 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, ...updates } : b)),
-      );
-    }
+    } catch {}
   };
 
   const handleSaveInternalNote = async (id: string, note: string) => {
+    // Optimistic instant update
+    const updated = bookings.map((b) =>
+      b.id === id ? { ...b, internalNotes: note } : b,
+    );
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
@@ -421,12 +569,9 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, internalNotes: note } : b)),
-      );
-    }
+    } catch {}
   };
 
   const handleIncrementSession = async (
@@ -435,6 +580,15 @@ export default function AdminPage() {
     total: number = 1,
   ) => {
     const nextVal = Math.min(total, current + 1);
+    const nextStatus: Booking["status"] = nextVal === total ? "realizado" : "confirmado";
+
+    // Optimistic instant update
+    const updated: Booking[] = bookings.map((b) =>
+      b.id === id ? { ...b, sessionsCompleted: nextVal, status: nextStatus } : b,
+    );
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
@@ -442,24 +596,25 @@ export default function AdminPage() {
         body: JSON.stringify({
           id,
           sessionsCompleted: nextVal,
-          status: nextVal === total ? "realizado" : "confirmado",
+          status: nextStatus,
         }),
       });
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) =>
-        prev.map((b) =>
-          b.id === id ? { ...b, sessionsCompleted: nextVal } : b,
-        ),
-      );
-    }
+    } catch {}
   };
 
   const handleDeleteBooking = async (id: string) => {
     if (!confirm("¿Eliminar este registro de turno?")) return;
+
+    // Optimistic instant update
+    const updated = bookings.filter((b) => b.id !== id);
+    setBookings(updated);
+    broadcastBookingsUpdate(updated);
+
     try {
       const res = await fetch(`/api/admin/bookings?id=${id}`, {
         method: "DELETE",
@@ -467,10 +622,9 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       }
-    } catch {
-      setBookings((prev) => prev.filter((b) => b.id !== id));
-    }
+    } catch {}
   };
 
   const handleCreateManualBooking = async (payload: Partial<Booking>) => {
@@ -483,11 +637,12 @@ export default function AdminPage() {
       const data = await res.json();
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
+        broadcastBookingsUpdate(data.bookings);
       } else {
-        fetchBookings();
+        fetchBookings(false);
       }
     } catch {
-      fetchBookings();
+      fetchBookings(false);
     }
   };
 
@@ -816,6 +971,37 @@ export default function AdminPage() {
         bankConfig={bankConfig}
         onSavePayment={handleSavePaymentDetail}
       />
+
+      {/* Floating Live Notification Toast */}
+      {liveNotification && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md w-full animate-in fade-in slide-in-from-bottom-5 duration-300">
+          <div className="p-4 rounded-2xl bg-surface-raised/95 border-2 border-accent shadow-2xl backdrop-blur-xl flex items-start gap-3.5 shadow-accent/25">
+            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-accent-foreground font-black shrink-0 text-lg shadow-md animate-pulse">
+              ⚡
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <h4 className="font-condensed font-black text-sm text-foreground uppercase tracking-wide">
+                  {liveNotification.title}
+                </h4>
+                <span className="text-[10px] font-condensed text-muted">
+                  {liveNotification.time}
+                </span>
+              </div>
+              <p className="text-xs text-foreground/90 font-medium mt-1 truncate">
+                {liveNotification.subtitle}
+              </p>
+            </div>
+            <button
+              onClick={() => setLiveNotification(null)}
+              className="text-muted hover:text-foreground text-xs p-1 rounded-lg hover:bg-surface"
+              title="Cerrar notificación"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

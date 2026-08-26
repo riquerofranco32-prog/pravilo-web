@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "@/lib/availability";
-
-// In-memory server cache (persists while server instance is warm)
-let serverScheduleConfig: ScheduleConfig = { ...DEFAULT_SCHEDULE_CONFIG };
+import { getServerScheduleConfig, saveServerScheduleConfig } from "@/lib/serverStorage";
 
 export async function GET() {
+  const config = getServerScheduleConfig();
   return NextResponse.json({
     ok: true,
-    config: serverScheduleConfig,
+    config,
   });
 }
 
@@ -32,11 +30,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    serverScheduleConfig = config;
+    saveServerScheduleConfig(config);
 
     return NextResponse.json({
       ok: true,
-      config: serverScheduleConfig,
+      config,
     });
   } catch (err: unknown) {
     return NextResponse.json(

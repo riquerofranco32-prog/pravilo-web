@@ -149,13 +149,13 @@ export function PraviloModalitiesSlider() {
                 </p>
                 <div className="flex flex-wrap justify-start gap-2 pt-2">
                   <span className="rounded-xl border border-accent/30 bg-accent/20 px-3 py-1 text-xs text-accent-foreground">
+                    Trabajo isométrico
+                  </span>
+                  <span className="rounded-xl border border-accent/30 bg-accent/20 px-3 py-1 text-xs text-accent-foreground">
                     Fuerza y control excéntrico
                   </span>
                   <span className="rounded-xl border border-accent/30 bg-accent/20 px-3 py-1 text-xs text-accent-foreground">
-                    Rango articular dinámico
-                  </span>
-                  <span className="rounded-xl border border-accent/30 bg-accent/20 px-3 py-1 text-xs text-accent-foreground">
-                    Transferencia deportiva
+                    Movilidad activa
                   </span>
                 </div>
               </div>
@@ -186,7 +186,7 @@ export function PraviloModalitiesSlider() {
           {/* Bloque de Cierre y Filosofía */}
           <div className="mt-8 rounded-2xl border border-border bg-background/90 p-6 sm:p-8 text-center space-y-4">
             <h3 className="font-condensed text-xl sm:text-2xl font-black text-foreground">
-              Porque PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
+              PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
             </h3>
             <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted leading-relaxed">
               No necesitás ser deportista ni tener experiencia previa para

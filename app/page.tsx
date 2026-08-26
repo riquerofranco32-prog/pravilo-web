@@ -446,7 +446,7 @@ export default function Home() {
             <RevealOnScroll>
               <span className="eyebrow">¿Qué es el método?</span>
               <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-                El método eslavo de descompresión y alineación
+                El secreto milenario de descompresión y alineación
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted">
                 PRAVILO es un método ancestral eslavo de entrenamiento y

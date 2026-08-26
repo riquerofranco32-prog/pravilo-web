@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Booking, generateSampleBookings } from "@/lib/bookings";
-
-// In-memory array for server runtime, initialized with realistic sample bookings
-let bookingsStorage: Booking[] = generateSampleBookings();
+import { getServerBookings, saveServerBookings } from "@/lib/serverStorage";
 
 export async function GET() {
-  if (bookingsStorage.length === 0) {
-    bookingsStorage = generateSampleBookings();
-  }
+  const bookings = getServerBookings();
   return NextResponse.json({
     ok: true,
-    bookings: bookingsStorage,
+    bookings,
   });
 }
 
@@ -19,10 +15,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (body.resetWithSamples) {
-      bookingsStorage = generateSampleBookings();
+      const samples = generateSampleBookings();
+      saveServerBookings(samples);
       return NextResponse.json({
         ok: true,
-        bookings: bookingsStorage,
+        bookings: samples,
       });
     }
 
@@ -78,13 +75,14 @@ export async function POST(req: NextRequest) {
       status,
     };
 
-    // Prepend
-    bookingsStorage = [newBooking, ...bookingsStorage];
+    const currentBookings = getServerBookings();
+    const updatedBookings = [newBooking, ...currentBookings];
+    saveServerBookings(updatedBookings);
 
     return NextResponse.json({
       ok: true,
       booking: newBooking,
-      bookings: bookingsStorage,
+      bookings: updatedBookings,
     });
   } catch (err: unknown) {
     return NextResponse.json(
@@ -107,6 +105,7 @@ export async function PATCH(req: NextRequest) {
       tags,
       internalNotes,
       sessionsCompleted,
+      clinicalProfile,
     } = body;
 
     if (!id) {
@@ -116,7 +115,8 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    bookingsStorage = bookingsStorage.map((b) => {
+    const currentBookings = getServerBookings();
+    const updatedBookings = currentBookings.map((b) => {
       if (b.id !== id) return b;
       return {
         ...b,
@@ -128,12 +128,15 @@ export async function PATCH(req: NextRequest) {
         ...(tags !== undefined ? { tags } : {}),
         ...(internalNotes !== undefined ? { internalNotes } : {}),
         ...(sessionsCompleted !== undefined ? { sessionsCompleted } : {}),
+        ...(clinicalProfile !== undefined ? { clinicalProfile } : {}),
       };
     });
 
+    saveServerBookings(updatedBookings);
+
     return NextResponse.json({
       ok: true,
-      bookings: bookingsStorage,
+      bookings: updatedBookings,
     });
   } catch (err: unknown) {
     return NextResponse.json(
@@ -155,11 +158,13 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    bookingsStorage = bookingsStorage.filter((b) => b.id !== id);
+    const currentBookings = getServerBookings();
+    const updatedBookings = currentBookings.filter((b) => b.id !== id);
+    saveServerBookings(updatedBookings);
 
     return NextResponse.json({
       ok: true,
-      bookings: bookingsStorage,
+      bookings: updatedBookings,
     });
   } catch (err: unknown) {
     return NextResponse.json(

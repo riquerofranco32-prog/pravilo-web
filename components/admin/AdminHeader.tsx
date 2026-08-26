@@ -183,6 +183,18 @@ export function AdminHeader({
                 <span className="text-muted/70 font-sans">Plottier, NQN</span>
               </div>
             )}
+
+            {/* Live Sync Status Badge */}
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[11px] text-emerald-400 font-condensed font-bold tracking-wider"
+              title="Panel sincronizado en tiempo real (0ms / auto-refresh activo)"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="hidden sm:inline">EN VIVO</span>
+            </div>
           </div>
 
           {/* Quick Actions & Header Controls */}
