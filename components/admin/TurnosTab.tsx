@@ -298,20 +298,28 @@ export function TurnosTab({
                     <select
                       value={b.status}
                       onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2 py-1 rounded-lg border focus:outline-none ${
+                      className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-lg border focus:outline-none cursor-pointer ${
                         b.status === "confirmado"
-                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                          ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/60"
                           : b.status === "realizado"
-                            ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                            ? "bg-sky-950/90 text-sky-300 border-sky-500/60"
                             : b.status === "cancelado"
-                              ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                              : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                              ? "bg-rose-950/90 text-rose-300 border-rose-500/60"
+                              : "bg-amber-950/90 text-amber-300 border-amber-500/60"
                       }`}
                     >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="realizado">Realizado</option>
-                      <option value="cancelado">Cancelado</option>
+                      <option value="pendiente" className="bg-[#18191c] text-amber-300 font-bold py-1.5">
+                        ● Pendiente
+                      </option>
+                      <option value="confirmado" className="bg-[#18191c] text-emerald-400 font-bold py-1.5">
+                        ● Confirmado
+                      </option>
+                      <option value="realizado" className="bg-[#18191c] text-sky-400 font-bold py-1.5">
+                        ● Realizado
+                      </option>
+                      <option value="cancelado" className="bg-[#18191c] text-rose-400 font-bold py-1.5">
+                        ● Cancelado
+                      </option>
                     </select>
                   </div>
 
@@ -466,14 +474,14 @@ export function TurnosTab({
                     <div className="relative flex-1">
                       <button
                         onClick={() => setActiveWaMenuId(activeWaMenuId === b.id ? null : b.id)}
-                        className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all"
+                        className="w-full py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] border border-[#25D366]/40 text-white font-bold text-xs font-condensed uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-[#25D366]/20 transition-all"
                       >
-                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5 fill-white shrink-0" viewBox="0 0 24 24">
                           <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                         </svg>
-                        <span>WhatsApp</span>
-                        <svg className="w-3 h-3 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <span className="text-white font-bold">WhatsApp</span>
+                        <svg className="w-3 h-3 text-white ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
 
@@ -577,12 +585,12 @@ export function TurnosTab({
                     <select
                       value={b.status}
                       onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className="px-2 py-1 rounded bg-[#18191c] border border-white/[0.1] text-[11px]"
+                      className="px-2.5 py-1 rounded-lg bg-[#18191c] border border-white/20 text-xs font-condensed font-bold uppercase text-white cursor-pointer focus:outline-none"
                     >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="realizado">Realizado</option>
-                      <option value="cancelado">Cancelado</option>
+                      <option value="pendiente" className="bg-[#18191c] text-amber-300 font-bold py-1">● Pendiente</option>
+                      <option value="confirmado" className="bg-[#18191c] text-emerald-400 font-bold py-1">● Confirmado</option>
+                      <option value="realizado" className="bg-[#18191c] text-sky-400 font-bold py-1">● Realizado</option>
+                      <option value="cancelado" className="bg-[#18191c] text-rose-400 font-bold py-1">● Cancelado</option>
                     </select>
                   </td>
                   <td className="px-4 py-3">
@@ -599,9 +607,12 @@ export function TurnosTab({
                         href={buildQuickWhatsAppMessage("confirmar", b, bankConfig)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[11px] inline-block"
+                        className="px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-bold hover:bg-[#20ba59] text-[11px] font-condensed uppercase tracking-wider inline-flex items-center gap-1 shadow-sm"
                       >
-                        WA
+                        <svg className="w-3 h-3 fill-white shrink-0" viewBox="0 0 24 24">
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
+                        </svg>
+                        <span>WA</span>
                       </a>
                     )}
                     <button
