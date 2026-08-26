@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 export default function BeforeAfterSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -60,11 +61,23 @@ export default function BeforeAfterSlider() {
                 <p className="font-condensed text-lg sm:text-xl font-bold text-foreground">
                   Eje Postural Descomprimido
                 </p>
-                <ul className="text-xs text-emerald-400/90 space-y-1 font-medium">
-                  <li>✓ Columna elongada y discos hidratados</li>
-                  <li>✓ Hombros abiertos y caja torácica expandida</li>
-                  <li>✓ Caderas simétricas y sin tensión lumbar</li>
-                  <li>✓ Sensación de ligereza y altura recuperada</li>
+                <ul className="text-xs text-emerald-400/90 space-y-1.5 font-medium">
+                  <li className="flex items-center justify-end gap-1.5">
+                    <span>Columna elongada y discos hidratados</span>
+                    <BenefitIcon name="checkCircle" className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  </li>
+                  <li className="flex items-center justify-end gap-1.5">
+                    <span>Hombros abiertos y caja torácica expandida</span>
+                    <BenefitIcon name="checkCircle" className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  </li>
+                  <li className="flex items-center justify-end gap-1.5">
+                    <span>Caderas simétricas y sin tensión lumbar</span>
+                    <BenefitIcon name="checkCircle" className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  </li>
+                  <li className="flex items-center justify-end gap-1.5">
+                    <span>Sensación de ligereza y altura recuperada</span>
+                    <BenefitIcon name="checkCircle" className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  </li>
                 </ul>
               </div>
             </div>
@@ -85,11 +98,23 @@ export default function BeforeAfterSlider() {
                 <p className="font-condensed text-lg sm:text-xl font-bold text-foreground">
                   Compresión & Rigidez Acumulada
                 </p>
-                <ul className="text-xs text-amber-400/90 space-y-1 font-medium">
-                  <li>✗ Discos lumbares comprimidos por gravedad</li>
-                  <li>✗ Hombros volcados hacia adelante y cifosis</li>
-                  <li>✗ Acortamiento de psoas e isquiotibiales</li>
-                  <li>✗ Fatiga postural, contracturas y dolor ciático</li>
+                <ul className="text-xs text-amber-400/90 space-y-1.5 font-medium">
+                  <li className="flex items-center justify-start gap-1.5">
+                    <BenefitIcon name="xCircle" className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Discos lumbares comprimidos por gravedad</span>
+                  </li>
+                  <li className="flex items-center justify-start gap-1.5">
+                    <BenefitIcon name="xCircle" className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Hombros volcados hacia adelante y cifosis</span>
+                  </li>
+                  <li className="flex items-center justify-start gap-1.5">
+                    <BenefitIcon name="xCircle" className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Acortamiento de psoas e isquiotibiales</span>
+                  </li>
+                  <li className="flex items-center justify-start gap-1.5">
+                    <BenefitIcon name="xCircle" className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Fatiga postural, contracturas y dolor ciático</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -100,7 +125,7 @@ export default function BeforeAfterSlider() {
               style={{ left: `${sliderPosition}%` }}
             >
               <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border-2 border-accent bg-surface-raised text-white shadow-xl">
-                <span className="text-xs font-bold">↔</span>
+                <BenefitIcon name="dragHorizontal" className="w-4 h-4 text-white" />
               </div>
             </div>
           </div>

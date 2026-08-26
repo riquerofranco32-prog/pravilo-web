@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 interface QuestionOption {
   id: string;
@@ -16,25 +17,25 @@ const ZONES: QuestionOption[] = [
     id: "lumbar",
     label: "Zona Lumbar & Ciático",
     desc: "Molestias al estar sentado, pinzamiento, hernia o sobrecarga lumbopélvica.",
-    icon: "🦴",
+    icon: "columna",
   },
   {
     id: "cervical",
     label: "Cuello, Cervical & Hombros",
     desc: "Tensión por pantallas, contracturas trapeciales o bruxismo.",
-    icon: "🧘‍♂️",
+    icon: "cervical",
   },
   {
     id: "deporte",
     label: "Rendimiento Deportivo & Fuerza",
     desc: "Crossfit, running, ciclismo: ganar rango articular y acelerar recuperación.",
-    icon: "⚡",
+    icon: "deporte",
   },
   {
     id: "integral",
     label: "Descompresión Integral & Postura",
     desc: "Sensación de compresión corporal, estrés acumulado y acortamiento general.",
-    icon: "🌟",
+    icon: "integral",
   },
 ];
 
@@ -43,19 +44,19 @@ const FREQUENCIES: QuestionOption[] = [
     id: "leve",
     label: "Ocasional / Leve",
     desc: "Aparece después de jornadas largas o entrenamientos exigentes.",
-    icon: "🟢",
+    icon: "severityLeve",
   },
   {
     id: "frecuente",
     label: "Frecuente / Semanal",
     desc: "Se siente casi todos los días al despertar o trabajar en la oficina.",
-    icon: "🟡",
+    icon: "severityFrecuente",
   },
   {
     id: "cronico",
     label: "Constante / Crónico",
     desc: "Convivo con dolor recurrente hace más de 3 meses.",
-    icon: "🔴",
+    icon: "severityCronico",
   },
 ];
 
@@ -71,6 +72,22 @@ export function PosturalDiagnosticQuiz() {
   };
 
   const getRecommendation = () => {
+    if (selectedZone === "deporte") {
+      return {
+        plan: "Pack 8 Sesiones",
+        planPrice: "$240.000 ($30.000/sesión)",
+        badge: "Enfoque Deportivo & Alto Rendimiento",
+        title: "Protocolo de Movilidad, Fuerza & Recuperación Activa",
+        summary:
+          "Diseñado para deportistas y personas activas que buscan aumentar su rango articular, liberar fascias sobrecargadas por el entrenamiento y potenciar la transferencia de fuerza sin impacto.",
+        benefits: [
+          "Expansión del rango de movimiento y flexibilidad activa",
+          "Aceleración de la recuperación muscular pos-esfuerzo",
+          "Prevención de lesiones y optimización biomecánica",
+        ],
+      };
+    }
+
     if (selectedFreq === "cronico") {
       return {
         plan: "Pack 12 Sesiones",
@@ -128,7 +145,7 @@ export function PosturalDiagnosticQuiz() {
           ¿Qué necesita tu cuerpo hoy?
         </h2>
         <p className="mx-auto max-w-xl text-base text-muted">
-          Respondé 2 preguntas rápidas para descubrir cómo el método Pravilo puede ayudarte y cuál es el plan recomendado para tu caso.
+          Seleccioná tu objetivo o molestia para descubrir cómo el método Pravilo puede ayudarte y cuál es el plan recomendado para tu caso.
         </p>
       </RevealOnScroll>
 
@@ -156,7 +173,12 @@ export function PosturalDiagnosticQuiz() {
                     <button
                       type="button"
                       key={zone.id}
-                      onClick={() => setSelectedZone(zone.id)}
+                      onClick={() => {
+                        setSelectedZone(zone.id);
+                        if (zone.id === "deporte") {
+                          setSelectedFreq(null);
+                        }
+                      }}
                       className={`p-5 rounded-2xl border text-left transition-all ${
                         isSelected
                           ? "bg-accent/15 border-accent shadow-lg shadow-accent/10"
@@ -164,7 +186,9 @@ export function PosturalDiagnosticQuiz() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{zone.icon}</span>
+                        <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent-text shrink-0">
+                          <BenefitIcon name={zone.icon} className="w-5 h-5" />
+                        </div>
                         <h4 className="font-condensed font-bold text-base uppercase tracking-wide text-foreground">
                           {zone.label}
                         </h4>
@@ -176,8 +200,8 @@ export function PosturalDiagnosticQuiz() {
               </div>
             </div>
 
-            {/* Step 2: Frecuencia (shows once zone is selected) */}
-            {selectedZone && (
+            {/* Step 2: Frecuencia (solo si no es deporte) */}
+            {selectedZone && selectedZone !== "deporte" && (
               <div className="space-y-4 pt-6 border-t border-border/80 animate-in fade-in slide-in-from-bottom-3 duration-300">
                 <div className="flex items-center gap-2.5">
                   <span className="w-6 h-6 rounded-full bg-accent/20 text-accent-text font-condensed text-xs font-black flex items-center justify-center border border-accent/40">
@@ -202,8 +226,8 @@ export function PosturalDiagnosticQuiz() {
                             : "bg-surface border-border hover:border-border-highlight hover:bg-surface-raised"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <span>{freq.icon}</span>
+                        <div className="flex items-center gap-2.5">
+                          <BenefitIcon name={freq.icon} className="w-4 h-4 shrink-0" />
                           <h4 className="font-condensed font-bold text-sm uppercase tracking-wide text-foreground">
                             {freq.label}
                           </h4>
@@ -217,8 +241,8 @@ export function PosturalDiagnosticQuiz() {
             )}
 
             {/* Button to calculate */}
-            {selectedZone && selectedFreq && (
-              <div className="flex justify-center pt-4">
+            {selectedZone && (selectedZone === "deporte" || selectedFreq) && (
+              <div className="flex justify-center pt-4 animate-in fade-in zoom-in-95 duration-200">
                 <button
                   type="button"
                   onClick={() => setShowResult(true)}
@@ -275,7 +299,7 @@ export function PosturalDiagnosticQuiz() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-foreground">
                 {rec.benefits.map((b, i) => (
                   <div key={i} className="flex items-center gap-2.5 p-3 rounded-xl bg-surface border border-border">
-                    <span className="text-accent-text font-bold">✓</span>
+                    <BenefitIcon name="checkCircle" className="w-3.5 h-3.5 text-accent-text shrink-0" />
                     <span className="font-condensed font-medium text-xs text-foreground/90">{b}</span>
                   </div>
                 ))}

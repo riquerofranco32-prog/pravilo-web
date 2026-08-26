@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 interface BenefitCardData {
   id: string;
@@ -171,7 +172,7 @@ export function PraviloMoscowBenefitsSection() {
           </p>
 
           <div className="pt-2 inline-flex items-center gap-2 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text bg-accent/10 border border-accent/20 px-4 py-1.5 rounded-full animate-bounce">
-            <span>👇</span>
+            <BenefitIcon name="chevronDown" className="w-3.5 h-3.5" />
             <span>Tocá cada tarjeta para conocer los efectos en tu cuerpo</span>
           </div>
         </RevealOnScroll>
@@ -293,8 +294,9 @@ export function PraviloMoscowBenefitsSection() {
               </div>
 
               <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 space-y-1">
-                <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text block">
-                  🔬 Enfoque Biomecánico:
+                <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text flex items-center gap-1.5">
+                  <BenefitIcon name="microscope" className="w-3.5 h-3.5" />
+                  <span>Enfoque Biomecánico:</span>
                 </span>
                 <p className="text-xs text-muted font-sans italic">
                   {selectedBenefit.scienceNote}

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 interface ComparisonItem {
   feature: string;
@@ -192,7 +193,7 @@ export function PraviloComparisonSection() {
           <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-accent/20 border border-accent/40 flex items-center justify-center text-accent-text shrink-0">
-                <span className="text-xl">⚖️</span>
+                <BenefitIcon name="scale" className="w-6 h-6 text-accent-text" />
               </div>
               <div className="space-y-0.5">
                 <h4 className="text-base font-bold font-condensed uppercase text-foreground">
