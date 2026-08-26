@@ -10,9 +10,8 @@ interface FAQItem {
 
 const CATEGORIES = [
   { id: "todos", label: "Todas las preguntas" },
-  { id: "dolor", label: "Dolores & Hernias" },
-  { id: "sesion", label: "Primera Sesión" },
   { id: "general", label: "El Método PRAVILO" },
+  { id: "sesion", label: "Tu Sesión" },
   { id: "pagos", label: "Precios & Formas de Pago" },
 ];
 
@@ -24,28 +23,16 @@ const FAQS: FAQItem[] = [
       "PRAVILO es un método ancestral de entrenamiento y descompresión originario de la tradición eslava. Mediante un sistema específico de poleas y tracción suave en cuatro puntos (manos y pies), el cuerpo se eleva y elonga sin impacto. La sensación durante la sesión es de alivio inmediato, apertura en el pecho y caderas, y una profunda descompresión en toda la columna vertebral.",
   },
   {
-    category: "dolor",
-    question: "¿Es seguro si tengo dolor lumbar crónico, ciático o hernias de disco?",
-    answer:
-      "Sí, es uno de los mayores beneficios del método. Al generar tracción axial controlada, se crea espacio entre las vértebras, aliviando la compresión de los discos y raíces nerviosas. Las sesiones son 1 a 1 y guiadas en todo momento por Juan Garrafa, profesor de educación física y primer instructor oficial de Pravilo en Argentina, graduando la tensión milimétricamente.",
-  },
-  {
     category: "sesion",
     question: "¿Qué indumentaria y preparación necesito para asistir?",
     answer:
-      "Solo necesitás ropa deportiva cómoda (remera y calza o jogging) y una botella de agua para hidratarte. La práctica se realiza descalzo o con medias en un estudio privado, cálido y acondicionado exclusivamente para vos.",
+      "Solo necesitás ropa deportiva cómoda y una botella de agua para hidratarte. La práctica se realiza descalzo o con medias en un estudio privado, cálido y acondicionado exclusivamente para vos.",
   },
   {
-    category: "sesion",
-    question: "¿Cuánto dura cada sesión y con qué frecuencia se recomienda venir?",
-    answer:
-      "Cada sesión dura 60 minutos completos e incluye movilidad preparatoria articular, trabajo en suspensión Pravilo y descarga en piso. Para mantenimiento se recomienda 1 sesión semanal; para dolor crónico o reeducación postural profunda, 2 sesiones por semana (Pack de 8 sesiones).",
-  },
-  {
-    category: "dolor",
+    category: "general",
     question: "¿Hay límite de edad o contraindicaciones para practicarlo?",
     answer:
-      "No hay límite de edad estricto. Practican desde jóvenes deportistas hasta adultos mayores de 65+ años. En la primera sesión se realiza una evaluación biomecánica previa para conocer cualquier antecedente médico y adaptar la intensidad al 100%.",
+      "No hay límite de edad estricto. Practican desde jóvenes deportistas hasta adultos mayores. En la primera sesión se realiza una evaluación biomecánica previa para conocer cualquier antecedente médico y adaptar la intensidad al 100%.",
   },
   {
     category: "pagos",
