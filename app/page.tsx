@@ -1003,11 +1003,11 @@ export default function Home() {
                 href="https://se7endev.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface-raised hover:border-accent/60 hover:bg-surface-raised transition-all hover:scale-105"
+                className="group inline-flex items-center gap-2 transition-all opacity-80 hover:opacity-100"
                 title="Desarrollado por Se7en Studio"
               >
-                <span className="text-[11px] font-condensed uppercase tracking-wider text-muted group-hover:text-foreground">Hecho por</span>
-                <div className="relative h-5 w-24 sm:h-5.5 sm:w-28">
+                <span className="text-xs text-muted group-hover:text-foreground transition-colors">Hecho por</span>
+                <div className="relative h-5 w-24 sm:h-6 sm:w-28 transition-transform group-hover:scale-105">
                   <Image
                     src="/images/se7en-studio-logo.png"
                     alt="Se7en Studio"
