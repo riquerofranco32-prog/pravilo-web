@@ -10,6 +10,8 @@ import {
   saveServerClinicalProfiles,
   getServerGiftCards,
   saveServerGiftCards,
+  getServerGalleryImages,
+  saveServerGalleryImages,
 } from "@/lib/serverStorage";
 
 export async function GET() {
@@ -18,6 +20,7 @@ export async function GET() {
   const planPrices = getServerPlanPrices();
   const clinicalProfiles = getServerClinicalProfiles();
   const giftCards = getServerGiftCards();
+  const galleryImages = getServerGalleryImages();
 
   return NextResponse.json({
     ok: true,
@@ -26,13 +29,14 @@ export async function GET() {
     planPrices,
     clinicalProfiles,
     giftCards,
+    galleryImages,
   });
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { config, bankConfig, planPrices, clinicalProfiles, giftCards, pin } = body;
+    const { config, bankConfig, planPrices, clinicalProfiles, giftCards, galleryImages, pin } = body;
 
     // Validación básica de PIN si se requiere
     const ADMIN_PIN = process.env.ADMIN_PIN || "pravilo2026";
@@ -58,6 +62,9 @@ export async function POST(req: NextRequest) {
     if (giftCards && Array.isArray(giftCards)) {
       saveServerGiftCards(giftCards);
     }
+    if (galleryImages && Array.isArray(galleryImages)) {
+      saveServerGalleryImages(galleryImages);
+    }
 
     return NextResponse.json({
       ok: true,
@@ -66,6 +73,7 @@ export async function POST(req: NextRequest) {
       planPrices: getServerPlanPrices(),
       clinicalProfiles: getServerClinicalProfiles(),
       giftCards: getServerGiftCards(),
+      galleryImages: getServerGalleryImages(),
     });
   } catch (err: unknown) {
     return NextResponse.json(

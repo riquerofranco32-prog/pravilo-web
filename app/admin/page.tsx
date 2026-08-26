@@ -38,6 +38,8 @@ import { TarifasTab, PlanPricingConfig } from "@/components/admin/TarifasTab";
 import { GiftCardsTab } from "@/components/admin/GiftCardsTab";
 import { FidelizacionTab } from "@/components/admin/FidelizacionTab";
 import { CampanasTab } from "@/components/admin/CampanasTab";
+import { GaleriaTab } from "@/components/admin/GaleriaTab";
+import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
 
 export default function AdminPage() {
   const [pin, setPin] = useState("");
@@ -79,6 +81,7 @@ export default function AdminPage() {
     Record<string, StudentClinicalProfile>
   >({});
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(DEFAULT_GALLERY_IMAGES);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   // Price State
@@ -459,6 +462,13 @@ export default function AdminPage() {
               JSON.stringify(data.giftCards),
             );
           }
+          if (data.galleryImages && Array.isArray(data.galleryImages) && data.galleryImages.length > 0) {
+            setGalleryImages(data.galleryImages);
+            localStorage.setItem(
+              "pravilo_gallery_images",
+              JSON.stringify(data.galleryImages),
+            );
+          }
         }
       })
       .catch(() => {});
@@ -751,6 +761,22 @@ export default function AdminPage() {
     }).catch(() => {});
   };
 
+  const handleSaveGallery = async (updatedImages: GalleryImageItem[]) => {
+    setGalleryImages(updatedImages);
+    try {
+      localStorage.setItem("pravilo_gallery_images", JSON.stringify(updatedImages));
+      const res = await fetch("/api/admin/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ galleryImages: updatedImages, pin: pin || "pravilo2026" }),
+      });
+      const data = await res.json();
+      return !!data?.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -958,6 +984,14 @@ export default function AdminPage() {
         )}
 
         {activeTab === "analiticas" && <AnaliticasTab bookings={bookings} />}
+
+        {activeTab === "galeria" && (
+          <GaleriaTab
+            galleryImages={galleryImages}
+            onSaveGallery={handleSaveGallery}
+            pin={pin}
+          />
+        )}
 
         {activeTab === "tarifas" && (
           <TarifasTab

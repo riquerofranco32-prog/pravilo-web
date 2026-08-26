@@ -7,16 +7,48 @@ import RevealOnScroll from "@/components/RevealOnScroll";
 type GalleryImg = { src: string; alt: string };
 
 export default function Gallery({
-  images,
+  images: initialImages,
 }: {
   images: GalleryImg[];
   gridClassName?: string;
   aspectClassName?: string;
   isMasonry?: boolean;
 }) {
+  const [images, setImages] = useState<GalleryImg[]>(initialImages);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setImages(initialImages);
+  }, [initialImages]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("pravilo_gallery_images");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const visible = parsed.filter((img: any) => img.visible !== false);
+          if (visible.length > 0) {
+            setImages(visible);
+          }
+        }
+      } catch {}
+    }
+
+    fetch("/api/admin/config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.galleryImages && Array.isArray(data.galleryImages) && data.galleryImages.length > 0) {
+          const visible = data.galleryImages.filter((img: any) => img.visible !== false);
+          if (visible.length > 0) {
+            setImages(visible);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const close = useCallback(() => setOpenIndex(null), []);
   const prevModal = useCallback(

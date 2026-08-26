@@ -31,6 +31,8 @@ import {
   whatsappLink,
 } from "@/lib/constants";
 import { PLANES_EXPERIENCIA } from "@/lib/plans";
+import { DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
+import { getServerGalleryImages } from "@/lib/serverStorage";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
@@ -636,7 +638,14 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <Gallery images={GALERIA_ACCION} />
+            {(() => {
+              const serverGallery = getServerGalleryImages();
+              const activeGallery = (serverGallery && serverGallery.length > 0 ? serverGallery : DEFAULT_GALLERY_IMAGES)
+                .filter((img) => img.visible !== false)
+                .map((img) => ({ src: img.src, alt: img.alt }));
+
+              return <Gallery images={activeGallery} />;
+            })()}
           </div>
         </section>
 

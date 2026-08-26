@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Booking, BankConfig, DEFAULT_BANK_CONFIG, generateSampleBookings } from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
+import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "./gallery";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
@@ -290,6 +291,51 @@ export function saveServerGiftCards(cards: any[]): boolean {
     return true;
   } catch (err) {
     console.error("Error saving giftcards to file:", err);
+    return false;
+  }
+}
+
+const GALLERY_FILE = path.join(DATA_DIR, "gallery.json");
+let cachedGallery: GalleryImageItem[] | null = null;
+let isGalleryLoaded = false;
+
+export function getServerGalleryImages(): GalleryImageItem[] {
+  if (isGalleryLoaded && cachedGallery) {
+    return cachedGallery;
+  }
+
+  ensureDataDir();
+
+  try {
+    if (fs.existsSync(GALLERY_FILE)) {
+      const raw = fs.readFileSync(GALLERY_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        cachedGallery = parsed;
+        isGalleryLoaded = true;
+        return cachedGallery;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading gallery file:", err);
+  }
+
+  cachedGallery = [...DEFAULT_GALLERY_IMAGES];
+  isGalleryLoaded = true;
+  saveServerGalleryImages(cachedGallery);
+  return cachedGallery;
+}
+
+export function saveServerGalleryImages(images: GalleryImageItem[]): boolean {
+  cachedGallery = images;
+  isGalleryLoaded = true;
+  ensureDataDir();
+
+  try {
+    fs.writeFileSync(GALLERY_FILE, JSON.stringify(images, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Error saving gallery to file:", err);
     return false;
   }
 }
