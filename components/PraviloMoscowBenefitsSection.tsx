@@ -5,8 +5,6 @@ import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
 import BenefitIcon from "./BenefitIcon";
 
-export type BenefitTheme = "biomecanico" | "neon" | "titanio";
-
 interface BenefitCardData {
   id: string;
   number: string;
@@ -16,32 +14,12 @@ interface BenefitCardData {
   fullDesc: string;
   scienceNote: string;
   iconSvg: React.ReactNode;
-  themeStyles: {
-    biomecanico: {
-      iconBg: string;
-      iconBorder: string;
-      iconColor: string;
-      tagColor: string;
-      glowColor: string;
-      accentLine: string;
-    };
-    neon: {
-      iconBg: string;
-      iconBorder: string;
-      iconColor: string;
-      tagColor: string;
-      glowColor: string;
-      accentLine: string;
-    };
-    titanio: {
-      iconBg: string;
-      iconBorder: string;
-      iconColor: string;
-      tagColor: string;
-      glowColor: string;
-      accentLine: string;
-    };
-  };
+  iconBg: string;
+  iconBorder: string;
+  iconColor: string;
+  tagColor: string;
+  glowColor: string;
+  accentLine: string;
 }
 
 const BENEFICIOS_ARG: BenefitCardData[] = [
@@ -60,32 +38,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-rose-500/15",
-        iconBorder: "border-rose-500/30",
-        iconColor: "text-rose-400",
-        tagColor: "text-rose-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(244,63,94,0.35)] hover:border-rose-500/50",
-        accentLine: "from-rose-500 to-rose-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-rose-500/25 to-orange-500/25 shadow-[0_0_15px_rgba(244,63,94,0.3)]",
-        iconBorder: "border-rose-500/50",
-        iconColor: "text-rose-300",
-        tagColor: "text-rose-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(244,63,94,0.45)] hover:border-rose-400",
-        accentLine: "from-rose-500 via-orange-400 to-rose-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-rose-500/25 to-orange-500/25 shadow-[0_0_15px_rgba(244,63,94,0.3)]",
+    iconBorder: "border-rose-500/50",
+    iconColor: "text-rose-300",
+    tagColor: "text-rose-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(244,63,94,0.45)] hover:border-rose-400",
+    accentLine: "from-rose-500 via-orange-400 to-rose-500",
   },
   {
     id: "fascia",
@@ -102,32 +60,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-amber-500/15",
-        iconBorder: "border-amber-500/30",
-        iconColor: "text-amber-400",
-        tagColor: "text-amber-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(245,158,11,0.35)] hover:border-amber-500/50",
-        accentLine: "from-amber-500 to-yellow-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-amber-500/25 to-yellow-500/25 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
-        iconBorder: "border-amber-500/50",
-        iconColor: "text-amber-300",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] hover:border-amber-400",
-        accentLine: "from-amber-400 via-yellow-300 to-amber-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-amber-500/25 to-yellow-500/25 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+    iconBorder: "border-amber-500/50",
+    iconColor: "text-amber-300",
+    tagColor: "text-amber-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] hover:border-amber-400",
+    accentLine: "from-amber-400 via-yellow-300 to-amber-500",
   },
   {
     id: "circulacion",
@@ -144,32 +82,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-sky-500/15",
-        iconBorder: "border-sky-500/30",
-        iconColor: "text-sky-400",
-        tagColor: "text-sky-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(14,165,233,0.35)] hover:border-sky-500/50",
-        accentLine: "from-sky-500 to-cyan-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-sky-500/25 to-blue-600/25 shadow-[0_0_15px_rgba(14,165,233,0.3)]",
-        iconBorder: "border-sky-500/50",
-        iconColor: "text-sky-300",
-        tagColor: "text-sky-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(14,165,233,0.45)] hover:border-sky-400",
-        accentLine: "from-sky-400 via-cyan-300 to-blue-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-sky-500/25 to-blue-600/25 shadow-[0_0_15px_rgba(14,165,233,0.3)]",
+    iconBorder: "border-sky-500/50",
+    iconColor: "text-sky-300",
+    tagColor: "text-sky-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(14,165,233,0.45)] hover:border-sky-400",
+    accentLine: "from-sky-400 via-cyan-300 to-blue-500",
   },
   {
     id: "nervioso",
@@ -186,32 +104,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-purple-500/15",
-        iconBorder: "border-purple-500/30",
-        iconColor: "text-purple-400",
-        tagColor: "text-purple-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(168,85,247,0.35)] hover:border-purple-500/50",
-        accentLine: "from-purple-500 to-indigo-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-purple-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
-        iconBorder: "border-purple-500/50",
-        iconColor: "text-purple-300",
-        tagColor: "text-purple-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(168,85,247,0.45)] hover:border-purple-400",
-        accentLine: "from-purple-400 via-fuchsia-300 to-indigo-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-purple-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+    iconBorder: "border-purple-500/50",
+    iconColor: "text-purple-300",
+    tagColor: "text-purple-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(168,85,247,0.45)] hover:border-purple-400",
+    accentLine: "from-purple-400 via-fuchsia-300 to-indigo-500",
   },
   {
     id: "drenaje",
@@ -228,32 +126,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-emerald-500/15",
-        iconBorder: "border-emerald-500/30",
-        iconColor: "text-emerald-400",
-        tagColor: "text-emerald-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.35)] hover:border-emerald-500/50",
-        accentLine: "from-emerald-500 to-teal-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-emerald-500/25 to-teal-500/25 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
-        iconBorder: "border-emerald-500/50",
-        iconColor: "text-emerald-300",
-        tagColor: "text-emerald-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] hover:border-emerald-400",
-        accentLine: "from-emerald-400 via-teal-300 to-emerald-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-emerald-500/25 to-teal-500/25 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+    iconBorder: "border-emerald-500/50",
+    iconColor: "text-emerald-300",
+    tagColor: "text-emerald-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] hover:border-emerald-400",
+    accentLine: "from-emerald-400 via-teal-300 to-emerald-500",
   },
   {
     id: "energia",
@@ -270,32 +148,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-yellow-500/15",
-        iconBorder: "border-yellow-500/30",
-        iconColor: "text-yellow-400",
-        tagColor: "text-yellow-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(234,179,8,0.35)] hover:border-yellow-500/50",
-        accentLine: "from-yellow-500 to-amber-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-yellow-400/25 to-amber-600/25 shadow-[0_0_15px_rgba(234,179,8,0.3)]",
-        iconBorder: "border-yellow-400/50",
-        iconColor: "text-yellow-300",
-        tagColor: "text-yellow-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(234,179,8,0.45)] hover:border-yellow-400",
-        accentLine: "from-yellow-300 via-amber-300 to-orange-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-yellow-400/25 to-amber-600/25 shadow-[0_0_15px_rgba(234,179,8,0.3)]",
+    iconBorder: "border-yellow-400/50",
+    iconColor: "text-yellow-300",
+    tagColor: "text-yellow-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(234,179,8,0.45)] hover:border-yellow-400",
+    accentLine: "from-yellow-300 via-amber-300 to-orange-500",
   },
   {
     id: "postura",
@@ -312,32 +170,12 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-blue-500/15",
-        iconBorder: "border-blue-500/30",
-        iconColor: "text-blue-400",
-        tagColor: "text-blue-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(59,130,246,0.35)] hover:border-blue-500/50",
-        accentLine: "from-blue-500 to-indigo-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-blue-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
-        iconBorder: "border-blue-500/50",
-        iconColor: "text-blue-300",
-        tagColor: "text-blue-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(59,130,246,0.45)] hover:border-blue-400",
-        accentLine: "from-blue-400 via-cyan-300 to-indigo-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-blue-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
+    iconBorder: "border-blue-500/50",
+    iconColor: "text-blue-300",
+    tagColor: "text-blue-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(59,130,246,0.45)] hover:border-blue-400",
+    accentLine: "from-blue-400 via-cyan-300 to-indigo-500",
   },
   {
     id: "resiliencia",
@@ -354,38 +192,17 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
-    themeStyles: {
-      biomecanico: {
-        iconBg: "bg-pink-500/15",
-        iconBorder: "border-pink-500/30",
-        iconColor: "text-pink-400",
-        tagColor: "text-pink-400",
-        glowColor: "hover:shadow-[0_12px_35px_-10px_rgba(236,72,153,0.35)] hover:border-pink-500/50",
-        accentLine: "from-pink-500 to-rose-400",
-      },
-      neon: {
-        iconBg: "bg-gradient-to-br from-pink-500/25 to-rose-600/25 shadow-[0_0_15px_rgba(236,72,153,0.3)]",
-        iconBorder: "border-pink-500/50",
-        iconColor: "text-pink-300",
-        tagColor: "text-pink-300",
-        glowColor: "hover:shadow-[0_0_30px_rgba(236,72,153,0.45)] hover:border-pink-400",
-        accentLine: "from-pink-400 via-rose-300 to-fuchsia-500",
-      },
-      titanio: {
-        iconBg: "bg-gradient-to-br from-amber-200/15 via-yellow-500/10 to-amber-700/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]",
-        iconBorder: "border-amber-400/30",
-        iconColor: "text-amber-200",
-        tagColor: "text-amber-300",
-        glowColor: "hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] hover:border-amber-400/60",
-        accentLine: "from-amber-300 via-yellow-200 to-amber-400",
-      },
-    },
+    iconBg: "bg-gradient-to-br from-pink-500/25 to-rose-600/25 shadow-[0_0_15px_rgba(236,72,153,0.3)]",
+    iconBorder: "border-pink-500/50",
+    iconColor: "text-pink-300",
+    tagColor: "text-pink-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(236,72,153,0.45)] hover:border-pink-400",
+    accentLine: "from-pink-400 via-rose-300 to-fuchsia-500",
   },
 ];
 
 export function PraviloMoscowBenefitsSection() {
   const [selectedBenefit, setSelectedBenefit] = useState<BenefitCardData | null>(null);
-  const [activeTheme, setActiveTheme] = useState<BenefitTheme>("biomecanico");
 
   return (
     <section id="beneficios" className="px-6 py-20 md:py-28 bg-surface relative overflow-hidden border-t border-border">
@@ -408,46 +225,6 @@ export function PraviloMoscowBenefitsSection() {
             Más que una sesión de estiramiento: una transformación biomecánica, postural y neurológica pensada para tu cuerpo.
           </p>
 
-          {/* Selector interactivo de propuestas visuales */}
-          <div className="pt-3 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs font-condensed font-bold uppercase tracking-wider text-muted mr-1">
-              Ver Propuesta:
-            </span>
-            <button
-              type="button"
-              onClick={() => setActiveTheme("biomecanico")}
-              className={`px-4 py-1.5 rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition-all duration-200 ${
-                activeTheme === "biomecanico"
-                  ? "bg-accent text-accent-foreground shadow-lg shadow-accent/25 scale-105"
-                  : "bg-surface-raised border border-border text-muted hover:text-foreground"
-              }`}
-            >
-              🎨 1. Colores Biomecánicos
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTheme("neon")}
-              className={`px-4 py-1.5 rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition-all duration-200 ${
-                activeTheme === "neon"
-                  ? "bg-gradient-to-r from-rose-500 via-amber-500 to-cyan-400 text-white font-black shadow-lg shadow-cyan-500/25 scale-105"
-                  : "bg-surface-raised border border-border text-muted hover:text-foreground"
-              }`}
-            >
-              🔮 2. Gradientes Neón Duo-Tone
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTheme("titanio")}
-              className={`px-4 py-1.5 rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition-all duration-200 ${
-                activeTheme === "titanio"
-                  ? "bg-gradient-to-r from-amber-400 to-yellow-600 text-black font-black shadow-lg shadow-amber-500/25 scale-105"
-                  : "bg-surface-raised border border-border text-muted hover:text-foreground"
-              }`}
-            >
-              👑 3. Oro Champagne Premium
-            </button>
-          </div>
-
           <div className="pt-2 inline-flex items-center gap-2 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text bg-accent/10 border border-accent/20 px-4 py-1.5 rounded-full animate-bounce">
             <BenefitIcon name="chevronDown" className="w-3.5 h-3.5" />
             <span>Tocá cada tarjeta para conocer los efectos en tu cuerpo</span>
@@ -458,7 +235,6 @@ export function PraviloMoscowBenefitsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {BENEFICIOS_ARG.map((b, i) => {
             const isSelected = selectedBenefit?.id === b.id;
-            const currentStyle = b.themeStyles[activeTheme];
 
             return (
               <RevealOnScroll
@@ -467,7 +243,7 @@ export function PraviloMoscowBenefitsSection() {
               >
                 <div
                   onClick={() => setSelectedBenefit(b)}
-                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${currentStyle.glowColor} ${
+                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${b.glowColor} ${
                     isSelected
                       ? "bg-surface-raised border-accent shadow-xl shadow-accent/20 ring-1 ring-accent scale-[1.02]"
                       : "bg-surface-raised/60 border-border hover:bg-surface-raised hover:scale-[1.02]"
@@ -475,14 +251,14 @@ export function PraviloMoscowBenefitsSection() {
                 >
                   {/* Subtle top accent line */}
                   <div
-                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${currentStyle.accentLine} opacity-0 group-hover:opacity-100 transition-opacity`}
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${b.accentLine} opacity-0 group-hover:opacity-100 transition-opacity`}
                   />
 
                   <div className="space-y-4">
                     {/* Icon & Number */}
                     <div className="flex items-start justify-between">
                       <div
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110 ${currentStyle.iconBg} ${currentStyle.iconBorder} ${currentStyle.iconColor}`}
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110 ${b.iconBg} ${b.iconBorder} ${b.iconColor}`}
                       >
                         {b.iconSvg}
                       </div>
@@ -494,7 +270,7 @@ export function PraviloMoscowBenefitsSection() {
                     {/* Tag & Title */}
                     <div className="space-y-1">
                       <span
-                        className={`text-[10px] font-condensed font-bold uppercase tracking-wider block transition-colors ${currentStyle.tagColor}`}
+                        className={`text-[10px] font-condensed font-bold uppercase tracking-wider block transition-colors ${b.tagColor}`}
                       >
                         {b.tag}
                       </span>
@@ -511,7 +287,7 @@ export function PraviloMoscowBenefitsSection() {
 
                   {/* Click to expand hint */}
                   <div
-                    className={`pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-condensed font-bold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform ${currentStyle.tagColor}`}
+                    className={`pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-condensed font-bold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform ${b.tagColor}`}
                   >
                     <span>Ver detalle</span>
                     <span>→</span>
@@ -544,13 +320,13 @@ export function PraviloMoscowBenefitsSection() {
             {/* Modal Header */}
             <div className="flex items-center gap-4">
               <div
-                className={`p-3.5 rounded-2xl border ${selectedBenefit.themeStyles[activeTheme].iconBg} ${selectedBenefit.themeStyles[activeTheme].iconBorder} ${selectedBenefit.themeStyles[activeTheme].iconColor} shrink-0`}
+                className={`p-3.5 rounded-2xl border ${selectedBenefit.iconBg} ${selectedBenefit.iconBorder} ${selectedBenefit.iconColor} shrink-0`}
               >
                 {selectedBenefit.iconSvg}
               </div>
               <div>
                 <span
-                  className={`text-[11px] font-condensed font-bold uppercase tracking-wider ${selectedBenefit.themeStyles[activeTheme].tagColor}`}
+                  className={`text-[11px] font-condensed font-bold uppercase tracking-wider ${selectedBenefit.tagColor}`}
                 >
                   {selectedBenefit.number} • {selectedBenefit.tag}
                 </span>
