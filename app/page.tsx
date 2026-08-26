@@ -517,8 +517,7 @@ export default function Home() {
               <p className="mt-8 text-lg leading-relaxed text-muted">
                 Detrás de cada sesión existe una metodología milimétricamente
                 adaptada a las características, lesiones previas y objetivos de
-                cada persona, siempre bajo la guía constante y personalizada de
-                Juan Garrafa.
+                cada persona, siempre bajo guía constante y personalizada.
               </p>
             </RevealOnScroll>
 
