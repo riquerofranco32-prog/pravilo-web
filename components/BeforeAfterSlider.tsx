@@ -121,7 +121,7 @@ export default function BeforeAfterSlider() {
             <div className="rounded-2xl border border-border bg-background p-4 text-xs space-y-2">
               <div className="flex items-center gap-2 text-foreground font-semibold">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                <span>Sesión 100% individual y personalizada con Juan</span>
+                <span>Sesión 100% individual y personalizada</span>
               </div>
               <p className="text-muted leading-relaxed">
                 Cada persona recibe un ajuste de tensión a medida según su

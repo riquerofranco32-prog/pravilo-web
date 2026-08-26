@@ -16,6 +16,7 @@ import GoogleReviews from "@/components/GoogleReviews";
 import FAQAccordion from "@/components/FAQAccordion";
 import GiftCardModal from "@/components/GiftCardModal";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
+import { PraviloModalitiesSlider } from "@/components/PraviloModalitiesSlider";
 import { PricingSection } from "@/components/PricingSection";
 import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
 import { PraviloMoscowBenefitsSection } from "@/components/PraviloMoscowBenefitsSection";
@@ -522,6 +523,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* DOS ORIENTACIONES: PRAVILO DEPORTIVO VS PRAVILO TERAPÉUTICO (SLIDER DESPLEGABLE) */}
+        <PraviloModalitiesSlider />
+
         {/* COMPARADOR ANTES / DESPUÉS POSTURAL */}
         <BeforeAfterSlider />
 
@@ -672,7 +676,7 @@ export default function Home() {
                   <span>Evaluación Biomecánica</span>
                 </span>
                 <p className="text-xs text-muted">
-                  Juan analiza tu postura, rango de movimiento y antecedentes
+                  Se analiza tu postura, rango de movimiento y antecedentes
                   previos antes de iniciar la tracción.
                 </p>
               </div>
