@@ -543,7 +543,7 @@ export default function Home() {
               <RevealOnScroll className="w-full max-w-xs shrink-0 md:max-w-sm">
                 <div className="relative overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_60px_-15px_rgba(160,26,26,0.4)] group">
                   <Image
-                    src="/images/foto-img-3392.jpg"
+                    src="/images/juan-garrafa-instructor.jpg"
                     alt="Juan I. Garrafa, instructor oficial de PRAVILO ARG"
                     width={760}
                     height={1010}
