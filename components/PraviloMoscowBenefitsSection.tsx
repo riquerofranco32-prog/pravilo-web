@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
-import SpotlightCard from "./SpotlightCard";
 import BookingWizard from "./BookingWizard";
 
 interface BenefitCardData {
@@ -16,17 +15,17 @@ interface BenefitCardData {
   iconSvg: React.ReactNode;
 }
 
-const BENEFICIOS_MOSCOW: BenefitCardData[] = [
+const BENEFICIOS_ARG: BenefitCardData[] = [
   {
-    id: "tension",
+    id: "descompresion",
     number: "01",
-    title: "Liberación de Tensión & Descompresión",
-    tag: "Columna & Articulaciones",
+    title: "Descompresión Vertebral y Alivio Profundo",
+    tag: "Columna & Lumbares",
     shortDesc:
-      "A través de una tracción suave en suspensión, los músculos y fascias acortadas regresan a su longitud anatómica original.",
+      "Apertura milimétrica entre vértebras que libera de inmediato la presión en discos, nervios y zona lumbar.",
     fullDesc:
-      "La vida sedentaria o los entrenamientos de alto impacto provocan contracciones musculares involuntarias crónicas. En PRAVILO, la tracción simétrica en 4 puntos genera un espacio milimétrico entre cada vértebra, aliviando la compresión de discos y nervios de manera progresiva y sin impacto articular.",
-    scienceNote: "Restaura la hidratación discal y elimina contracturas profundas de difícil acceso para masajes convencionales.",
+      "La vida cotidiana, las horas sentado frente a la pantalla o los entrenamientos de impacto comprimen progresivamente la columna. En PRAVILO, la suspensión simétrica en 4 puntos reparte la carga de manera perfecta, creando espacio entre vértebras y permitiendo que los discos respiren y se rehidraten sin impacto articular.",
+    scienceNote: "Restaura el espacio intervertebral y descomprime raíces nerviosas (como el ciático) de forma suave y controlada.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -34,15 +33,31 @@ const BENEFICIOS_MOSCOW: BenefitCardData[] = [
     ),
   },
   {
-    id: "circulacion",
+    id: "fascia",
     number: "02",
-    title: "Optimización de la Circulación Sanguínea",
-    tag: "Sistema Cardiovascular",
+    title: "Expansión Fascial y Rango Articular",
+    tag: "Movilidad 360°",
     shortDesc:
-      "Al soltar la presión muscular que comprime venas y arterias, se restablece el flujo sanguíneo y la oxigenación general.",
+      "Desbloqueo de caderas, hombros y caja torácica que ningún estiramiento convencional en el piso logra alcanzar.",
     fullDesc:
-      "Un músculo crónicamente espasmado actúa como un estrangulador sobre los vasos sanguíneos y capilares circundantes, dificultando el retorno venoso hacia el corazón. Al descomprimir las cadenas miofasciales, la sangre fluye libremente, transportando oxígeno y nutrientes a todos los tejidos y órganos.",
-    scienceNote: "Mejora el retorno venoso, oxigena el cerebro y reduce la fatiga cardíaca periférica.",
+      "La fascia es el tejido conectivo que envuelve cada músculo del cuerpo. Cuando se acorta o rigidiza por mala postura, limita todo tu movimiento. La tracción tridimensional estira estas cadenas en toda su longitud, disolviendo adherencias profundas y devolviéndote una elasticidad real.",
+    scienceNote: "Libera la tensión miofascial profunda y aumenta el rango de movimiento articular en hombros, cadera y cuello.",
+    iconSvg: (
+      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+      </svg>
+    ),
+  },
+  {
+    id: "circulacion",
+    number: "03",
+    title: "Circulación y Oxigenación Total",
+    tag: "Flujo Sanguíneo",
+    shortDesc:
+      "Al soltar los espasmos musculares que comprimen los vasos, la sangre fluye libremente oxigenando cada tejido.",
+    fullDesc:
+      "Un músculo contracturado de forma permanente actúa como un torniquete sobre las arterias y venas que lo atraviesan. Al relajar esas zonas críticas durante la tracción, se reactiva el retorno venoso hacia el corazón, facilitando la nutrición celular y una recuperación acelerada de la musculatura.",
+    scienceNote: "Optimiza la perfusión sanguínea periférica, alivia la pesadez en extremidades y nutre tejidos profundos.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -50,31 +65,15 @@ const BENEFICIOS_MOSCOW: BenefitCardData[] = [
     ),
   },
   {
-    id: "hormonal",
-    number: "03",
-    title: "Regulación & Balance Hormonal",
-    tag: "Sistema Endocrino",
-    shortDesc:
-      "A través de un estrés biomecánico positivo (eustrés), el sistema hormonal se calibra y aprende a transicionar al reposo.",
-    fullDesc:
-      "El estímulo de tracción controlada genera una respuesta endocrina adaptativa. El cuerpo aprende a gestionar la liberación de adrenalina y endorfinas durante la fase activa, para luego entrar en un estado de calma profunda donde bajan drásticamente los niveles de cortisol (la hormona del estrés crónico).",
-    scienceNote: "Promueve la secreción de endorfinas y equilibra la curva circadiana de energía y descanso.",
-    iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-  },
-  {
     id: "nervioso",
     number: "04",
-    title: "Reinicio del Sistema Nervioso",
-    tag: "Reset Neuro-Somático",
+    title: "Desactivación del Estrés y Calma Mental",
+    tag: "Sistema Nervioso",
     shortDesc:
-      "Se libera el estrés emocional y somático acumulado en el cuerpo, dando paso a una claridad mental inmediata.",
+      "El cuerpo pasa del estado de alerta y tensión constante a un modo de relajación y restauración profunda.",
     fullDesc:
-      "El cuerpo retiene tensiones y traumas posturales en forma de patrones neuromusculares defensivos. Al experimentar la suspensión total en un ambiente seguro y guiado, el sistema nervioso simpático ('lucha o huida') se apaga, dando lugar al tono parasimpático de regeneración celular y descanso profundo.",
-    scienceNote: "Estimulación del nervio vago y reprogramación propioceptiva del esquema corporal.",
+      "La mente y el cuerpo están en diálogo continuo: las preocupaciones se transforman en corazas físicas. Al flotar en el dispositivo bajo una guía segura, el sistema nervioso central apaga la respuesta de 'lucha o huida' y activa el tono parasimpático, generando una sensación inmediata de ligereza y paz.",
+    scienceNote: "Estimulación del nervio vago y reducción natural de los picos de cortisol y tensión muscular refleja.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -82,15 +81,15 @@ const BENEFICIOS_MOSCOW: BenefitCardData[] = [
     ),
   },
   {
-    id: "linfatico",
+    id: "drenaje",
     number: "05",
-    title: "Drenaje Linfático & Desinflamación",
-    tag: "Regeneración Fascial",
+    title: "Drenaje Natural y Alivio Inflamatorio",
+    tag: "Sistema Linfático",
     shortDesc:
-      "La tracción multidireccional reactiva el flujo linfático, eliminando toxinas y descongestionando articulaciones.",
+      "Movilización profunda de líquidos y toxinas estancadas mediante la tracción suave del propio cuerpo.",
     fullDesc:
-      "A diferencia de la sangre, el sistema linfático no tiene una bomba propia; depende del movimiento y de la compresión/descompresión muscular para circular. La elongación fascial 3D en Pravilo exprime y rehidrata las cápsulas articulares, facilitando el vaciado de líquidos estancados y sustancias proinflamatorias.",
-    scienceNote: "Disminuye la inflamación articular crónica y acelera la recuperación post-entrenamiento.",
+      "El sistema linfático no cuenta con un corazón propio para bombear; depende exclusivamente del movimiento y la alternancia de presiones en los tejidos. La apertura articular en PRAVILO actúa como una bomba hidráulica natural que descongestiona articulaciones cargadas y acelera la eliminación de desechos metabólicos.",
+    scienceNote: "Promueve el drenaje linfático intersticial y colabora en desinflamar zonas articulares sobrecargadas.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -100,29 +99,29 @@ const BENEFICIOS_MOSCOW: BenefitCardData[] = [
   {
     id: "energia",
     number: "06",
-    title: "Impulso de Energía & Vitalidad",
-    tag: "Rendimiento Cotidiano",
+    title: "Recuperación de Energía y Menor Fatiga",
+    tag: "Vitalidad Diaria",
     shortDesc:
-      "Al desactivar el gasto constante de energía que requiere sostener contracturas, experimentás una ligereza inmediata.",
+      "Dejar de gastar energía sosteniendo contracturas involuntarias se traduce en vitalidad instantánea al caminar.",
     fullDesc:
-      "Mantener músculos tensos las 24 horas del día consume en segundo plano una inmensa cantidad de glucosa, oxígeno y energía vital. Al liberarte de esa coraza invisible, el cuerpo recupera de golpe toda esa energía disponible para tu concentración, trabajo y disfrute diario.",
-    scienceNote: "Mayor disponibilidad de oxígeno celular y sensación de liviandad corporal al caminar.",
+      "Sostener contracturas crónicas en el cuello o la espalda es como manejar un auto con el freno de mano puesto: agota tu energía y te deja fatigado antes de tiempo. Al desbloquear esa rigidez, el cuerpo ahorra ese gasto silencioso y recuperás un impulso fresco para tu día a día.",
+    scienceNote: "Disminuye el gasto energético parasitario de las contracturas crónicas y mejora la oxigenación general.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
   },
   {
-    id: "voluntad",
+    id: "postura",
     number: "07",
-    title: "Fortalecimiento de la Voluntad & Confianza",
-    tag: "Conexión Mente-Cuerpo",
+    title: "Reeducación y Simetría Postural",
+    tag: "Alineación Corporal",
     shortDesc:
-      "Cuando a través del cuerpo comprobás que podés superar lo que creías imposible, lo trasladás a tu vida diaria.",
+      "Corrección de malos hábitos y vicios de postura adquiridos por trabajo sedentario o celular.",
     fullDesc:
-      "En el dispositivo PRAVILO, el alumno aprende a respirar con calma frente a una carga de tracción inusual, superando el reflejo inicial de miedo o duda. Esta vivencia física directa reprograma tu autopercepción de resistencia y capacidad de logro en cualquier área de tu vida.",
-    scienceNote: "Desarrollo de resiliencia somática y superación de barreras autoimpuestas.",
+      "Al suspenderte de forma simétrica, el cuerpo evidencia de inmediato qué lado está compensando de más. El sistema nervioso reprograma la alineación de hombros, columna y pelvis, ayudándote a pararte más erguido, con menos esfuerzo y mayor presencia.",
+    scienceNote: "Reprogramación propioceptiva del esquema corporal y fortalecimiento de la musculatura postural profunda.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -132,13 +131,13 @@ const BENEFICIOS_MOSCOW: BenefitCardData[] = [
   {
     id: "resiliencia",
     number: "08",
-    title: "Mayor Tolerancia al Estrés Cotidiano",
-    tag: "Autocontrol & Calma",
+    title: "Autocontrol, Respiración y Presencia",
+    tag: "Mente & Enfoque",
     shortDesc:
-      "El estrés biomecánico guiado te entrena para elegir qué sentir y cómo respirar en situaciones de alta presión.",
+      "Aprendés a respirar con calma ante desafíos físicos, ganando serenidad para momentos de alta presión.",
     fullDesc:
-      "Durante la sesión, el alumno aprende a no tensionarse reactivamente ante el estímulo, sino a relajar la musculatura mediante la exhalación consciente. Esta habilidad se automatiza en el cerebro, permitiéndote afrontar el estrés laboral y emocional con serenidad y claridad mental.",
-    scienceNote: "Mejora la variabilidad de la frecuencia cardíaca (VFC) y la autorregulación emocional.",
+      "En el aparato, la clave para relajarse no es hacer fuerza, sino exhalar y confiar en la estructura. Esta capacidad de mantener la respiración profunda y la mente serena frente a una sensación desconocida se traslada de inmediato a cómo manejás el estrés en tu vida cotidiana.",
+    scienceNote: "Mejora la variabilidad de la frecuencia cardíaca (VFC) y la respuesta adaptativa al estrés mental y laboral.",
     iconSvg: (
       <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -160,26 +159,26 @@ export function PraviloMoscowBenefitsSection() {
         <RevealOnScroll className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-raised border border-border text-accent-text text-xs font-condensed font-bold uppercase tracking-widest">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            Metodología Rusa Original
+            Impacto Integral Comprobado
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-condensed uppercase tracking-tight text-foreground">
-            ¿Por qué entrenar regularmente en el dispositivo <span className="text-accent-text">PRAVILO</span>?
+            ¿Qué experimentás al entrenar en <span className="text-accent-text">PRAVILO</span>?
           </h2>
 
           <p className="text-sm sm:text-base text-muted leading-relaxed font-sans">
-            La práctica periódica no solo alivia molestias musculares: genera una transformación biomecánica, hormonal y neurológica en todo tu organismo.
+            Más que una sesión de estiramiento: una transformación biomecánica, postural y neurológica pensada para tu cuerpo.
           </p>
 
           <div className="pt-2 inline-flex items-center gap-2 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text bg-accent/10 border border-accent/20 px-4 py-1.5 rounded-full animate-bounce">
             <span>👇</span>
-            <span>¡Hacé clic en cada tarjeta para conocer el impacto en tu cuerpo!</span>
+            <span>Tocá cada tarjeta para conocer los efectos en tu cuerpo</span>
           </div>
         </RevealOnScroll>
 
-        {/* 8 Cards Grid (Moscow style) */}
+        {/* 8 Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {BENEFICIOS_MOSCOW.map((b, i) => {
+          {BENEFICIOS_ARG.map((b, i) => {
             const isSelected = selectedBenefit?.id === b.id;
 
             return (
@@ -227,7 +226,7 @@ export function PraviloMoscowBenefitsSection() {
 
                   {/* Click to expand hint */}
                   <div className="pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-condensed font-bold uppercase tracking-wider text-accent-text group-hover:translate-x-0.5 transition-transform">
-                    <span>Saber más</span>
+                    <span>Ver detalle</span>
                     <span>→</span>
                   </div>
                 </div>
@@ -240,15 +239,15 @@ export function PraviloMoscowBenefitsSection() {
         <RevealOnScroll className="p-8 rounded-3xl bg-surface-raised border border-border flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-xl">
           <div className="space-y-1 max-w-xl">
             <h4 className="font-condensed text-xl font-black uppercase text-foreground">
-              Sentí el alivio en tu propia estructura
+              Comprobá el alivio en tu propia estructura
             </h4>
             <p className="text-xs sm:text-sm text-muted font-sans">
-              Evaluación personalizada y sesión de 60 min en el estudio de Plottier, Neuquén.
+              Evaluación personalizada y sesión guiada de 60 minutos en Plottier, Neuquén.
             </p>
           </div>
 
           <BookingWizard
-            buttonText="Reservar Sesión de Evaluación"
+            buttonText="Reservar Turno de Evaluación"
             className="btn-shiny px-8 py-3.5 rounded-2xl bg-accent text-accent-foreground font-condensed font-black uppercase tracking-wider text-sm shadow-xl shadow-accent/25 hover:scale-105 active:scale-95 transition-all shrink-0"
           />
         </RevealOnScroll>
@@ -295,7 +294,7 @@ export function PraviloMoscowBenefitsSection() {
 
               <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 space-y-1">
                 <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text block">
-                  🔬 Fundamento Biomecánico & Científico:
+                  🔬 Enfoque Biomecánico:
                 </span>
                 <p className="text-xs text-muted font-sans italic">
                   {selectedBenefit.scienceNote}
