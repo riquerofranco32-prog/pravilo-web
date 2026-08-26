@@ -12,49 +12,62 @@ export function PricingSection() {
   const [plans, setPlans] = useState<Plan[]>(PLANES_EXPERIENCIA);
 
   useEffect(() => {
+    const applyPrices = (parsed: Record<string, string | undefined>) => {
+      if (parsed.individual || parsed.pack8 || parsed.pack12) {
+        const updated = PLANES_EXPERIENCIA.map((p) => {
+          if (p.title.includes("12") && parsed.pack12) {
+            const num = parseInt(parsed.pack12.replace(/\D/g, ""), 10) || p.priceNumber;
+            return {
+              ...p,
+              price: parsed.pack12,
+              priceNumber: num,
+              desc: parsed.pack12Desc || p.desc,
+            };
+          }
+          if (p.title.includes("8") && parsed.pack8) {
+            const num = parseInt(parsed.pack8.replace(/\D/g, ""), 10) || p.priceNumber;
+            return {
+              ...p,
+              price: parsed.pack8,
+              priceNumber: num,
+              desc: parsed.pack8Desc || p.desc,
+            };
+          }
+          if (p.title.includes("Individual") && parsed.individual) {
+            const num = parseInt(parsed.individual.replace(/\D/g, ""), 10) || p.priceNumber;
+            return {
+              ...p,
+              price: parsed.individual,
+              priceNumber: num,
+              desc: parsed.individualDesc || p.desc,
+            };
+          }
+          return p;
+        });
+        setPlans(updated);
+      }
+    };
+
+    // 1. LocalStorage cache
     try {
       const stored =
         localStorage.getItem("pravilo_plan_prices") ||
         localStorage.getItem(LOCAL_STORAGE_PRICES_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.individual || parsed.pack8 || parsed.pack12) {
-          const updated = PLANES_EXPERIENCIA.map((p) => {
-            if (p.title.includes("12") && parsed.pack12) {
-              const num = parseInt(parsed.pack12.replace(/\D/g, ""), 10) || p.priceNumber;
-              return {
-                ...p,
-                price: parsed.pack12,
-                priceNumber: num,
-                desc: parsed.pack12Desc || p.desc,
-              };
-            }
-            if (p.title.includes("8") && parsed.pack8) {
-              const num = parseInt(parsed.pack8.replace(/\D/g, ""), 10) || p.priceNumber;
-              return {
-                ...p,
-                price: parsed.pack8,
-                priceNumber: num,
-                desc: parsed.pack8Desc || p.desc,
-              };
-            }
-            if (p.title.includes("Individual") && parsed.individual) {
-              const num = parseInt(parsed.individual.replace(/\D/g, ""), 10) || p.priceNumber;
-              return {
-                ...p,
-                price: parsed.individual,
-                priceNumber: num,
-                desc: parsed.individualDesc || p.desc,
-              };
-            }
-            return p;
-          });
-          setPlans(updated);
-        }
+        applyPrices(JSON.parse(stored));
       }
-    } catch {
-      // fallback
-    }
+    } catch {}
+
+    // 2. Fetch from server API
+    fetch("/api/admin/config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.ok && data.planPrices) {
+          applyPrices(data.planPrices);
+          localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (

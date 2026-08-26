@@ -88,12 +88,18 @@ export default function BookingWizard({
     fetch("/api/admin/config")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && data.config) {
-          setConfig(data.config);
-          localStorage.setItem(
-            LOCAL_STORAGE_SCHEDULE_KEY,
-            JSON.stringify(data.config),
-          );
+        if (data?.ok) {
+          if (data.config) {
+            setConfig(data.config);
+            localStorage.setItem(
+              LOCAL_STORAGE_SCHEDULE_KEY,
+              JSON.stringify(data.config),
+            );
+          }
+          if (data.planPrices) {
+            setPlanPrices(data.planPrices);
+            localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
+          }
         }
       })
       .catch(() => {});

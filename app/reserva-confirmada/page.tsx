@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { whatsappLink, LOCATION, WHATSAPP_NUMBER } from "@/lib/constants";
-import { DEFAULT_BANK_CONFIG } from "@/lib/bookings";
+import { getServerBankConfig } from "@/lib/serverStorage";
 
 export default async function ReservaConfirmada({
   searchParams,
@@ -15,6 +15,7 @@ export default async function ReservaConfirmada({
   }>;
 }) {
   const params = await searchParams;
+  const bankConfig = getServerBankConfig();
   const plan = params.plan || "1 Sesión Individual";
   const price = params.price || "$35.000";
   const date = params.date || "";
@@ -147,11 +148,11 @@ export default async function ReservaConfirmada({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
             <div className="p-2.5 rounded-xl bg-background border border-border">
               <span className="text-muted block text-[10px]">Alias Bancario:</span>
-              <span className="font-bold text-foreground select-all text-xs">{DEFAULT_BANK_CONFIG.alias}</span>
+              <span className="font-bold text-foreground select-all text-xs">{bankConfig.alias}</span>
             </div>
             <div className="p-2.5 rounded-xl bg-background border border-border">
               <span className="text-muted block text-[10px]">Titular:</span>
-              <span className="text-foreground text-xs">{DEFAULT_BANK_CONFIG.titular}</span>
+              <span className="text-foreground text-xs">{bankConfig.titular || bankConfig.accountHolder}</span>
             </div>
           </div>
 

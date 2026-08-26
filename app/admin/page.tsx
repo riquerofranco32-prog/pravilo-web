@@ -419,12 +419,46 @@ export default function AdminPage() {
     fetch("/api/admin/config")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && data.config) {
-          setConfig(data.config);
-          localStorage.setItem(
-            LOCAL_STORAGE_SCHEDULE_KEY,
-            JSON.stringify(data.config),
-          );
+        if (data?.ok) {
+          if (data.config) {
+            setConfig(data.config);
+            localStorage.setItem(
+              LOCAL_STORAGE_SCHEDULE_KEY,
+              JSON.stringify(data.config),
+            );
+          }
+          if (data.bankConfig) {
+            setBankConfig(data.bankConfig);
+            localStorage.setItem(
+              LOCAL_STORAGE_BANK_KEY,
+              JSON.stringify(data.bankConfig),
+            );
+          }
+          if (data.planPrices) {
+            setPlanPrices(data.planPrices);
+            localStorage.setItem(
+              "pravilo_plan_prices",
+              JSON.stringify(data.planPrices),
+            );
+            localStorage.setItem(
+              LOCAL_STORAGE_PRICES_KEY,
+              JSON.stringify(data.planPrices),
+            );
+          }
+          if (data.clinicalProfiles && Object.keys(data.clinicalProfiles).length > 0) {
+            setClinicalProfiles(data.clinicalProfiles);
+            localStorage.setItem(
+              LOCAL_STORAGE_CLINICAL_KEY,
+              JSON.stringify(data.clinicalProfiles),
+            );
+          }
+          if (data.giftCards && Array.isArray(data.giftCards) && data.giftCards.length > 0) {
+            setGiftCards(data.giftCards);
+            localStorage.setItem(
+              LOCAL_STORAGE_GIFTCARDS_KEY,
+              JSON.stringify(data.giftCards),
+            );
+          }
         }
       })
       .catch(() => {});
@@ -668,6 +702,11 @@ export default function AdminPage() {
   const handleSaveBankConfig = (newBank: BankConfig) => {
     setBankConfig(newBank);
     localStorage.setItem(LOCAL_STORAGE_BANK_KEY, JSON.stringify(newBank));
+    fetch("/api/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bankConfig: newBank, pin: pin || "pravilo2026" }),
+    }).catch(() => {});
     setSaveStatus("✓ Datos bancarios guardados correctamente.");
     setTimeout(() => setSaveStatus(null), 3000);
   };
@@ -682,12 +721,22 @@ export default function AdminPage() {
     };
     setClinicalProfiles(updated);
     localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(updated));
+    fetch("/api/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clinicalProfiles: updated, pin: pin || "pravilo2026" }),
+    }).catch(() => {});
   };
 
   const handleSavePrices = (newPrices: PlanPricingConfig) => {
     setPlanPrices(newPrices);
     localStorage.setItem("pravilo_plan_prices", JSON.stringify(newPrices));
     localStorage.setItem(LOCAL_STORAGE_PRICES_KEY, JSON.stringify(newPrices));
+    fetch("/api/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planPrices: newPrices, pin: pin || "pravilo2026" }),
+    }).catch(() => {});
     setSaveStatus("✓ Tarifas guardadas y publicadas correctamente.");
     setTimeout(() => setSaveStatus(null), 3000);
   };
@@ -695,6 +744,11 @@ export default function AdminPage() {
   const handleSaveGiftCards = (updatedCards: GiftCard[]) => {
     setGiftCards(updatedCards);
     localStorage.setItem(LOCAL_STORAGE_GIFTCARDS_KEY, JSON.stringify(updatedCards));
+    fetch("/api/admin/config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ giftCards: updatedCards, pin: pin || "pravilo2026" }),
+    }).catch(() => {});
   };
 
   const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {

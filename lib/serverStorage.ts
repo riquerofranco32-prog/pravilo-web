@@ -148,3 +148,148 @@ export function saveServerBankConfig(bank: BankConfig): boolean {
     return false;
   }
 }
+
+// ----------------- PLAN PRICES CONFIG -----------------
+const PRICES_FILE = path.join(DATA_DIR, "prices.json");
+export const DEFAULT_PLAN_PRICES = {
+  individual: "$35.000",
+  pack8: "$240.000",
+  pack12: "$300.000",
+  individualDesc: "Precio de lanzamiento · 60 min.",
+  pack8Desc: "$30.000 por sesión · Vigencia: 2 meses.",
+  pack12Desc: "$25.000 por sesión · Vigencia: 3 meses.",
+};
+
+let cachedPrices: Record<string, string | undefined> = { ...DEFAULT_PLAN_PRICES };
+let isPricesLoaded = false;
+
+export function getServerPlanPrices(): Record<string, string | undefined> {
+  if (isPricesLoaded) {
+    return cachedPrices;
+  }
+
+  ensureDataDir();
+
+  try {
+    if (fs.existsSync(PRICES_FILE)) {
+      const raw = fs.readFileSync(PRICES_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.individual) {
+        cachedPrices = parsed;
+        isPricesLoaded = true;
+        return cachedPrices;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading prices file:", err);
+  }
+
+  cachedPrices = { ...DEFAULT_PLAN_PRICES };
+  isPricesLoaded = true;
+  saveServerPlanPrices(cachedPrices);
+  return cachedPrices;
+}
+
+export function saveServerPlanPrices(prices: Record<string, string | undefined>): boolean {
+  cachedPrices = prices;
+  isPricesLoaded = true;
+  ensureDataDir();
+
+  try {
+    fs.writeFileSync(PRICES_FILE, JSON.stringify(prices, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Error saving prices to file:", err);
+    return false;
+  }
+}
+
+// ----------------- CLINICAL PROFILES -----------------
+const CLINICAL_FILE = path.join(DATA_DIR, "clinical.json");
+let cachedClinical: Record<string, any> = {};
+let isClinicalLoaded = false;
+
+export function getServerClinicalProfiles(): Record<string, any> {
+  if (isClinicalLoaded) {
+    return cachedClinical;
+  }
+
+  ensureDataDir();
+
+  try {
+    if (fs.existsSync(CLINICAL_FILE)) {
+      const raw = fs.readFileSync(CLINICAL_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        cachedClinical = parsed;
+        isClinicalLoaded = true;
+        return cachedClinical;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading clinical file:", err);
+  }
+
+  cachedClinical = {};
+  isClinicalLoaded = true;
+  return cachedClinical;
+}
+
+export function saveServerClinicalProfiles(profiles: Record<string, any>): boolean {
+  cachedClinical = profiles;
+  isClinicalLoaded = true;
+  ensureDataDir();
+
+  try {
+    fs.writeFileSync(CLINICAL_FILE, JSON.stringify(profiles, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Error saving clinical to file:", err);
+    return false;
+  }
+}
+
+// ----------------- GIFT CARDS -----------------
+const GIFTCARDS_FILE = path.join(DATA_DIR, "giftcards.json");
+let cachedGiftCards: any[] = [];
+let isGiftCardsLoaded = false;
+
+export function getServerGiftCards(): any[] {
+  if (isGiftCardsLoaded) {
+    return cachedGiftCards;
+  }
+
+  ensureDataDir();
+
+  try {
+    if (fs.existsSync(GIFTCARDS_FILE)) {
+      const raw = fs.readFileSync(GIFTCARDS_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        cachedGiftCards = parsed;
+        isGiftCardsLoaded = true;
+        return cachedGiftCards;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading giftcards file:", err);
+  }
+
+  cachedGiftCards = [];
+  isGiftCardsLoaded = true;
+  return cachedGiftCards;
+}
+
+export function saveServerGiftCards(cards: any[]): boolean {
+  cachedGiftCards = cards;
+  isGiftCardsLoaded = true;
+  ensureDataDir();
+
+  try {
+    fs.writeFileSync(GIFTCARDS_FILE, JSON.stringify(cards, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Error saving giftcards to file:", err);
+    return false;
+  }
+}
