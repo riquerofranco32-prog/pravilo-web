@@ -18,7 +18,6 @@ import GiftCardModal from "@/components/GiftCardModal";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import { PricingSection } from "@/components/PricingSection";
 import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
-import { PraviloComparisonSection } from "@/components/PraviloComparisonSection";
 import { PraviloMoscowBenefitsSection } from "@/components/PraviloMoscowBenefitsSection";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
@@ -662,8 +661,6 @@ export default function Home() {
         {/* AUTODIAGNÓSTICO POSTURAL INTERACTIVO */}
         <PosturalDiagnosticQuiz />
 
-        {/* COMPARADOR BIOMECÁNICO INTERACTIVO: PRAVILO VS TERAPIAS TRADICIONALES */}
-        <PraviloComparisonSection />
 
         {/* PRECIOS Y EXPERIENCIAS (DINÁMICOS Y SINCRONIZADOS CON ADMIN) */}
         <PricingSection />
