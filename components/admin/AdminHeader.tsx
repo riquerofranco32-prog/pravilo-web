@@ -54,6 +54,26 @@ export function AdminHeader({
   onImportBackup,
   fileInputRef,
 }: AdminHeaderProps) {
+  const tabsScrollRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        container.scrollBy({
+          left: e.deltaY * 1.3,
+          behavior: "auto",
+        });
+      }
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, []);
+
   const tabs = [
     {
       id: "turnos",
@@ -320,7 +340,10 @@ export function AdminHeader({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2 border-t border-border">
+        <div
+          ref={tabsScrollRef}
+          className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2 border-t border-border"
+        >
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (

@@ -66,8 +66,22 @@ export default function Gallery({
       }
     };
 
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        container.scrollBy({
+          left: e.deltaY * 1.4,
+          behavior: "auto",
+        });
+      }
+    };
+
     container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("wheel", handleWheel);
+    };
   }, [currentIndex, images.length]);
 
   useEffect(() => {
