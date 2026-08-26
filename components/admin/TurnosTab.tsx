@@ -184,10 +184,13 @@ export function TurnosTab({
             {onReloadSamples && (
               <button
                 onClick={onReloadSamples}
-                className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wider text-accent-text transition-all flex items-center gap-1"
+                className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wider text-accent-text transition-all flex items-center gap-1.5"
                 title="Cargar o actualizar turnos realistas de muestra"
               >
-                <span>✨</span> Cargar Turnos
+                <svg className="w-3.5 h-3.5 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+                <span>Cargar Turnos</span>
               </button>
             )}
           </div>
@@ -242,9 +245,12 @@ export function TurnosTab({
             <div className="pt-2">
               <button
                 onClick={onReloadSamples}
-                className="btn-shiny px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all"
+                className="btn-shiny px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all inline-flex items-center gap-2"
               >
-                ✨ Cargar Turnos de Prueba / Nuevos Turnos
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+                <span>Cargar Turnos de Prueba / Nuevos Turnos</span>
               </button>
             </div>
           )}
