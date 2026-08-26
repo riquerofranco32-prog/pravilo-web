@@ -21,6 +21,7 @@ interface TurnosTabProps {
   onDeleteBooking: (id: string) => void;
   onOpenReceiptModal: (booking: Booking) => void;
   onOpenStudentCrm: (phone: string, name: string) => void;
+  onReloadSamples?: () => void;
 }
 
 export function TurnosTab({
@@ -33,6 +34,7 @@ export function TurnosTab({
   onDeleteBooking,
   onOpenReceiptModal,
   onOpenStudentCrm,
+  onReloadSamples,
 }: TurnosTabProps) {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [searchQuery, setSearchQuery] = useState("");
@@ -178,6 +180,16 @@ export function TurnosTab({
                 {f.label}
               </button>
             ))}
+
+            {onReloadSamples && (
+              <button
+                onClick={onReloadSamples}
+                className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wider text-accent-text transition-all flex items-center gap-1"
+                title="Cargar o actualizar turnos realistas de muestra"
+              >
+                <span>✨</span> Cargar Turnos
+              </button>
+            )}
           </div>
 
           {/* Status & Payment Selectors */}
@@ -216,14 +228,26 @@ export function TurnosTab({
 
       {/* Bookings View: Cards or Table */}
       {filteredBookings.length === 0 ? (
-        <div className="text-center py-16 p-8 rounded-2xl bg-surface border border-dashed border-border space-y-3">
+        <div className="text-center py-16 p-8 rounded-2xl bg-surface border border-dashed border-border space-y-4">
           <div className="w-12 h-12 rounded-full bg-surface-raised mx-auto flex items-center justify-center text-muted">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <p className="text-sm font-condensed font-bold uppercase tracking-wider text-foreground">No se encontraron turnos con los filtros actuales.</p>
-          <p className="text-xs text-muted">Probá limpiando la búsqueda o cambiando el rango de fechas.</p>
+          <div>
+            <p className="text-base font-condensed font-bold uppercase tracking-wider text-foreground">No se encontraron turnos con los filtros actuales.</p>
+            <p className="text-xs text-muted font-sans mt-1">Podés cargar turnos de prueba realistas o crear un turno nuevo manualmente.</p>
+          </div>
+          {onReloadSamples && (
+            <div className="pt-2">
+              <button
+                onClick={onReloadSamples}
+                className="btn-shiny px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all"
+              >
+                ✨ Cargar Turnos de Prueba / Nuevos Turnos
+              </button>
+            </div>
+          )}
         </div>
       ) : viewMode === "cards" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

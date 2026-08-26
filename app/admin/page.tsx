@@ -13,12 +13,15 @@ import {
   DEFAULT_BANK_CONFIG,
   GiftCard,
   LOCAL_STORAGE_BANK_KEY,
+  LOCAL_STORAGE_BOOKINGS_KEY,
   LOCAL_STORAGE_CLINICAL_KEY,
   LOCAL_STORAGE_GIFTCARDS_KEY,
   LOCAL_STORAGE_PRICES_KEY,
   PaymentMethod,
   PaymentStatus,
   StudentClinicalProfile,
+  generateSampleBookings,
+  generateSampleClinicalProfiles,
 } from "@/lib/bookings";
 
 import { AdminHeader, AdminTab } from "@/components/admin/AdminHeader";
@@ -34,6 +37,7 @@ import { BancoTab } from "@/components/admin/BancoTab";
 import { TarifasTab, PlanPricingConfig } from "@/components/admin/TarifasTab";
 import { GiftCardsTab } from "@/components/admin/GiftCardsTab";
 import { FidelizacionTab } from "@/components/admin/FidelizacionTab";
+import { CampanasTab } from "@/components/admin/CampanasTab";
 
 export default function AdminPage() {
   const [pin, setPin] = useState("");
@@ -209,8 +213,23 @@ export default function AdminPage() {
     const storedClinical = localStorage.getItem(LOCAL_STORAGE_CLINICAL_KEY);
     if (storedClinical) {
       try {
-        setClinicalProfiles(JSON.parse(storedClinical));
-      } catch {}
+        const parsed = JSON.parse(storedClinical);
+        if (Object.keys(parsed).length > 0) {
+          setClinicalProfiles(parsed);
+        } else {
+          const samples = generateSampleClinicalProfiles();
+          setClinicalProfiles(samples);
+          localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
+        }
+      } catch {
+        const samples = generateSampleClinicalProfiles();
+        setClinicalProfiles(samples);
+        localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
+      }
+    } else {
+      const samples = generateSampleClinicalProfiles();
+      setClinicalProfiles(samples);
+      localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
     }
 
     // Gift Cards
@@ -249,11 +268,58 @@ export default function AdminPage() {
     fetch("/api/admin/bookings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && data.bookings) {
+        if (data?.ok && data.bookings && data.bookings.length > 0) {
           setBookings(data.bookings);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(data.bookings));
+        } else {
+          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                setBookings(parsed);
+                return;
+              }
+            } catch {}
+          }
+          const samples = generateSampleBookings();
+          setBookings(samples);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setBookings(parsed);
+              return;
+            }
+          } catch {}
+        }
+        const samples = generateSampleBookings();
+        setBookings(samples);
+        localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
+      });
+  };
+
+  const handleReloadSamples = () => {
+    const freshBookings = generateSampleBookings();
+    const freshClinical = generateSampleClinicalProfiles();
+    setBookings(freshBookings);
+    setClinicalProfiles(freshClinical);
+    localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(freshBookings));
+    localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(freshClinical));
+
+    fetch("/api/admin/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resetWithSamples: true }),
+    }).catch(() => {});
+
+    setSaveStatus("✨ ¡Turnos nuevos cargados exitosamente!");
+    setTimeout(() => setSaveStatus(null), 3000);
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -652,6 +718,7 @@ export default function AdminPage() {
               setSelectedStudentPhone(phone);
               setActiveTab("crm");
             }}
+            onReloadSamples={handleReloadSamples}
           />
         )}
 
@@ -664,6 +731,8 @@ export default function AdminPage() {
             onSelectStudentPhone={setSelectedStudentPhone}
           />
         )}
+
+        {activeTab === "campanas" && <CampanasTab bookings={bookings} />}
 
         {activeTab === "agenda" && (
           <AgendaCalendarTab

@@ -8,6 +8,7 @@ import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
 import Gallery from "@/components/Gallery";
 import BenefitIcon from "@/components/BenefitIcon";
+import PlanPerkIcon from "@/components/BenefitIcon";
 import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
@@ -15,9 +16,9 @@ import GoogleReviews from "@/components/GoogleReviews";
 import FAQAccordion from "@/components/FAQAccordion";
 import GiftCardModal from "@/components/GiftCardModal";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
-import PlanPerkIcon from "@/components/BenefitIcon";
 import { PricingSection } from "@/components/PricingSection";
 import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
+import { PraviloComparisonSection } from "@/components/PraviloComparisonSection";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -712,6 +713,9 @@ export default function Home() {
 
         {/* AUTODIAGNÓSTICO POSTURAL INTERACTIVO */}
         <PosturalDiagnosticQuiz />
+
+        {/* COMPARADOR BIOMECÁNICO INTERACTIVO: PRAVILO VS TERAPIAS TRADICIONALES */}
+        <PraviloComparisonSection />
 
         {/* PRECIOS Y EXPERIENCIAS (DINÁMICOS Y SINCRONIZADOS CON ADMIN) */}
         <PricingSection />

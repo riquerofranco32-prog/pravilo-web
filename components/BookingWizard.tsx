@@ -12,6 +12,7 @@ import {
   getAvailableSlots,
   isDateAvailable,
 } from "@/lib/availability";
+import { Booking, LOCAL_STORAGE_BOOKINGS_KEY } from "@/lib/bookings";
 
 export default function BookingWizard({
   className = "",
@@ -103,19 +104,34 @@ export default function BookingWizard({
       const day = String(selectedDate.getDate()).padStart(2, "0");
       const dateStr = `${year}-${month}-${day}`;
 
+      const newBookingObj: Booking = {
+        id: `bk_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        createdAt: new Date().toISOString(),
+        planTitle: selectedPlan.title,
+        planPrice: selectedPlan.price,
+        date: dateStr,
+        time: selectedTime,
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+        customerNotes: customerNotes.trim(),
+        status: "pendiente",
+        paymentStatus: "pendiente",
+        totalSessions: selectedPlan.title.includes("8") ? 8 : selectedPlan.title.includes("12") ? 12 : 1,
+        sessionsCompleted: 0,
+      };
+
+      // Save to localStorage immediately
+      try {
+        const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+        const list = stored ? JSON.parse(stored) : [];
+        localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify([newBookingObj, ...list]));
+      } catch {}
+
+      // Save to API
       fetch("/api/admin/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          planTitle: selectedPlan.title,
-          planPrice: selectedPlan.price,
-          date: dateStr,
-          time: selectedTime,
-          customerName,
-          customerPhone,
-          customerNotes,
-          status: "pendiente",
-        }),
+        body: JSON.stringify(newBookingObj),
       }).catch(() => {});
     } catch {
       // ignore

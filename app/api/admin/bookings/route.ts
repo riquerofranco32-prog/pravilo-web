@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Booking } from "@/lib/bookings";
+import { Booking, generateSampleBookings } from "@/lib/bookings";
 
-// In-memory array for server runtime (clean state for real bookings)
-let bookingsStorage: Booking[] = [];
+// In-memory array for server runtime, initialized with realistic sample bookings
+let bookingsStorage: Booking[] = generateSampleBookings();
 
 export async function GET() {
+  if (bookingsStorage.length === 0) {
+    bookingsStorage = generateSampleBookings();
+  }
   return NextResponse.json({
     ok: true,
     bookings: bookingsStorage,
@@ -14,6 +17,15 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    if (body.resetWithSamples) {
+      bookingsStorage = generateSampleBookings();
+      return NextResponse.json({
+        ok: true,
+        bookings: bookingsStorage,
+      });
+    }
+
     const {
       planTitle,
       planPrice,

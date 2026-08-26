@@ -26,6 +26,9 @@ export interface StudentClinicalProfile {
   emergencyContact?: { name: string; phone: string; relation?: string };
   sessionLogs?: { date: string; note: string; tensionLevel?: string }[];
   evolutionLogs?: ClinicalEvolutionLog[];
+  signatureBase64?: string;
+  signatureDate?: string;
+  hasSignedConsent?: boolean;
 }
 
 export interface Booking {
@@ -91,6 +94,287 @@ export const LOCAL_STORAGE_BANK_KEY = "pravilo_bank_config_v1";
 export const LOCAL_STORAGE_CLINICAL_KEY = "pravilo_student_clinical_v1";
 export const LOCAL_STORAGE_GIFTCARDS_KEY = "pravilo_giftcards_v1";
 export const LOCAL_STORAGE_PRICES_KEY = "pravilo_plan_prices_v1";
+
+export function generateSampleBookings(): Booking[] {
+  const formatDate = (offsetDays: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayStr = formatDate(0);
+  const tomorrowStr = formatDate(1);
+  const in2DaysStr = formatDate(2);
+  const yesterdayStr = formatDate(-1);
+  const threeDaysAgoStr = formatDate(-3);
+
+  return [
+    {
+      id: `bk_sample_1_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      customerName: "Martín Benítez",
+      customerPhone: "+54 9 299 458-1290",
+      planTitle: "Pack 8 Sesiones",
+      planPrice: "$240.000",
+      totalAmount: 240000,
+      amountPaid: 120000,
+      paymentMethod: "transferencia",
+      paymentStatus: "seña",
+      date: todayStr,
+      time: "16:30",
+      customerNotes: "Molestia lumbar L5-S1 al estar sentado mucho tiempo en oficina.",
+      internalNotes: "Comenzar con tracción suave y arnés acolchado de tobillos.",
+      tags: ["Lumbalgia", "Oficina", "Pack 8"],
+      status: "pendiente",
+      totalSessions: 8,
+      sessionsCompleted: 0,
+    },
+    {
+      id: `bk_sample_2_${Date.now()}`,
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      customerName: "Sofía Álvarez",
+      customerPhone: "+54 9 299 512-8844",
+      planTitle: "1 Sesión Individual",
+      planPrice: "$35.000",
+      totalAmount: 35000,
+      amountPaid: 35000,
+      paymentMethod: "transferencia",
+      paymentStatus: "pagado_transferencia",
+      date: todayStr,
+      time: "18:00",
+      customerNotes: "Cervicalgia y tensión en hombros por entrenamiento de crossfit.",
+      internalNotes: "Excelente respuesta en descompresión dorsal.",
+      tags: ["Cervicalgia", "Deportista", "Primera Vez"],
+      status: "confirmado",
+      totalSessions: 1,
+      sessionsCompleted: 0,
+    },
+    {
+      id: `bk_sample_3_${Date.now()}`,
+      createdAt: new Date(Date.now() - 7200000).toISOString(),
+      customerName: "Gonzalo Morales",
+      customerPhone: "+54 9 299 634-9021",
+      planTitle: "1 Sesión Individual",
+      planPrice: "$35.000",
+      totalAmount: 35000,
+      amountPaid: 0,
+      paymentMethod: "efectivo",
+      paymentStatus: "pendiente",
+      date: todayStr,
+      time: "19:30",
+      customerNotes: "Recomendado por su kinesiólogo para elongación profunda.",
+      internalNotes: "Pendiente abonar o transferir seña antes de la sesión.",
+      tags: ["Recomendado", "Primera Vez"],
+      status: "pendiente",
+      totalSessions: 1,
+      sessionsCompleted: 0,
+    },
+    {
+      id: `bk_sample_4_${Date.now()}`,
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      customerName: "Camila Vázquez",
+      customerPhone: "+54 9 299 411-7320",
+      planTitle: "Pack 12 Sesiones",
+      planPrice: "$300.000",
+      totalAmount: 300000,
+      amountPaid: 300000,
+      paymentMethod: "transferencia",
+      paymentStatus: "pagado_transferencia",
+      date: tomorrowStr,
+      time: "10:30",
+      customerNotes: "Plan integral de corrección postural y fortalecimiento miofascial.",
+      internalNotes: "Sesión 4 del pack. Gran avance en rotación de cadera.",
+      tags: ["Postura", "Pack 12", "Fascial"],
+      status: "confirmado",
+      totalSessions: 12,
+      sessionsCompleted: 3,
+    },
+    {
+      id: `bk_sample_5_${Date.now()}`,
+      createdAt: new Date(Date.now() - 90000000).toISOString(),
+      customerName: "Federico Rossi",
+      customerPhone: "+54 9 299 567-3312",
+      planTitle: "Pack 8 Sesiones",
+      planPrice: "$240.000",
+      totalAmount: 240000,
+      amountPaid: 100000,
+      paymentMethod: "mercadopago",
+      paymentStatus: "seña",
+      date: tomorrowStr,
+      time: "16:00",
+      customerNotes: "Contractura escapular crónica y rigidez torácica.",
+      internalNotes: "Verificar ajuste de muñequeras en suspensión.",
+      tags: ["Dorsal", "Pack 8"],
+      status: "confirmado",
+      totalSessions: 8,
+      sessionsCompleted: 2,
+    },
+    {
+      id: `bk_sample_6_${Date.now()}`,
+      createdAt: new Date(Date.now() - 120000000).toISOString(),
+      customerName: "Lucía Domínguez",
+      customerPhone: "+54 9 299 489-0055",
+      planTitle: "1 Sesión Individual",
+      planPrice: "$35.000",
+      totalAmount: 35000,
+      amountPaid: 0,
+      paymentMethod: "transferencia",
+      paymentStatus: "pendiente",
+      date: in2DaysStr,
+      time: "17:30",
+      customerNotes: "Busca alivio para compresión discal y estrés.",
+      internalNotes: "Enviar mensaje de recordatorio y datos de alias bancario.",
+      tags: ["Primera Vez", "Descompresión"],
+      status: "pendiente",
+      totalSessions: 1,
+      sessionsCompleted: 0,
+    },
+    {
+      id: `bk_sample_7_${Date.now()}`,
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      customerName: "Esteban Cabrera",
+      customerPhone: "+54 9 299 402-9911",
+      planTitle: "Pack 8 Sesiones",
+      planPrice: "$240.000",
+      totalAmount: 240000,
+      amountPaid: 240000,
+      paymentMethod: "transferencia",
+      paymentStatus: "pagado_transferencia",
+      date: yesterdayStr,
+      time: "18:00",
+      customerNotes: "Sesión realizada exitosamente. Reducción notable del dolor.",
+      internalNotes: "Dolor bajó de 8/10 a 2/10. Muy satisfecho con la tracción.",
+      tags: ["Pack 8", "Realizado"],
+      status: "realizado",
+      totalSessions: 8,
+      sessionsCompleted: 8,
+    },
+    {
+      id: `bk_sample_8_${Date.now()}`,
+      createdAt: new Date(Date.now() - 259200000).toISOString(),
+      customerName: "Valeria Méndez",
+      customerPhone: "+54 9 299 577-4422",
+      planTitle: "1 Sesión Individual",
+      planPrice: "$35.000",
+      totalAmount: 35000,
+      amountPaid: 35000,
+      paymentMethod: "efectivo",
+      paymentStatus: "pagado_efectivo",
+      date: threeDaysAgoStr,
+      time: "19:00",
+      customerNotes: "Sesión de prueba de 60 min completada.",
+      internalNotes: "Interesada en adquirir Pack 8 para el próximo mes.",
+      tags: ["Primera Vez", "Realizado"],
+      status: "realizado",
+      totalSessions: 1,
+      sessionsCompleted: 1,
+    },
+  ];
+}
+
+export function generateSampleClinicalProfiles(): Record<string, StudentClinicalProfile> {
+  const todayStr = new Date().toISOString().split("T")[0];
+  const lastWeekStr = new Date(Date.now() - 86400000 * 7).toISOString().split("T")[0];
+  const twoWeeksAgoStr = new Date(Date.now() - 86400000 * 14).toISOString().split("T")[0];
+
+  return {
+    "+54 9 299 458-1290": {
+      conditionReason: "Lumbalgia L5-S1 por sedentarismo laboral",
+      painLevelInitial: 7,
+      painLevelCurrent: 5,
+      medicalNotes: "Sin cirugías previas. Responde bien a elongación axial.",
+      tags: ["Lumbalgia", "Oficina"],
+      evolutionLogs: [
+        {
+          date: todayStr,
+          sessionNumber: 1,
+          painBefore: 7,
+          painAfter: 4,
+          tensionLevel: "Moderada",
+          notes: "Primera toma de contacto. Descompresión lumbar efectiva.",
+        },
+      ],
+    },
+    "+54 9 299 512-8844": {
+      conditionReason: "Cervicobraquialgia y sobrecarga trapecio",
+      painLevelInitial: 8,
+      painLevelCurrent: 3,
+      medicalNotes: "Deportista de alto impacto. Tensión miofascial alta.",
+      tags: ["Cervicalgia", "Deportista"],
+      evolutionLogs: [
+        {
+          date: todayStr,
+          sessionNumber: 1,
+          painBefore: 8,
+          painAfter: 3,
+          tensionLevel: "Alta",
+          notes: "Liberación de cadenas escapulares y estiramiento de pectorales.",
+        },
+      ],
+    },
+    "+54 9 299 411-7320": {
+      conditionReason: "Escoliosis leve y rectificación cervical",
+      painLevelInitial: 6,
+      painLevelCurrent: 2,
+      medicalNotes: "Realizando Pack de 12 sesiones de reeducación postural.",
+      tags: ["Postura", "Pack 12"],
+      evolutionLogs: [
+        {
+          date: twoWeeksAgoStr,
+          sessionNumber: 1,
+          painBefore: 6,
+          painAfter: 3,
+          tensionLevel: "Moderada",
+          notes: "Inicio de protocolo de descompresión simétrica.",
+        },
+        {
+          date: lastWeekStr,
+          sessionNumber: 2,
+          painBefore: 5,
+          painAfter: 2,
+          tensionLevel: "Leve",
+          notes: "Mejora en simetría de hombros y movilidad torácica.",
+        },
+      ],
+    },
+    "+54 9 299 402-9911": {
+      conditionReason: "Hernia discal L4-L5 diagnosticada por resonancia",
+      painLevelInitial: 9,
+      painLevelCurrent: 2,
+      medicalNotes: "Pack 8 finalizado con éxito. Alivio total de ciática.",
+      tags: ["Hernia Discal", "Pack 8"],
+      evolutionLogs: [
+        {
+          date: twoWeeksAgoStr,
+          sessionNumber: 1,
+          painBefore: 9,
+          painAfter: 5,
+          tensionLevel: "Muy Alta",
+          notes: "Tracción suave gradual de 4 puntos.",
+        },
+        {
+          date: lastWeekStr,
+          sessionNumber: 4,
+          painBefore: 5,
+          painAfter: 2,
+          tensionLevel: "Moderada",
+          notes: "Descompresión total de raíz nerviosa L5.",
+        },
+        {
+          date: todayStr,
+          sessionNumber: 8,
+          painBefore: 3,
+          painAfter: 1,
+          tensionLevel: "Leve",
+          notes: "Finalización de pack. Dolor residual mínimo (1/10).",
+        },
+      ],
+    },
+  };
+}
 
 export function formatDateTimeExact(isoString: string): string {
   if (!isoString) return "";
@@ -314,6 +598,61 @@ export function exportBookingsToCSV(bookings: Booking[]): void {
   link.setAttribute(
     "download",
     `pravilo_reservas_${new Date().toISOString().split("T")[0]}.csv`,
+  );
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+export function exportStudentsToCSV(
+  students: {
+    name: string;
+    phone: string;
+    lastDate: string;
+    plan: string;
+    totalSessions?: number;
+    sessionsCompleted?: number;
+    profile?: StudentClinicalProfile;
+  }[],
+): void {
+  if (!students || students.length === 0) return;
+
+  const headers = [
+    "Nombre Alumno",
+    "Telefono",
+    "Ultima Sesion",
+    "Plan Actual",
+    "Sesiones Hechas",
+    "Motivo Consulta",
+    "Dolor Inicial (EVA)",
+    "Dolor Actual (EVA)",
+    "Consentimiento Firmado",
+    "Observaciones Medicas",
+  ];
+
+  const rows = students.map((s) => [
+    `"${(s.name || "").replace(/"/g, '""')}"`,
+    `"${s.phone || ""}"`,
+    s.lastDate,
+    `"${(s.plan || "").replace(/"/g, '""')}"`,
+    `${s.sessionsCompleted || 0}/${s.totalSessions || 1}`,
+    `"${(s.profile?.conditionReason || "").replace(/"/g, '""')}"`,
+    s.profile?.painLevelInitial ?? "",
+    s.profile?.painLevelCurrent ?? "",
+    s.profile?.hasSignedConsent ? "SI" : "NO",
+    `"${(s.profile?.medicalNotes || "").replace(/"/g, '""')}"`,
+  ]);
+
+  const csvContent =
+    "data:text/csv;charset=utf-8,\uFEFF" +
+    [headers.join(";"), ...rows.map((e) => e.join(";"))].join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute(
+    "download",
+    `pravilo_alumnos_crm_${new Date().toISOString().split("T")[0]}.csv`,
   );
   document.body.appendChild(link);
   link.click();

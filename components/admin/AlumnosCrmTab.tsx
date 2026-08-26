@@ -8,6 +8,7 @@ import {
 } from "@/lib/bookings";
 import { ClinicalProfilePrintModal } from "./ClinicalProfilePrintModal";
 import { PainEvolutionChart } from "./PainEvolutionChart";
+import { ConsentSignatureModal } from "./ConsentSignatureModal";
 
 interface AlumnosCrmTabProps {
   bookings: Booking[];
@@ -26,6 +27,7 @@ export function AlumnosCrmTab({
 }: AlumnosCrmTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showConsentModal, setShowConsentModal] = useState(false);
 
   // New evolution log state inside active profile
   const [newLogDate, setNewLogDate] = useState(new Date().toISOString().split("T")[0]);
@@ -266,7 +268,18 @@ export function AlumnosCrmTab({
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => setShowConsentModal(true)}
+                    className={`px-3.5 py-1.5 rounded-xl border text-xs font-condensed font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all ${
+                      currentProfile.hasSignedConsent
+                        ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                        : "bg-surface-raised hover:bg-surface border-border text-foreground hover:border-accent"
+                    }`}
+                  >
+                    <span>✍️</span> {currentProfile.hasSignedConsent ? "Consentimiento Firmado ✓" : "Firmar Consentimiento"}
+                  </button>
+
                   <button
                     onClick={() => setShowPrintModal(true)}
                     className="px-3.5 py-1.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-xs font-condensed font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5 transition-all"
@@ -491,6 +504,26 @@ export function AlumnosCrmTab({
           studentPhone={currentStudent.phone}
           profile={currentProfile}
           bookings={currentStudent.bookings}
+        />
+      )}
+
+      {/* Consent & Digital Signature Modal */}
+      {currentStudent && (
+        <ConsentSignatureModal
+          isOpen={showConsentModal}
+          onClose={() => setShowConsentModal(false)}
+          studentName={currentStudent.name}
+          studentPhone={currentStudent.phone}
+          existingSignature={currentProfile.signatureBase64}
+          onSaveConsent={(signatureBase64, signatureDate) => {
+            const updated = {
+              ...currentProfile,
+              signatureBase64,
+              signatureDate,
+              hasSignedConsent: true,
+            };
+            onSaveClinicalProfile(currentStudent.phone, updated);
+          }}
         />
       )}
     </div>

@@ -214,6 +214,22 @@ export function ClinicalProfilePrintModal({
               <p className="font-condensed font-bold uppercase tracking-wide">PRAVILO ARG • Estudio Biomecánico</p>
               <p className="text-[10px] font-sans">Documento confidencial para seguimiento biomecánico</p>
             </div>
+
+            {profile.signatureBase64 && (
+              <div className="text-center">
+                <div className="h-14 flex items-center justify-center">
+                  <img
+                    src={profile.signatureBase64}
+                    alt="Firma del alumno"
+                    className="max-h-12 object-contain filter invert print:filter-none"
+                  />
+                </div>
+                <div className="border-t border-border print:border-neutral-400 pt-1 text-[10px] font-condensed uppercase text-foreground print:text-black">
+                  Firma Digital del Alumno ({profile.signatureDate || "Registrada"})
+                </div>
+              </div>
+            )}
+
             <div className="text-right border-t border-neutral-400 pt-2 w-48 text-center text-[11px] text-black hidden print:block font-condensed uppercase">
               Firma del Instructor / Especialista
             </div>
