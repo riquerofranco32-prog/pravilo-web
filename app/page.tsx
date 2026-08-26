@@ -44,62 +44,41 @@ const NAV = [
 
 const GALERIA_ACCION = [
   {
+    src: "/images/espacio-completo.jpg",
+    alt: "Vista panorámica del estudio PRAVILO ARG y estructura central",
+  },
+  {
     src: "/images/pravilo-sign-suspension.jpg",
-    alt: "Sesión de suspensión invertida frente al cartel PRAVILO",
-  },
-  {
-    src: "/images/pravilo-pulley-tension.jpg",
-    alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
-  },
-  {
-    src: "/images/pravilo-neon-suspension.jpg",
-    alt: "Sesión de suspensión con iluminación neón en el estudio",
-  },
-  {
-    src: "/images/pravilo-mirror-suspension.jpg",
-    alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
-  },
-  {
-    src: "/images/pravilo-estudio-completo.jpg",
-    alt: "Vista completa del estudio PRAVILO ARG",
-  },
-  {
-    src: "/images/foto-img-3392.jpg",
-    alt: "Instructor frente al cartel PRAVILO ARG",
+    alt: "Sesión de descompresión en suspensión frente al cartel PRAVILO",
   },
   {
     src: "/images/foto-img-3399.jpg",
     alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
   },
   {
-    src: "/images/foto-img-3421.jpg",
-    alt: "Instructor configurando el sistema de tracción",
+    src: "/images/pravilo-neon-suspension.jpg",
+    alt: "Sesión de suspensión con iluminación neón en el estudio",
   },
   {
-    src: "/images/foto-img-3428.jpg",
-    alt: "Sesión guiada en el estudio PRAVILO",
+    src: "/images/pravilo-estudio-completo.jpg",
+    alt: "Vista completa del estudio PRAVILO ARG",
   },
   {
-    src: "/images/foto-img-3433.jpg",
-    alt: "Trabajo individual con el método PRAVILO",
+    src: "/images/pravilo-mirror-suspension.jpg",
+    alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
   },
   {
-    src: "/images/foto-img-3437.jpg",
-    alt: "Instructor asistiendo en sesión de movilidad",
-  },
-  { src: "/images/foto-img-3441.jpg", alt: "Tracción y simetría en PRAVILO" },
-  { src: "/images/foto-img-3443.jpg", alt: "Ejercicio en el estudio PRAVILO" },
-  {
-    src: "/images/foto-img-3444.jpg",
-    alt: "Trabajo corporal profundo en PRAVILO",
+    src: "/images/foto-img-3400.jpg",
+    alt: "Ingreso y cartel iluminado de PRAVILO ARG",
   },
   {
-    src: "/images/foto-img-3446.jpg",
-    alt: "Suspensión con instructor PRAVILO",
+    src: "/images/pravilo-pulley-tension.jpg",
+    alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
   },
-  { src: "/images/foto-img-3447.jpg", alt: "Sesión de tracción en PRAVILO" },
-  { src: "/images/foto-img-3448.jpg", alt: "Movimiento y eje en PRAVILO" },
-  { src: "/images/foto-img-3449.jpg", alt: "Práctica completa en PRAVILO" },
+  {
+    src: "/images/foto-img-3449.jpg",
+    alt: "Estructura y calibración de pesos en PRAVILO",
+  },
 ];
 
 const BENEFICIOS = [
@@ -376,13 +355,8 @@ export default function Home() {
 
                 {/* Bajada */}
                 <p className="mt-6 max-w-lg text-lg text-muted text-balance leading-relaxed">
-                  Entrenamiento y terapia de movilidad profunda con el método
-                  eslavo{" "}
-                  <strong className="text-foreground font-semibold">
-                    PRAVILO
-                  </strong>
-                  . Descompresión axial de 4 puntos, liberación fascial y
-                  alineación postural guiada en Plottier.
+                  Una propuesta diferente, que tenés que experimentar para
+                  entender.
                 </p>
 
                 {/* CTAs */}
@@ -895,7 +869,7 @@ export default function Home() {
           {/* Foto de fondo con overlay */}
           <div className="pointer-events-none absolute inset-0">
             <Image
-              src="/images/foto-img-3437.jpg"
+              src="/images/espacio-completo.jpg"
               alt=""
               fill
               sizes="100vw"
