@@ -235,23 +235,6 @@ export function PraviloMoscowBenefitsSection() {
             );
           })}
         </div>
-
-        {/* Bottom CTA Box */}
-        <RevealOnScroll className="p-8 rounded-3xl bg-surface-raised border border-border flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-xl">
-          <div className="space-y-1 max-w-xl">
-            <h4 className="font-condensed text-xl font-black uppercase text-foreground">
-              Comprobá el alivio en tu propia estructura
-            </h4>
-            <p className="text-xs sm:text-sm text-muted font-sans">
-              Evaluación personalizada y sesión guiada de 60 minutos en Plottier, Neuquén.
-            </p>
-          </div>
-
-          <BookingWizard
-            buttonText="Reservar Turno de Evaluación"
-            className="btn-shiny px-8 py-3.5 rounded-2xl bg-accent text-accent-foreground font-condensed font-black uppercase tracking-wider text-sm shadow-xl shadow-accent/25 hover:scale-105 active:scale-95 transition-all shrink-0"
-          />
-        </RevealOnScroll>
       </div>
 
       {/* Modal Interactivo de Detalle Biomecánico */}
