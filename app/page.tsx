@@ -19,6 +19,7 @@ import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import { PricingSection } from "@/components/PricingSection";
 import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
 import { PraviloComparisonSection } from "@/components/PraviloComparisonSection";
+import { PraviloMoscowBenefitsSection } from "@/components/PraviloMoscowBenefitsSection";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_REVIEWS_URL,
@@ -562,50 +563,8 @@ export default function Home() {
         {/* COMPARADOR ANTES / DESPUÉS POSTURAL */}
         <BeforeAfterSlider />
 
-        {/* BENEFICIOS */}
-        <section id="beneficios" className="px-6 py-16 md:py-20">
-          <div className="mx-auto max-w-5xl">
-            <RevealOnScroll className="text-center">
-              <span className="eyebrow mx-auto w-fit">
-                Beneficios Comprobados
-              </span>
-              <h2 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-                Lo que cambia en tu cuerpo
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-muted text-base md:text-lg">
-                Beneficios inmediatos desde la primera sesión y cambios
-                estructurales duraderos.
-              </p>
-            </RevealOnScroll>
-
-            <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-              {BENEFICIOS.map((b, i) => (
-                <RevealOnScroll
-                  key={b.title}
-                  style={{ transitionDelay: `${(i % 3) * 100}ms` }}
-                >
-                  <SpotlightCard className="group h-full rounded-2xl border-t-2 border-border/80 bg-surface-raised/40 p-4 sm:p-7 transition-all duration-300 hover:border-t-accent">
-                    <div className="flex items-baseline justify-between">
-                      <BenefitIcon
-                        name={b.icon}
-                        className="h-7 w-7 sm:h-8 sm:w-8"
-                      />
-                      <span className="font-condensed text-xs font-bold text-muted/50">
-                        0{i + 1}
-                      </span>
-                    </div>
-                    <h3 className="mt-4 font-condensed text-xl font-bold text-foreground group-hover:text-accent-text transition-colors">
-                      {b.title}
-                    </h3>
-                    <p className="mt-2 text-xs text-muted leading-relaxed">
-                      {b.desc}
-                    </p>
-                  </SpotlightCard>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* BENEFICIOS (Al estilo pravilo.moscow/benefit con tarjetas interactivas) */}
+        <PraviloMoscowBenefitsSection />
 
         {/* EL INSTRUCTOR */}
         <section
