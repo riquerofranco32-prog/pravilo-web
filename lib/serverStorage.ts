@@ -11,6 +11,7 @@ const BANK_FILE = path.join(DATA_DIR, "bank.json");
 
 // In-memory memory fallback caches
 let cachedBookings: Booking[] | null = null;
+let isBookingsLoaded = false;
 let cachedConfig: ScheduleConfig = { ...DEFAULT_SCHEDULE_CONFIG };
 let cachedBank: BankConfig = { ...DEFAULT_BANK_CONFIG };
 let isConfigLoaded = false;
@@ -28,7 +29,7 @@ function ensureDataDir() {
 
 // ----------------- BOOKINGS -----------------
 export function getServerBookings(): Booking[] {
-  if (cachedBookings && cachedBookings.length > 0) {
+  if (isBookingsLoaded && cachedBookings !== null) {
     return cachedBookings;
   }
 
@@ -38,8 +39,9 @@ export function getServerBookings(): Booking[] {
     if (fs.existsSync(BOOKINGS_FILE)) {
       const raw = fs.readFileSync(BOOKINGS_FILE, "utf-8");
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         cachedBookings = parsed;
+        isBookingsLoaded = true;
         return cachedBookings;
       }
     }
@@ -49,12 +51,14 @@ export function getServerBookings(): Booking[] {
 
   const initial = generateSampleBookings();
   cachedBookings = initial;
+  isBookingsLoaded = true;
   saveServerBookings(initial);
   return initial;
 }
 
 export function saveServerBookings(bookings: Booking[]): boolean {
   cachedBookings = bookings;
+  isBookingsLoaded = true;
   ensureDataDir();
 
   try {

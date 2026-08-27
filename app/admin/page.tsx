@@ -242,7 +242,7 @@ export default function AdminPage() {
     fetch("/api/admin/bookings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
+        if (data?.ok && Array.isArray(data.bookings)) {
           const incoming: Booking[] = data.bookings;
 
           // Detect new real bookings on live refresh (only if already loaded and created recently)
@@ -260,7 +260,7 @@ export default function AdminPage() {
           }
 
           // Register known ids
-          incoming.forEach((b) => knownBookingIdsRef.current.add(b.id));
+          knownBookingIdsRef.current = new Set(incoming.map((b) => b.id));
           isInitialLoadRef.current = false;
 
           setBookings(incoming);
@@ -270,19 +270,14 @@ export default function AdminPage() {
           if (stored) {
             try {
               const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
+              if (Array.isArray(parsed)) {
+                knownBookingIdsRef.current = new Set(parsed.map((b: Booking) => b.id));
                 isInitialLoadRef.current = false;
                 setBookings(parsed);
                 return;
               }
             } catch {}
           }
-          const samples = generateSampleBookings();
-          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
-          isInitialLoadRef.current = false;
-          setBookings(samples);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
         }
       })
       .catch(() => {
@@ -291,19 +286,14 @@ export default function AdminPage() {
           if (stored) {
             try {
               const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
+              if (Array.isArray(parsed)) {
+                knownBookingIdsRef.current = new Set(parsed.map((b: Booking) => b.id));
                 isInitialLoadRef.current = false;
                 setBookings(parsed);
                 return;
               }
             } catch {}
           }
-          const samples = generateSampleBookings();
-          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
-          isInitialLoadRef.current = false;
-          setBookings(samples);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
         }
       });
   };
