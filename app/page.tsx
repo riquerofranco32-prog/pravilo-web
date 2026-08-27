@@ -30,7 +30,6 @@ import {
   SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
-import { PLANES_EXPERIENCIA } from "@/lib/plans";
 import { DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
 import { getServerGalleryImages } from "@/lib/serverStorage";
 
