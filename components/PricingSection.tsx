@@ -145,11 +145,6 @@ export function PricingSection() {
           </RevealOnScroll>
         </div>
       </div>
-
-      {/* Gift Card Banner */}
-      <div className="mt-12 flex justify-center">
-        <GiftCardModal />
-      </div>
     </section>
   );
 }

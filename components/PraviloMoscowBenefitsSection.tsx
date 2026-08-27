@@ -239,7 +239,7 @@ export function PraviloMoscowBenefitsSection() {
             return (
               <RevealOnScroll
                 key={b.id}
-                style={{ transitionDelay: `${(i % 4) * 80}ms` }}
+                delay={(i % 2) * 60}
               >
                 <div
                   onClick={() => setSelectedBenefit(b)}

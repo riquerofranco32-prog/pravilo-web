@@ -23,6 +23,13 @@ export default function RevealOnScroll({
     const el = ref.current;
     if (!el) return;
 
+    // Si ya está en la vista inicial al cargar la página, mostrar inmediatamente
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 30) {
+      el.classList.add("is-visible");
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -31,8 +38,9 @@ export default function RevealOnScroll({
         }
       },
       {
-        rootMargin: "0px 0px -50px 0px",
-        threshold: 0.05,
+        // Anticipar 60px antes de que entre al viewport para que la animación empiece suavemente
+        rootMargin: "0px 0px 60px 0px",
+        threshold: 0.01,
       },
     );
 

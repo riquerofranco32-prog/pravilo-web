@@ -130,7 +130,7 @@ export default function GoogleReviews() {
           {GOOGLE_REVIEWS.map((review, idx) => (
             <RevealOnScroll
               key={review.id}
-              style={{ transitionDelay: `${idx * 80}ms` }}
+              delay={(idx % 2) * 80}
             >
               <SpotlightCard className="relative flex h-full flex-col justify-between rounded-3xl border border-border bg-surface-raised/70 p-7 transition-all duration-300 hover:border-accent/50 hover:-translate-y-1 hover:shadow-[0_16px_40px_-15px_rgba(160,26,26,0.35)]">
                 <div>
