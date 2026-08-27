@@ -131,7 +131,7 @@ export default function BeforeAfterSlider() {
           </div>
 
           {/* Explicación & CTA */}
-          <div className="space-y-5">
+          <RevealOnScroll delay={100} className="space-y-5">
             <span className="eyebrow">Alineación en 3 Dimensiones</span>
             <h3 className="font-condensed text-2xl sm:text-3xl font-black text-foreground">
               Sentí la diferencia desde la primera sesión
@@ -160,7 +160,7 @@ export default function BeforeAfterSlider() {
                 className="btn-shiny w-full rounded-full bg-accent py-3.5 font-condensed text-base font-bold uppercase tracking-wider text-accent-foreground shadow-md transition-all hover:scale-105"
               />
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </RevealOnScroll>
     </section>

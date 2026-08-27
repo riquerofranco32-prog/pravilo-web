@@ -187,25 +187,27 @@ export function PraviloModalitiesSlider() {
           </p>
 
           {/* Bloque de Cierre y Filosofía */}
-          <div className="mt-8 rounded-2xl border border-border bg-background/90 p-6 sm:p-8 text-center space-y-4">
-            <h3 className="font-condensed text-xl sm:text-2xl font-black text-foreground">
-              PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
-            </h3>
-            <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted leading-relaxed">
-              No necesitás ser deportista ni tener experiencia previa para
-              practicar PRAVILO. <br className="hidden sm:inline" />
-              <strong className="text-foreground font-semibold">
-                Vos elegís hacia dónde llevar la experiencia.
-              </strong>
-            </p>
+          <RevealOnScroll delay={100}>
+            <div className="mt-8 rounded-2xl border border-border bg-background/90 p-6 sm:p-8 text-center space-y-4">
+              <h3 className="font-condensed text-xl sm:text-2xl font-black text-foreground">
+                PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
+              </h3>
+              <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted leading-relaxed">
+                No necesitás ser deportista ni tener experiencia previa para
+                practicar PRAVILO. <br className="hidden sm:inline" />
+                <strong className="text-foreground font-semibold">
+                  Vos elegís hacia dónde llevar la experiencia.
+                </strong>
+              </p>
 
-            <div className="pt-3 flex justify-center">
-              <BookingWizard
-                buttonText="Reservar mi sesión inicial personalizada →"
-                className="btn-shiny rounded-full bg-accent px-8 py-3.5 font-condensed text-base font-bold uppercase tracking-wider text-accent-foreground shadow-lg hover:scale-105 transition-all"
-              />
+              <div className="pt-3 flex justify-center">
+                <BookingWizard
+                  buttonText="Reservar mi sesión inicial personalizada →"
+                  className="btn-shiny rounded-full bg-accent px-8 py-3.5 font-condensed text-base font-bold uppercase tracking-wider text-accent-foreground shadow-lg hover:scale-105 transition-all"
+                />
+              </div>
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </RevealOnScroll>
     </section>
