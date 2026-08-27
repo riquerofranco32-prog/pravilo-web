@@ -245,9 +245,15 @@ export default function AdminPage() {
         if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
           const incoming: Booking[] = data.bookings;
 
-          // Detect new bookings on live refresh
+          // Detect new real bookings on live refresh (only if already loaded and created recently)
           if (!isInitialLoadRef.current && isSilent) {
-            const newOnes = incoming.filter((b) => !knownBookingIdsRef.current.has(b.id));
+            const now = Date.now();
+            const newOnes = incoming.filter((b) => {
+              if (knownBookingIdsRef.current.has(b.id)) return false;
+              if (b.id.startsWith("bk_sample")) return false;
+              const ageMs = now - new Date(b.createdAt).getTime();
+              return ageMs < 120000; // Created in last 2 minutes
+            });
             if (newOnes.length > 0) {
               notifyNewBooking(newOnes[0]);
             }

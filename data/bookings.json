@@ -1,0 +1,96 @@
+[
+  {
+    "id": "bk_sample_1",
+    "createdAt": "2026-08-26T18:30:00.000Z",
+    "customerName": "Martín Benítez",
+    "customerPhone": "+54 9 299 458-1290",
+    "planTitle": "1 Sesión Individual",
+    "planPrice": "$35.000",
+    "totalAmount": 35000,
+    "amountPaid": 35000,
+    "paymentMethod": "transferencia",
+    "paymentStatus": "pagado_transferencia",
+    "date": "2026-08-25",
+    "time": "16:30",
+    "customerNotes": "Molestia lumbar L5-S1 al estar sentado mucho tiempo en oficina.",
+    "internalNotes": "Comenzar con tracción suave y arnés acolchado de tobillos.",
+    "tags": [
+      "Lumbalgia",
+      "Oficina",
+      "Individual"
+    ],
+    "status": "realizado",
+    "totalSessions": 1,
+    "sessionsCompleted": 1
+  },
+  {
+    "id": "bk_sample_2",
+    "createdAt": "2026-08-26T20:30:00.000Z",
+    "customerName": "Sofía Álvarez",
+    "customerPhone": "+54 9 299 512-8844",
+    "planTitle": "1 Sesión Individual",
+    "planPrice": "$35.000",
+    "totalAmount": 35000,
+    "amountPaid": 35000,
+    "paymentMethod": "transferencia",
+    "paymentStatus": "pagado_transferencia",
+    "date": "2026-08-26",
+    "time": "18:00",
+    "customerNotes": "Cervicalgia y tensión en hombros por entrenamiento de crossfit.",
+    "internalNotes": "Excelente respuesta en descompresión dorsal.",
+    "tags": [
+      "Cervicalgia",
+      "Deportista",
+      "Primera Vez"
+    ],
+    "status": "confirmado",
+    "totalSessions": 1,
+    "sessionsCompleted": 0
+  },
+  {
+    "id": "bk_sample_3",
+    "createdAt": "2026-08-26T19:30:00.000Z",
+    "customerName": "Gonzalo Morales",
+    "customerPhone": "+54 9 299 634-9021",
+    "planTitle": "1 Sesión Individual",
+    "planPrice": "$35.000",
+    "totalAmount": 35000,
+    "amountPaid": 0,
+    "paymentMethod": "efectivo",
+    "paymentStatus": "pendiente",
+    "date": "2026-08-27",
+    "time": "19:30",
+    "customerNotes": "Recomendado por su kinesiólogo para elongación profunda.",
+    "internalNotes": "Pendiente abonar o transferir seña antes de la sesión.",
+    "tags": [
+      "Recomendado",
+      "Primera Vez"
+    ],
+    "status": "pendiente",
+    "totalSessions": 1,
+    "sessionsCompleted": 0
+  },
+  {
+    "id": "bk_sample_4",
+    "createdAt": "2026-08-25T21:30:00.000Z",
+    "customerName": "Camila Vázquez",
+    "customerPhone": "+54 9 299 411-7320",
+    "planTitle": "1 Sesión Individual",
+    "planPrice": "$35.000",
+    "totalAmount": 35000,
+    "amountPaid": 35000,
+    "paymentMethod": "transferencia",
+    "paymentStatus": "pagado_transferencia",
+    "date": "2026-08-27",
+    "time": "10:30",
+    "customerNotes": "Plan integral de corrección postural y fortalecimiento miofascial.",
+    "internalNotes": "Gran avance en rotación de cadera y movilidad torácica.",
+    "tags": [
+      "Postura",
+      "Fascial"
+    ],
+    "status": "confirmado",
+    "totalSessions": 1,
+    "sessionsCompleted": 0
+  }
+]
