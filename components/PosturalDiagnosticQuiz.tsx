@@ -113,48 +113,23 @@ export function PosturalDiagnosticQuiz() {
       };
     }
 
-    if (selectedFreq === "cronico") {
-      return {
-        plan: "Pack 12 Sesiones",
-        planPrice: "$300.000 ($25.000/sesión)",
-        badge: "Tratamiento Integral Recomendado",
-        title: "Protocolo de Descompresión Fascial Progresiva",
-        summary:
-          "Para dolores constantes o de larga data, la estructura miofascial necesita tiempo para reorganizarse y descomprimir los discos intervertebrales sin rebotes. El Pack 12 permite trabajar gradualmente la tracción simétrica.",
-        benefits: [
-          "Descompresión vertebral en 4 direcciones",
-          "Reeducación propioceptiva y postural profunda",
-          "Máximo ahorro por sesión y seguimiento continuo",
-        ],
-      };
-    }
-
-    if (selectedFreq === "frecuente" || selectedZone === "lumbar" || selectedZone === "cervical") {
-      return {
-        plan: "Pack 8 Sesiones",
-        planPrice: "$240.000 ($30.000/sesión)",
-        badge: "Plan Óptimo Más Elegido",
-        title: "Plan de Alivio y Restauración de Movilidad",
-        summary:
-          "Ideal para liberar tensiones acumuladas y generar espacio articular duradero. 8 sesiones permiten superar la fase de adaptación inicial y consolidar la descompresión muscular.",
-        benefits: [
-          "Liberación de fascias en cadena posterior",
-          "Alivio duradero de lumbalgias y cervicalgias",
-          "Acompañamiento 1 a 1 en cada sesión",
-        ],
-      };
-    }
-
     return {
       plan: "1 Sesión Individual",
-      planPrice: "$35.000 (60 min)",
-      badge: "Iniciación Sugerida",
-      title: "Primera Experiencia en Máquina Pravilo",
+      planPrice: "$35.000 · 60 minutos guiados",
+      badge: "Sesión 1 a 1 Personalizada",
+      title:
+        selectedZone === "lumbar"
+          ? "Protocolo de Descompresión Lumbo-Pélvica"
+          : selectedZone === "cervical"
+            ? "Protocolo de Liberación Cervico-Dorsal"
+            : selectedZone === "deporte"
+              ? "Protocolo de Movilidad & Recuperación Miofascial"
+              : "Protocolo de Descompresión & Alineación Integral",
       summary:
-        "La mejor forma de conocer la sensación única de gravedad cero y tracción controlada. Incluye evaluación biomecánica inicial guiada por Juan.",
+        "Tu sesión incluye una evaluación inicial exhaustiva de postura y rango articular, calibración personalizada de arneses y 60 minutos guiados por Juan en el aparato PRAVILO.",
       benefits: [
         "Evaluación inicial de postura y tensión",
-        "Experiencia guiada personalizada de 60 minutos",
+        "Descompresión vertebral guiada 1 a 1",
         "Sensación inmediata de liviandad y elongación",
       ],
     };
@@ -170,13 +145,14 @@ export function PosturalDiagnosticQuiz() {
           ¿Qué necesita tu cuerpo hoy?
         </h2>
         <p className="mx-auto max-w-xl text-base text-muted">
-          Seleccioná tu objetivo o molestia para descubrir cómo el método Pravilo puede ayudarte y cuál es el plan recomendado para tu caso.
+          Seleccioná tu objetivo o molestia para descubrir cómo el método Pravilo puede ayudarte en tu sesión guiada.
         </p>
       </RevealOnScroll>
 
-      <div className="mt-10 rounded-3xl border border-border bg-surface-raised/80 p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-        {/* Glow ambient de marca (carmesí) */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-accent/15 rounded-full blur-[100px] pointer-events-none" />
+      <RevealOnScroll delay={100}>
+        <div className="mt-10 rounded-3xl border border-border bg-surface-raised/80 p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+          {/* Glow ambient de marca (carmesí) */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-accent/15 rounded-full blur-[100px] pointer-events-none" />
 
         {!showResult ? (
           <div className="space-y-8 relative z-10">
@@ -333,6 +309,7 @@ export function PosturalDiagnosticQuiz() {
           </div>
         )}
       </div>
-    </section>
-  );
+    </RevealOnScroll>
+  </section>
+);
 }

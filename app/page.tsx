@@ -656,68 +656,73 @@ export default function Home() {
         <PricingSection />
 
         <section className="mx-auto max-w-6xl px-6 pb-16">
-
           {/* Bloque Compromiso de Bienestar */}
-          <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">
-            <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="shield" className="h-4 w-4" />
-                  <span>Estudio 100% Privado</span>
-                </span>
-                <p className="text-xs text-muted">
-                  Sin ruidos de gimnasio ni distracciones. El espacio completo
-                  está reservado exclusivamente para vos.
-                </p>
-              </div>
+          <RevealOnScroll>
+            <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">
+              <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="shield" className="h-4 w-4" />
+                    <span>Estudio 100% Privado</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    Sin ruidos de gimnasio ni distracciones. El espacio completo
+                    está reservado exclusivamente para vos.
+                  </p>
+                </div>
 
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="tension" className="h-4 w-4" />
-                  <span>Tensión Milimétrica</span>
-                </span>
-                <p className="text-xs text-muted">
-                  La carga e intensidad se adaptan paso a paso a tu nivel de
-                  confort, sin forzar ninguna articulación.
-                </p>
-              </div>
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="tension" className="h-4 w-4" />
+                    <span>Tensión Milimétrica</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    La carga e intensidad se adaptan paso a paso a tu nivel de
+                    confort, sin forzar ninguna articulación.
+                  </p>
+                </div>
 
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="clipboard" className="h-4 w-4" />
-                  <span>Evaluación Biomecánica</span>
-                </span>
-                <p className="text-xs text-muted">
-                  Se analiza tu postura, rango de movimiento y antecedentes
-                  previos antes de iniciar la tracción.
-                </p>
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="clipboard" className="h-4 w-4" />
+                    <span>Evaluación Biomecánica</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    Se analiza tu postura, rango de movimiento y antecedentes
+                    previos antes de iniciar la tracción.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </RevealOnScroll>
 
           {/* Banner de Gift Card VIP */}
-          <div className="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
-            <div>
-              <span className="inline-block rounded-full bg-accent/20 border border-accent/40 px-3 py-0.5 font-condensed text-[11px] font-bold uppercase tracking-wider text-accent-text mb-2">
-                Experiencia para regalar
-              </span>
-              <h3 className="font-condensed text-2xl font-black text-foreground">
-                ¿Buscás hacer un regalo diferente y memorable?
-              </h3>
-              <p className="mt-1 text-sm text-muted">
-                Encargá un voucher digital de PRAVILO para un cumpleaños o fecha
-                especial con dedicatoria personalizada.
-              </p>
+          <RevealOnScroll delay={100}>
+            <div className="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
+              <div>
+                <span className="inline-block rounded-full bg-accent/20 border border-accent/40 px-3 py-0.5 font-condensed text-[11px] font-bold uppercase tracking-wider text-accent-text mb-2">
+                  Experiencia para regalar
+                </span>
+                <h3 className="font-condensed text-2xl font-black text-foreground">
+                  ¿Buscás hacer un regalo diferente y memorable?
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  Encargá un voucher digital de PRAVILO para un cumpleaños o fecha
+                  especial con dedicatoria personalizada.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <GiftCardModal />
+              </div>
             </div>
-            <div className="shrink-0">
-              <GiftCardModal />
-            </div>
-          </div>
+          </RevealOnScroll>
 
-          <p className="mt-6 text-center text-xs text-muted">
-            Precios de referencia para el estudio de Plottier. Confirmación
-            inmediata vía WhatsApp.
-          </p>
+          <RevealOnScroll delay={150}>
+            <p className="mt-6 text-center text-xs text-muted">
+              Precios de referencia para el estudio de Plottier. Confirmación
+              inmediata vía WhatsApp.
+            </p>
+          </RevealOnScroll>
         </section>
 
         {/* RESEÑAS DE GOOGLE */}
@@ -754,9 +759,11 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <FAQAccordion />
+            <RevealOnScroll delay={100}>
+              <FAQAccordion />
+            </RevealOnScroll>
 
-            <div className="mt-12 text-center">
+            <RevealOnScroll delay={150} className="mt-12 text-center">
               <p className="text-sm text-muted">
                 ¿Tenés alguna consulta puntual sobre tu estado físico?
               </p>
@@ -775,7 +782,7 @@ export default function Home() {
                   </a>
                 </MagneticButton>
               </div>
-            </div>
+            </RevealOnScroll>
           </div>
         </section>
 
@@ -865,7 +872,7 @@ export default function Home() {
               </div>
             </RevealOnScroll>
 
-            <RevealOnScroll>
+            <RevealOnScroll delay={100} direction="scale">
               <div className="overflow-hidden rounded-3xl border border-border-highlight shadow-2xl">
                 <iframe
                   src={MAPS_EMBED_SRC}
@@ -926,7 +933,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="border-t border-border bg-background px-6 py-14 text-center text-sm text-muted">
-        <div className="mx-auto max-w-6xl">
+        <RevealOnScroll className="mx-auto max-w-6xl">
           <Link
             href="/"
             className="inline-block transition-opacity hover:opacity-90"
@@ -1020,7 +1027,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-        </div>
+        </RevealOnScroll>
       </footer>
     </>
   );
