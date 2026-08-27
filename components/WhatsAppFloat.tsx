@@ -1,59 +1,54 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { whatsappLink } from "@/lib/constants";
 
 export default function WhatsAppFloat() {
-  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [customPos, setCustomPos] = useState<{ x: number; y: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{
     startX: number;
     startY: number;
-    initialX: number;
-    initialY: number;
+    initialLeft: number;
+    initialTop: number;
     moved: boolean;
   } | null>(null);
   const elementRef = useRef<HTMLElement | null>(null);
 
-  // Initialize position to bottom right once mounted in browser
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const defaultX = window.innerWidth - 80;
-      const defaultY = window.innerHeight - 80;
-      setPosition({ x: defaultX, y: defaultY });
-    }
-  }, []);
-
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!elementRef.current) return;
     const rect = elementRef.current.getBoundingClientRect();
-    const currentX = position ? position.x : rect.left + rect.width / 2;
-    const currentY = position ? position.y : rect.top + rect.height / 2;
 
     dragStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
-      initialX: currentX,
-      initialY: currentY,
+      initialLeft: rect.left,
+      initialTop: rect.top,
       moved: false,
     };
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!dragStartRef.current) return;
+    if (!dragStartRef.current || !elementRef.current) return;
     const dx = e.clientX - dragStartRef.current.startX;
     const dy = e.clientY - dragStartRef.current.startY;
 
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
       dragStartRef.current.moved = true;
       setIsDragging(true);
     }
 
     if (dragStartRef.current.moved) {
-      const newX = Math.max(50, Math.min(window.innerWidth - 50, dragStartRef.current.initialX + dx));
-      const newY = Math.max(50, Math.min(window.innerHeight - 50, dragStartRef.current.initialY + dy));
-      setPosition({ x: newX, y: newY });
+      const rect = elementRef.current.getBoundingClientRect();
+      const elWidth = rect.width;
+      const elHeight = rect.height;
+
+      // Mantener dentro de los bordes de la pantalla
+      const newX = Math.max(10, Math.min(window.innerWidth - elWidth - 10, dragStartRef.current.initialLeft + dx));
+      const newY = Math.max(10, Math.min(window.innerHeight - elHeight - 10, dragStartRef.current.initialTop + dy));
+
+      setCustomPos({ x: newX, y: newY });
     }
   };
 
@@ -64,7 +59,7 @@ export default function WhatsAppFloat() {
     setIsDragging(false);
     (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
 
-    // If not dragged, open link
+    // Si solo fue un tap / click sin arrastrar, abrir chat de WhatsApp
     if (!wasMoved) {
       window.open(whatsappLink(), "_blank", "noopener,noreferrer");
     }
@@ -73,41 +68,43 @@ export default function WhatsAppFloat() {
   return (
     <aside
       ref={elementRef}
-      aria-label="Contacto flotante"
+      aria-label="Contacto flotante de WhatsApp"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={
-        position
+        customPos
           ? {
               position: "fixed",
-              left: `${position.x}px`,
-              top: `${position.y}px`,
-              transform: "translate(-50%, -50%)",
+              left: `${customPos.x}px`,
+              top: `${customPos.y}px`,
               zIndex: 50,
+              touchAction: "none",
             }
           : {
               position: "fixed",
-              bottom: "1.5rem",
-              right: "1.5rem",
+              bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))",
+              right: "1.25rem",
               zIndex: 50,
+              touchAction: "none",
             }
       }
-      className={`flex items-center gap-2.5 select-none touch-none cursor-grab active:cursor-grabbing transition-transform duration-100 ${
-        isDragging ? "scale-110 shadow-2xl opacity-90" : "hover:scale-105"
+      className={`flex items-center gap-2.5 select-none cursor-grab active:cursor-grabbing transition-transform duration-150 ${
+        isDragging ? "scale-105 opacity-90" : "hover:scale-105"
       }`}
-      title="Mantené presionado para mover por la pantalla o hacé clic para chatear"
+      title="Mantené presionado para mover o tocá para chatear por WhatsApp"
     >
-      {/* Tooltip / Badge sutil */}
+      {/* Tooltip / Badge sutil solo en desktop */}
       <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-border-highlight bg-surface-raised/95 px-3.5 py-1.5 font-condensed text-xs font-bold uppercase tracking-wider text-foreground shadow-xl backdrop-blur-md pointer-events-none">
         <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
         <span>Juan en línea</span>
       </span>
 
+      {/* Botón Circular Verde WhatsApp */}
       <div
         aria-label="Escribinos por WhatsApp al centro PRAVILO"
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_25px_-4px_rgba(37,211,102,0.6)] transition-all duration-300"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_25px_-4px_rgba(37,211,102,0.6)] transition-all duration-300 active:scale-95"
       >
         <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-30 animate-ping pointer-events-none" />
         <svg viewBox="0 0 32 32" className="relative h-7 w-7 fill-white transition-transform group-hover:rotate-6 pointer-events-none">
