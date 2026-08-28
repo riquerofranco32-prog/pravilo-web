@@ -3,13 +3,17 @@
 import React, { useEffect, useState } from "react";
 import { ScheduleConfig, getAvailableSlots } from "@/lib/availability";
 import { Booking, PaymentMethod, PaymentStatus } from "@/lib/bookings";
+import { BoltIcon, CalendarIcon, EditIcon } from "./Icons";
 
 interface ManualBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   config: ScheduleConfig;
   planPrices: Record<string, string | undefined>;
-  onSaveBooking: (newBooking: Partial<Booking>, isEditing?: boolean) => Promise<void> | void;
+  onSaveBooking: (
+    newBooking: Partial<Booking>,
+    isEditing?: boolean,
+  ) => Promise<void> | void;
   bookingToEdit?: Booking | null;
   initialDate?: string;
   initialSlot?: string;
@@ -50,8 +54,10 @@ export function ManualBookingModal({
   const [customTime, setCustomTime] = useState("");
   const [useCustomTime, setUseCustomTime] = useState(false);
   const [status, setStatus] = useState<Booking["status"]>("confirmado");
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("pendiente");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("transferencia");
+  const [paymentStatus, setPaymentStatus] =
+    useState<PaymentStatus>("pendiente");
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("transferencia");
   const [amountPaid, setAmountPaid] = useState<string>("");
   const [sessionsCompleted, setSessionsCompleted] = useState<number>(0);
   const [totalSessions, setTotalSessions] = useState<number>(1);
@@ -75,7 +81,11 @@ export function ManualBookingModal({
       setStatus(bookingToEdit.status || "confirmado");
       setPaymentStatus(bookingToEdit.paymentStatus || "pendiente");
       setPaymentMethod(bookingToEdit.paymentMethod || "transferencia");
-      setAmountPaid(bookingToEdit.amountPaid !== undefined ? String(bookingToEdit.amountPaid) : "");
+      setAmountPaid(
+        bookingToEdit.amountPaid !== undefined
+          ? String(bookingToEdit.amountPaid)
+          : "",
+      );
       setSessionsCompleted(bookingToEdit.sessionsCompleted || 0);
       setTotalSessions(bookingToEdit.totalSessions || 1);
       setSelectedTags(bookingToEdit.tags || []);
@@ -113,15 +123,32 @@ export function ManualBookingModal({
   };
 
   const currentPriceStr = getPriceForPlan(planTitle);
-  const currentPriceNum = parseInt(currentPriceStr.replace(/\D/g, ""), 10) || 35000;
-  const paidNum = amountPaid ? parseInt(amountPaid.replace(/\D/g, ""), 10) || 0 : 0;
+  const currentPriceNum =
+    parseInt(currentPriceStr.replace(/\D/g, ""), 10) || 35000;
+  const paidNum = amountPaid
+    ? parseInt(amountPaid.replace(/\D/g, ""), 10) || 0
+    : 0;
   const pendingBalance = Math.max(0, currentPriceNum - paidNum);
 
   // Compute slots for selected date
   const selectedDateObj = new Date(`${date}T12:00:00`);
   const availableSlots = getAvailableSlots(selectedDateObj, config);
-  const defaultSlotList = ["09:00", "10:30", "12:00", "15:00", "16:00", "16:30", "17:30", "18:00", "19:00", "19:30", "20:30"];
-  const slotOptions = Array.from(new Set([...availableSlots, ...defaultSlotList, time])).sort();
+  const defaultSlotList = [
+    "09:00",
+    "10:30",
+    "12:00",
+    "15:00",
+    "16:00",
+    "16:30",
+    "17:30",
+    "18:00",
+    "19:00",
+    "19:30",
+    "20:30",
+  ];
+  const slotOptions = Array.from(
+    new Set([...availableSlots, ...defaultSlotList, time]),
+  ).sort();
 
   const handlePlanSelect = (selectedPlan: string, total: number) => {
     setPlanTitle(selectedPlan);
@@ -141,7 +168,8 @@ export function ManualBookingModal({
     e.preventDefault();
     if (!customerName.trim() || !date) return;
 
-    const finalTime = useCustomTime && customTime.trim() ? customTime.trim() : time;
+    const finalTime =
+      useCustomTime && customTime.trim() ? customTime.trim() : time;
     if (!finalTime) return;
 
     setIsSubmitting(true);
@@ -207,12 +235,18 @@ export function ManualBookingModal({
                   : "bg-accent/20 text-accent-text border border-accent/40"
               }`}
             >
-              {isEditing ? "✏️" : "⚡"}
+              {isEditing ? (
+                <EditIcon className="w-5 h-5" />
+              ) : (
+                <BoltIcon className="w-5 h-5" />
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-black font-condensed uppercase tracking-tight text-foreground">
-                  {isEditing ? "Editar / Reprogramar Turno" : "Agendar Nuevo Turno Manual"}
+                  {isEditing
+                    ? "Editar / Reprogramar Turno"
+                    : "Agendar Nuevo Turno Manual"}
                 </h2>
                 {isEditing && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30">
@@ -231,8 +265,18 @@ export function ManualBookingModal({
             onClick={onClose}
             className="p-2 rounded-xl text-muted hover:text-foreground hover:bg-surface-raised transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -272,14 +316,17 @@ export function ManualBookingModal({
           <div className="p-4 rounded-2xl bg-surface-raised/70 border border-border space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text flex items-center gap-1.5">
-                <span>📅</span> Fecha & Horario de la Sesión
+                <CalendarIcon className="w-4 h-4" /> Fecha & Horario de la
+                Sesión
               </span>
               <button
                 type="button"
                 onClick={() => setUseCustomTime(!useCustomTime)}
                 className="text-[11px] font-condensed uppercase tracking-wider text-muted hover:text-accent-text underline"
               >
-                {useCustomTime ? "Ver horarios disponibles" : "Escribir horario personalizado"}
+                {useCustomTime
+                  ? "Ver horarios disponibles"
+                  : "Escribir horario personalizado"}
               </button>
             </div>
 
@@ -333,9 +380,24 @@ export function ManualBookingModal({
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: "1 Sesión Individual", label: "Individual", price: planPrices.individual || "$35.000", total: 1 },
-                { id: "Pack 8 Sesiones", label: "Pack 8", price: planPrices.pack8 || "$240.000", total: 8 },
-                { id: "Pack 12 Sesiones", label: "Pack 12", price: planPrices.pack12 || "$300.000", total: 12 },
+                {
+                  id: "1 Sesión Individual",
+                  label: "Individual",
+                  price: planPrices.individual || "$35.000",
+                  total: 1,
+                },
+                {
+                  id: "Pack 8 Sesiones",
+                  label: "Pack 8",
+                  price: planPrices.pack8 || "$240.000",
+                  total: 8,
+                },
+                {
+                  id: "Pack 12 Sesiones",
+                  label: "Pack 12",
+                  price: planPrices.pack12 || "$300.000",
+                  total: 12,
+                },
               ].map((p) => (
                 <button
                   type="button"
@@ -347,8 +409,12 @@ export function ManualBookingModal({
                       : "bg-surface-raised border-border text-muted hover:text-foreground hover:border-border-highlight"
                   }`}
                 >
-                  <p className="text-xs font-condensed font-bold uppercase">{p.label}</p>
-                  <p className="text-xs font-mono text-accent-text font-bold mt-0.5">{p.price}</p>
+                  <p className="text-xs font-condensed font-bold uppercase">
+                    {p.label}
+                  </p>
+                  <p className="text-xs font-mono text-accent-text font-bold mt-0.5">
+                    {p.price}
+                  </p>
                 </button>
               ))}
             </div>
@@ -357,7 +423,9 @@ export function ManualBookingModal({
             {totalSessions > 1 && (
               <div className="p-3 rounded-xl bg-surface-raised border border-border flex items-center justify-between gap-4 mt-2">
                 <div className="text-xs font-condensed uppercase tracking-wide">
-                  <span className="text-muted">Progreso de Sesiones del Pack:</span>
+                  <span className="text-muted">
+                    Progreso de Sesiones del Pack:
+                  </span>
                   <span className="font-bold text-accent-text ml-2">
                     {sessionsCompleted} de {totalSessions} realizadas
                   </span>
@@ -365,15 +433,23 @@ export function ManualBookingModal({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setSessionsCompleted(Math.max(0, sessionsCompleted - 1))}
+                    onClick={() =>
+                      setSessionsCompleted(Math.max(0, sessionsCompleted - 1))
+                    }
                     className="w-7 h-7 rounded-lg bg-surface border border-border text-muted hover:text-foreground text-sm font-bold flex items-center justify-center"
                   >
                     -
                   </button>
-                  <span className="font-mono text-sm font-bold w-5 text-center">{sessionsCompleted}</span>
+                  <span className="font-mono text-sm font-bold w-5 text-center">
+                    {sessionsCompleted}
+                  </span>
                   <button
                     type="button"
-                    onClick={() => setSessionsCompleted(Math.min(totalSessions, sessionsCompleted + 1))}
+                    onClick={() =>
+                      setSessionsCompleted(
+                        Math.min(totalSessions, sessionsCompleted + 1),
+                      )
+                    }
                     className="w-7 h-7 rounded-lg bg-surface border border-border text-muted hover:text-foreground text-sm font-bold flex items-center justify-center"
                   >
                     +
@@ -389,7 +465,9 @@ export function ManualBookingModal({
               <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
                 Estado & Control Financiero
               </span>
-              <span className="text-muted text-xs font-mono">Total: {currentPriceStr}</span>
+              <span className="text-muted text-xs font-mono">
+                Total: {currentPriceStr}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -400,7 +478,9 @@ export function ManualBookingModal({
                 </label>
                 <select
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as Booking["status"])}
+                  onChange={(e) =>
+                    setStatus(e.target.value as Booking["status"])
+                  }
                   className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-xs font-condensed uppercase font-bold text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="confirmado">Confirmado</option>
@@ -431,7 +511,9 @@ export function ManualBookingModal({
                 </label>
                 <select
                   value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                  onChange={(e) =>
+                    setPaymentMethod(e.target.value as PaymentMethod)
+                  }
                   className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-xs font-condensed uppercase text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="transferencia">Transferencia Bancaria</option>
@@ -443,9 +525,19 @@ export function ManualBookingModal({
 
             {/* Quick Balance Status */}
             <div className="flex items-center justify-between text-xs pt-2 border-t border-border font-mono">
-              <span className="text-emerald-400">Abonado: ${paidNum.toLocaleString("es-AR")}</span>
-              <span className={pendingBalance > 0 ? "text-accent-text font-bold" : "text-emerald-400 font-bold"}>
-                {pendingBalance > 0 ? `Saldo Restante: $${pendingBalance.toLocaleString("es-AR")}` : "¡Totalmente Pagado!"}
+              <span className="text-emerald-400">
+                Abonado: ${paidNum.toLocaleString("es-AR")}
+              </span>
+              <span
+                className={
+                  pendingBalance > 0
+                    ? "text-accent-text font-bold"
+                    : "text-emerald-400 font-bold"
+                }
+              >
+                {pendingBalance > 0
+                  ? `Saldo Restante: $${pendingBalance.toLocaleString("es-AR")}`
+                  : "¡Totalmente Pagado!"}
               </span>
             </div>
           </div>

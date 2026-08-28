@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TagIcon } from "./Icons";
 
 export interface PlanPricingConfig {
   individual: string;
@@ -25,11 +26,15 @@ export function TarifasTab({
 }: TarifasTabProps) {
   const [localPrices, setLocalPrices] = useState<PlanPricingConfig>({
     individual: planPrices.individual || "$35.000",
-    individualDesc: planPrices.individualDesc || "Sesión 1 a 1 guiada · Duración completa: 60 min.",
+    individualDesc:
+      planPrices.individualDesc ||
+      "Sesión 1 a 1 guiada · Duración completa: 60 min.",
     pack8: planPrices.pack8 || "$240.000",
     pack12: planPrices.pack12 || "$300.000",
-    pack8Desc: planPrices.pack8Desc || "$30.000 por sesión · Vigencia: 2 meses.",
-    pack12Desc: planPrices.pack12Desc || "$25.000 por sesión · Vigencia: 3 meses.",
+    pack8Desc:
+      planPrices.pack8Desc || "$30.000 por sesión · Vigencia: 2 meses.",
+    pack12Desc:
+      planPrices.pack12Desc || "$25.000 por sesión · Vigencia: 3 meses.",
   });
 
   const parseNum = (str: string) => {
@@ -55,10 +60,12 @@ export function TarifasTab({
       <div className="p-6 sm:p-8 rounded-2xl bg-surface border border-border space-y-6">
         <div>
           <h3 className="text-lg sm:text-xl font-black text-foreground font-condensed uppercase flex items-center gap-2">
-            <span>🏷️</span> Tarifa Oficial de la Sesión
+            <TagIcon className="w-5 h-5 text-accent-text" /> Tarifa Oficial de
+            la Sesión
           </h3>
           <p className="text-xs text-muted mt-1 font-sans">
-            El precio configurado aquí se actualiza en tiempo real en la landing page, el asistente de reservas y los cálculos de comprobantes.
+            El precio configurado aquí se actualiza en tiempo real en la landing
+            page, el asistente de reservas y los cálculos de comprobantes.
           </p>
         </div>
 
@@ -88,7 +95,12 @@ export function TarifasTab({
                   type="text"
                   required
                   value={localPrices.individual}
-                  onChange={(e) => setLocalPrices({ ...localPrices, individual: e.target.value })}
+                  onChange={(e) =>
+                    setLocalPrices({
+                      ...localPrices,
+                      individual: e.target.value,
+                    })
+                  }
                   placeholder="$35.000"
                   className="w-full px-4 py-3 rounded-xl bg-surface border border-border text-xl text-accent-text font-condensed font-black focus:border-accent focus:outline-none"
                 />
@@ -101,7 +113,12 @@ export function TarifasTab({
                 <input
                   type="text"
                   value={localPrices.individualDesc || ""}
-                  onChange={(e) => setLocalPrices({ ...localPrices, individualDesc: e.target.value })}
+                  onChange={(e) =>
+                    setLocalPrices({
+                      ...localPrices,
+                      individualDesc: e.target.value,
+                    })
+                  }
                   placeholder="Sesión 1 a 1 guiada · 60 min."
                   className="w-full px-4 py-3 rounded-xl bg-surface border border-border text-xs text-foreground placeholder-muted/50 focus:border-accent focus:outline-none font-sans"
                 />

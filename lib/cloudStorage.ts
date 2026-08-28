@@ -10,7 +10,13 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { getFirestoreDB, isFirebaseConfigured } from "./firebaseConfig";
-import { Booking, BankConfig, DEFAULT_BANK_CONFIG, GiftCard } from "./bookings";
+import {
+  Booking,
+  BankConfig,
+  DEFAULT_BANK_CONFIG,
+  GiftCard,
+  StudentClinicalProfile,
+} from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
 import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "./gallery";
 import {
@@ -278,7 +284,7 @@ export async function saveDBPlanPrices(
 }
 
 // ----------------- CLINICAL PROFILES -----------------
-export async function getDBClinicalProfiles(): Promise<Record<string, any>> {
+export async function getDBClinicalProfiles(): Promise<Record<string, StudentClinicalProfile>> {
   const db = getFirestoreDB();
   if (!db || !isFirebaseConfigured()) {
     return getServerClinicalProfiles();
@@ -288,7 +294,7 @@ export async function getDBClinicalProfiles(): Promise<Record<string, any>> {
     const docRef = doc(db, "config", "clinical_profiles");
     const snapshot = await getDoc(docRef);
     if (snapshot.exists()) {
-      const data = snapshot.data() as Record<string, any>;
+      const data = snapshot.data() as Record<string, StudentClinicalProfile>;
       saveServerClinicalProfiles(data);
       return data;
     }
@@ -300,7 +306,7 @@ export async function getDBClinicalProfiles(): Promise<Record<string, any>> {
 }
 
 export async function saveDBClinicalProfiles(
-  profiles: Record<string, any>,
+  profiles: Record<string, StudentClinicalProfile>,
 ): Promise<boolean> {
   const fsOk = saveServerClinicalProfiles(profiles);
 

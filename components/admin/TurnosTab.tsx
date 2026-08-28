@@ -7,9 +7,8 @@ import {
   PaymentStatus,
   buildGoogleCalendarUrl,
   buildQuickWhatsAppMessage,
-  formatDateTimeExact,
-  formatRelativeTime,
 } from "@/lib/bookings";
+import { CalendarIcon, ReceiptIcon, TrashIcon } from "./Icons";
 
 interface TurnosTabProps {
   bookings: Booking[];
@@ -525,7 +524,8 @@ export function TurnosTab({
                               : "Pago Pendiente"}
                         </span>
                         <span className="text-[10px] text-accent-text font-condensed font-bold uppercase underline">
-                          Recibo 🧾
+                          Recibo{" "}
+                          <ReceiptIcon className="w-3 h-3 inline -mt-0.5" />
                         </span>
                       </button>
                     </div>
@@ -693,19 +693,21 @@ export function TurnosTab({
                     href={buildGoogleCalendarUrl(b)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-xs"
+                    className="p-2 rounded-lg bg-surface-raised hover:bg-surface border border-border text-foreground/70 hover:text-foreground transition-colors"
                     title="Añadir a Google Calendar"
+                    aria-label="Añadir a Google Calendar"
                   >
-                    📅
+                    <CalendarIcon className="w-3.5 h-3.5" />
                   </a>
 
                   {/* Delete */}
                   <button
                     onClick={() => onDeleteBooking(b.id)}
-                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-rose-500/20 text-white/40 hover:text-rose-400 text-xs transition-colors"
+                    className="p-2 rounded-lg bg-surface-raised hover:bg-rose-500/20 border border-border hover:border-rose-500/40 text-muted hover:text-rose-400 transition-colors"
                     title="Eliminar registro"
+                    aria-label="Eliminar turno"
                   >
-                    🗑️
+                    <TrashIcon className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>

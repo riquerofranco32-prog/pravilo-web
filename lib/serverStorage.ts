@@ -1,6 +1,12 @@
 import fs from "fs";
 import path from "path";
-import { Booking, BankConfig, DEFAULT_BANK_CONFIG } from "./bookings";
+import {
+  Booking,
+  BankConfig,
+  DEFAULT_BANK_CONFIG,
+  GiftCard,
+  StudentClinicalProfile,
+} from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
 import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "./gallery";
 
@@ -29,8 +35,8 @@ let cachedBank: BankConfig = { ...DEFAULT_BANK_CONFIG };
 let cachedPrices: Record<string, string | undefined> = {
   ...DEFAULT_PLAN_PRICES,
 };
-let cachedClinical: Record<string, any> = {};
-let cachedGiftCards: any[] = [];
+let cachedClinical: Record<string, StudentClinicalProfile> = {};
+let cachedGiftCards: GiftCard[] = [];
 
 function ensureDataDir() {
   try {
@@ -206,7 +212,7 @@ export function saveServerPlanPrices(
 }
 
 // ----------------- CLINICAL PROFILES -----------------
-export function getServerClinicalProfiles(): Record<string, any> {
+export function getServerClinicalProfiles(): Record<string, StudentClinicalProfile> {
   ensureDataDir();
 
   try {
@@ -226,7 +232,7 @@ export function getServerClinicalProfiles(): Record<string, any> {
 }
 
 export function saveServerClinicalProfiles(
-  profiles: Record<string, any>,
+  profiles: Record<string, StudentClinicalProfile>,
 ): boolean {
   cachedClinical = profiles;
   ensureDataDir();
@@ -241,7 +247,7 @@ export function saveServerClinicalProfiles(
 }
 
 // ----------------- GIFT CARDS -----------------
-export function getServerGiftCards(): any[] {
+export function getServerGiftCards(): GiftCard[] {
   ensureDataDir();
 
   try {
@@ -260,7 +266,7 @@ export function getServerGiftCards(): any[] {
   return cachedGiftCards || [];
 }
 
-export function saveServerGiftCards(cards: any[]): boolean {
+export function saveServerGiftCards(cards: GiftCard[]): boolean {
   cachedGiftCards = cards;
   ensureDataDir();
 

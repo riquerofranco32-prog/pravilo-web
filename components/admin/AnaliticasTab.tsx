@@ -3,13 +3,16 @@
 import React, { useState, useMemo } from "react";
 import { Booking, parsePriceToNumber } from "@/lib/bookings";
 import { FinancialReportPrintModal } from "./FinancialReportPrintModal";
+import { CashIcon, ChartIcon, ClockIcon, TargetIcon } from "./Icons";
 
 interface AnaliticasTabProps {
   bookings: Booking[];
 }
 
 export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
-  const [period, setPeriod] = useState<"todo" | "este_mes" | "mes_pasado">("todo");
+  const [period, setPeriod] = useState<"todo" | "este_mes" | "mes_pasado">(
+    "todo",
+  );
   const [showReportModal, setShowReportModal] = useState(false);
 
   const now = new Date();
@@ -77,7 +80,7 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
 
     const activeCount = periodBookings.length - cancelledCount;
     const attendanceRate =
-      activeCount > 0 ? Math.round((completedSessions / activeCount) * 100) : 100;
+      activeCount > 0 ? Math.round((completedSessions / activeCount) * 100) : 0;
 
     return {
       totalGross,
@@ -101,7 +104,9 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
           <h3 className="text-xl font-black font-condensed uppercase tracking-tight text-foreground">
             Dashboard Financiero & Rendimiento
           </h3>
-          <p className="text-xs text-muted font-sans">Métricas de facturación, cobranzas y retención de alumnos</p>
+          <p className="text-xs text-muted font-sans">
+            Métricas de facturación, cobranzas y retención de alumnos
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
@@ -109,8 +114,18 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
             onClick={() => setShowReportModal(true)}
             className="btn-shiny px-4 py-2 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-accent/20"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
             </svg>
             <span>Emitir Reporte PDF</span>
           </button>
@@ -145,7 +160,9 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
             <span className="text-xs font-condensed font-bold uppercase tracking-wider text-emerald-400">
               Total Cobrado
             </span>
-            <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs">💵</span>
+            <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs">
+              <CashIcon className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-3xl font-black font-mono text-emerald-300">
             ${stats.totalCollected.toLocaleString("es-AR")}
@@ -163,7 +180,9 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
             <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
               Saldos a Cobrar
             </span>
-            <span className="p-1.5 rounded-lg bg-accent/20 text-accent-text text-xs">⏳</span>
+            <span className="p-1.5 rounded-lg bg-accent/20 text-accent-text text-xs">
+              <ClockIcon className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-3xl font-black font-mono text-accent-text">
             ${stats.totalPending.toLocaleString("es-AR")}
@@ -179,7 +198,9 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
             <span className="text-xs font-condensed font-bold uppercase tracking-wider text-foreground/80">
               Volumen Bruto
             </span>
-            <span className="p-1.5 rounded-lg bg-surface text-foreground text-xs">📊</span>
+            <span className="p-1.5 rounded-lg bg-surface text-foreground text-xs">
+              <ChartIcon className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-3xl font-black font-mono text-foreground">
             ${stats.totalGross.toLocaleString("es-AR")}
@@ -195,7 +216,9 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
             <span className="text-xs font-condensed font-bold uppercase tracking-wider text-sky-400">
               Tasa de Asistencia
             </span>
-            <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 text-xs">🎯</span>
+            <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 text-xs">
+              <TargetIcon className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-3xl font-black font-mono text-sky-300">
             {stats.attendanceRate}%
@@ -214,18 +237,31 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
           </h4>
 
           <div className="space-y-3">
+            {Object.keys(stats.planCounts).length === 0 && (
+              <p className="text-xs text-muted font-sans py-6 text-center">
+                Sin turnos en el período seleccionado.
+              </p>
+            )}
             {Object.entries(stats.planCounts).map(([planName, count]) => {
-              const pct = stats.totalBookings > 0 ? Math.round((count / stats.totalBookings) * 100) : 0;
+              const pct =
+                stats.totalBookings > 0
+                  ? Math.round((count / stats.totalBookings) * 100)
+                  : 0;
               return (
                 <div key={planName} className="space-y-1">
                   <div className="flex justify-between text-xs font-condensed">
-                    <span className="text-foreground uppercase tracking-wide">{planName}</span>
+                    <span className="text-foreground uppercase tracking-wide">
+                      {planName}
+                    </span>
                     <span className="font-mono text-accent-text font-bold">
                       {count} ({pct}%)
                     </span>
                   </div>
                   <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden flex">
-                    <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
+                    <div
+                      className="h-full bg-accent rounded-full"
+                      style={{ width: `${pct}%` }}
+                    />
                   </div>
                 </div>
               );
@@ -240,25 +276,33 @@ export function AnaliticasTab({ bookings }: AnaliticasTabProps) {
           </h4>
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3.5 rounded-xl bg-surface-raised border border-border">
-              <span className="text-[11px] text-emerald-400 block font-condensed uppercase tracking-wider font-bold">Realizados</span>
+              <span className="text-[11px] text-emerald-400 block font-condensed uppercase tracking-wider font-bold">
+                Realizados
+              </span>
               <span className="text-2xl font-bold font-mono text-foreground mt-1 block">
                 {stats.completedSessions}
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-surface-raised border border-border">
-              <span className="text-[11px] text-accent-text block font-condensed uppercase tracking-wider font-bold">Confirmados</span>
+              <span className="text-[11px] text-accent-text block font-condensed uppercase tracking-wider font-bold">
+                Confirmados
+              </span>
               <span className="text-2xl font-bold font-mono text-foreground mt-1 block">
                 {stats.confirmedCount}
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-surface-raised border border-border">
-              <span className="text-[11px] text-rose-400 block font-condensed uppercase tracking-wider font-bold">Cancelados</span>
+              <span className="text-[11px] text-rose-400 block font-condensed uppercase tracking-wider font-bold">
+                Cancelados
+              </span>
               <span className="text-2xl font-bold font-mono text-foreground mt-1 block">
                 {stats.cancelledCount}
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-surface-raised border border-border">
-              <span className="text-[11px] text-muted block font-condensed uppercase tracking-wider font-bold">Volumen Total Bruto</span>
+              <span className="text-[11px] text-muted block font-condensed uppercase tracking-wider font-bold">
+                Volumen Total Bruto
+              </span>
               <span className="text-base font-bold font-mono text-foreground mt-1 block">
                 ${stats.totalGross.toLocaleString("es-AR")}
               </span>

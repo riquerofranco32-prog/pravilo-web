@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { GiftCard, buildGiftCardShareWhatsAppMessage } from "@/lib/bookings";
+import { CopyIcon, GiftIcon, TrashIcon } from "./Icons";
 
 interface GiftCardsTabProps {
   giftCards: GiftCard[];
@@ -21,7 +22,9 @@ export function GiftCardsTab({
   const [planTitle, setPlanTitle] = useState("1 Sesión Individual");
   const [customMessage, setCustomMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"todos" | "activo" | "canjeado">("todos");
+  const [filterStatus, setFilterStatus] = useState<
+    "todos" | "activo" | "canjeado"
+  >("todos");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const getPriceForPlan = (plan: string) => {
@@ -34,7 +37,10 @@ export function GiftCardsTab({
     e.preventDefault();
     if (!recipientName.trim() || !senderName.trim()) return;
 
-    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const randomSuffix = Math.random()
+      .toString(36)
+      .substring(2, 6)
+      .toUpperCase();
     const code = `PRAVILO-${randomSuffix}`;
 
     const newCard: GiftCard = {
@@ -68,8 +74,12 @@ export function GiftCardsTab({
       const isCurrentlyActive = gc.status === "activo";
       return {
         ...gc,
-        status: (isCurrentlyActive ? "canjeado" : "activo") as GiftCard["status"],
-        redeemedAt: isCurrentlyActive ? new Date().toISOString().split("T")[0] : undefined,
+        status: (isCurrentlyActive
+          ? "canjeado"
+          : "activo") as GiftCard["status"],
+        redeemedAt: isCurrentlyActive
+          ? new Date().toISOString().split("T")[0]
+          : undefined,
       };
     });
     onSaveGiftCards(updated);
@@ -104,17 +114,25 @@ export function GiftCardsTab({
       {/* Top Header & Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
-          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">Total Emitidas</span>
-          <p className="text-3xl font-black font-condensed text-foreground">{giftCards.length}</p>
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
+            Total Emitidas
+          </span>
+          <p className="text-3xl font-black font-condensed text-foreground">
+            {giftCards.length}
+          </p>
         </div>
         <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
-          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-emerald-400">Activas / Por Canjear</span>
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-emerald-400">
+            Activas / Por Canjear
+          </span>
           <p className="text-3xl font-black font-condensed text-emerald-300">
             {giftCards.filter((g) => g.status === "activo").length}
           </p>
         </div>
         <div className="p-5 rounded-2xl bg-surface border border-border space-y-1">
-          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-muted">Canjeadas en Estudio</span>
+          <span className="text-xs font-condensed font-bold uppercase tracking-wider text-muted">
+            Canjeadas en Estudio
+          </span>
           <p className="text-3xl font-black font-condensed text-foreground/80">
             {giftCards.filter((g) => g.status === "canjeado").length}
           </p>
@@ -126,15 +144,20 @@ export function GiftCardsTab({
         <div className="lg:col-span-5 p-6 rounded-2xl bg-surface border border-border space-y-5">
           <div>
             <h3 className="text-lg font-black font-condensed uppercase text-foreground flex items-center gap-2">
-              <span>🎁</span> Emitir Nueva Gift Card
+              <GiftIcon className="w-5 h-5 text-accent-text" /> Emitir Nueva
+              Gift Card
             </h3>
-            <p className="text-xs text-muted mt-1 font-sans">Generá un código de voucher oficial para enviar por WhatsApp</p>
+            <p className="text-xs text-muted mt-1 font-sans">
+              Generá un código de voucher oficial para enviar por WhatsApp
+            </p>
           </div>
 
           <form onSubmit={handleCreateGiftCard} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Para (Beneficiario) *</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                  Para (Beneficiario) *
+                </label>
                 <input
                   type="text"
                   required
@@ -145,7 +168,9 @@ export function GiftCardsTab({
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Teléfono Beneficiario</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                  Teléfono Beneficiario
+                </label>
                 <input
                   type="text"
                   value={recipientPhone}
@@ -158,7 +183,9 @@ export function GiftCardsTab({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">De parte de *</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                  De parte de *
+                </label>
                 <input
                   type="text"
                   required
@@ -169,7 +196,9 @@ export function GiftCardsTab({
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Teléfono Remitente</label>
+                <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                  Teléfono Remitente
+                </label>
                 <input
                   type="text"
                   value={senderPhone}
@@ -181,20 +210,30 @@ export function GiftCardsTab({
             </div>
 
             <div>
-              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Plan / Experiencia a Regalar</label>
+              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                Plan / Experiencia a Regalar
+              </label>
               <select
                 value={planTitle}
                 onChange={(e) => setPlanTitle(e.target.value)}
                 className="w-full px-3 py-2.5 rounded-xl bg-surface-raised border border-border text-xs font-condensed font-bold uppercase tracking-wide text-foreground focus:border-accent focus:outline-none"
               >
-                <option value="1 Sesión Individual">1 Sesión Individual ({getPriceForPlan("1 Sesión")})</option>
-                <option value="Pack 8 Sesiones">Pack 8 Sesiones ({getPriceForPlan("Pack 8")})</option>
-                <option value="Pack 12 Sesiones">Pack 12 Sesiones ({getPriceForPlan("Pack 12")})</option>
+                <option value="1 Sesión Individual">
+                  1 Sesión Individual ({getPriceForPlan("1 Sesión")})
+                </option>
+                <option value="Pack 8 Sesiones">
+                  Pack 8 Sesiones ({getPriceForPlan("Pack 8")})
+                </option>
+                <option value="Pack 12 Sesiones">
+                  Pack 12 Sesiones ({getPriceForPlan("Pack 12")})
+                </option>
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">Dedicatoria Especial (Opcional)</label>
+              <label className="block text-[11px] font-condensed uppercase tracking-wider text-muted mb-1">
+                Dedicatoria Especial (Opcional)
+              </label>
               <textarea
                 rows={2}
                 value={customMessage}
@@ -267,7 +306,11 @@ export function GiftCardsTab({
                           >
                             {gc.code}
                             <span className="text-[10px] text-muted">
-                              {copiedCode === gc.code ? "✓" : "📋"}
+                              {copiedCode === gc.code ? (
+                                "✓"
+                              ) : (
+                                <CopyIcon className="w-3 h-3" />
+                              )}
                             </span>
                           </button>
                           <span
@@ -282,9 +325,13 @@ export function GiftCardsTab({
                         </div>
                         <p className="text-xs text-foreground mt-1">
                           <span className="text-muted">Para:</span>{" "}
-                          <span className="font-semibold text-foreground">{gc.recipientName}</span>{" "}
+                          <span className="font-semibold text-foreground">
+                            {gc.recipientName}
+                          </span>{" "}
                           <span className="text-muted">de</span>{" "}
-                          <span className="font-semibold text-foreground">{gc.senderName}</span>
+                          <span className="font-semibold text-foreground">
+                            {gc.senderName}
+                          </span>
                         </p>
                       </div>
 
@@ -325,15 +372,18 @@ export function GiftCardsTab({
                               : "bg-surface-raised text-muted hover:text-foreground"
                           }`}
                         >
-                          {gc.status === "activo" ? "Marcar Canjeado" : "Reactivar"}
+                          {gc.status === "activo"
+                            ? "Marcar Canjeado"
+                            : "Reactivar"}
                         </button>
 
                         <button
                           onClick={() => handleDelete(gc.id)}
-                          className="p-1 text-muted hover:text-rose-400 text-xs"
+                          className="p-1 text-muted hover:text-rose-400"
                           title="Eliminar"
+                          aria-label="Eliminar gift card"
                         >
-                          🗑️
+                          <TrashIcon className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Booking, buildGoogleReviewWhatsAppMessage } from "@/lib/bookings";
+import { CopyIcon } from "./Icons";
 
 interface FidelizacionTabProps {
   bookings: Booking[];
@@ -45,7 +46,9 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
       map.set(key, existing);
     });
 
-    return Array.from(map.values()).sort((a, b) => b.lastDate.localeCompare(a.lastDate));
+    return Array.from(map.values()).sort((a, b) =>
+      b.lastDate.localeCompare(a.lastDate),
+    );
   }, [bookings]);
 
   const filteredStudents = completedStudents.filter((s) => {
@@ -76,7 +79,9 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
               Multiplicá la reputación y confianza de PRAVILO ARG
             </h3>
             <p className="text-xs sm:text-sm text-muted leading-relaxed font-sans">
-              Solicitá reseñas de 5 estrellas a tus alumnos tras completar sus sesiones o packs. Los testimonios verificados aumentan las reservas orgánicas en Neuquén y Plottier.
+              Solicitá reseñas de 5 estrellas a tus alumnos tras completar sus
+              sesiones o packs. Los testimonios verificados aumentan las
+              reservas orgánicas en Neuquén y Plottier.
             </p>
           </div>
 
@@ -93,7 +98,13 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
               onClick={handleCopyLink}
               className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-surface-raised hover:bg-surface border border-border text-xs font-condensed font-bold uppercase tracking-wider text-foreground flex items-center justify-center gap-2 transition-all"
             >
-              {copiedLink ? "✓ Link Copiado" : "📋 Copiar Link de Reseña"}
+              {copiedLink ? (
+                "✓ Link Copiado"
+              ) : (
+                <>
+                  <CopyIcon className="w-3.5 h-3.5" /> Copiar Link de Reseña
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -107,7 +118,8 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
               Alumnos con Sesiones Realizadas ({completedStudents.length})
             </h4>
             <p className="text-xs text-muted">
-              Hacé clic en &ldquo;Pedir Reseña&rdquo; para enviar un mensaje directo y personalizado por WhatsApp.
+              Hacé clic en &ldquo;Pedir Reseña&rdquo; para enviar un mensaje
+              directo y personalizado por WhatsApp.
             </p>
           </div>
 
@@ -123,7 +135,8 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
         <div className="overflow-x-auto">
           {filteredStudents.length === 0 ? (
             <p className="text-xs text-muted text-center py-12 italic">
-              No hay alumnos con sesiones finalizadas que coincidan con la búsqueda.
+              No hay alumnos con sesiones finalizadas que coincidan con la
+              búsqueda.
             </p>
           ) : (
             <table className="w-full text-left text-xs border-collapse">
@@ -139,16 +152,31 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
               </thead>
               <tbody className="divide-y divide-border/60">
                 {filteredStudents.map((s) => {
-                  const waUrl = buildGoogleReviewWhatsAppMessage(s.name, s.phone);
+                  const waUrl = buildGoogleReviewWhatsAppMessage(
+                    s.name,
+                    s.phone,
+                  );
                   return (
-                    <tr key={s.phone} className="hover:bg-surface-raised transition-colors">
-                      <td className="py-3.5 px-3 font-condensed font-bold uppercase text-foreground text-sm">{s.name}</td>
-                      <td className="py-3.5 px-3 font-mono text-muted">{s.phone}</td>
-                      <td className="py-3.5 px-3 font-condensed font-bold text-accent-text">
-                        {s.completedCount} sesión{s.completedCount !== 1 ? "es" : ""}
+                    <tr
+                      key={s.phone}
+                      className="hover:bg-surface-raised transition-colors"
+                    >
+                      <td className="py-3.5 px-3 font-condensed font-bold uppercase text-foreground text-sm">
+                        {s.name}
                       </td>
-                      <td className="py-3.5 px-3 font-condensed uppercase text-foreground/90">{s.plan}</td>
-                      <td className="py-3.5 px-3 font-mono text-muted">{s.lastDate}</td>
+                      <td className="py-3.5 px-3 font-mono text-muted">
+                        {s.phone}
+                      </td>
+                      <td className="py-3.5 px-3 font-condensed font-bold text-accent-text">
+                        {s.completedCount} sesión
+                        {s.completedCount !== 1 ? "es" : ""}
+                      </td>
+                      <td className="py-3.5 px-3 font-condensed uppercase text-foreground/90">
+                        {s.plan}
+                      </td>
+                      <td className="py-3.5 px-3 font-mono text-muted">
+                        {s.lastDate}
+                      </td>
                       <td className="py-3.5 px-3 text-right">
                         <a
                           href={waUrl}

@@ -55,7 +55,9 @@ export function AgendaCalendarTab({
   const selectedDayBookings = (bookingsByDate.get(selectedDateStr) || []).sort(
     (a, b) => a.time.localeCompare(b.time),
   );
-  const isSelectedDateBlocked = (config.blockedDates || []).includes(selectedDateStr);
+  const isSelectedDateBlocked = (config.blockedDates || []).includes(
+    selectedDateStr,
+  );
   const blockedReason = config.blockedDateReasons?.[selectedDateStr];
   const configuredSlots = getAvailableSlots(selectedDateObj, config);
 
@@ -95,8 +97,18 @@ export function AgendaCalendarTab({
             className="p-2.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-foreground hover:text-accent-text transition-colors"
             title="Mes anterior"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <button
@@ -104,8 +116,18 @@ export function AgendaCalendarTab({
             className="p-2.5 rounded-xl bg-surface-raised hover:bg-surface border border-border text-foreground hover:text-accent-text transition-colors"
             title="Mes siguiente"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
@@ -130,7 +152,10 @@ export function AgendaCalendarTab({
           <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {/* Empty slots for month padding */}
             {Array.from({ length: firstDayIndex }).map((_, idx) => (
-              <div key={`empty-${idx}`} className="h-16 sm:h-20 rounded-xl bg-transparent opacity-10" />
+              <div
+                key={`empty-${idx}`}
+                className="h-16 sm:h-20 rounded-xl bg-transparent opacity-10"
+              />
             ))}
 
             {/* Month Day Cells */}
@@ -140,7 +165,8 @@ export function AgendaCalendarTab({
               const isSelected = selectedDateStr === dateStr;
               const dayBookings = bookingsByDate.get(dateStr) || [];
               const isBlocked = (config.blockedDates || []).includes(dateStr);
-              const isToday = new Date().toISOString().split("T")[0] === dateStr;
+              const isToday =
+                new Date().toISOString().split("T")[0] === dateStr;
 
               return (
                 <button
@@ -209,7 +235,9 @@ export function AgendaCalendarTab({
                 </h4>
                 <p className="text-xs text-muted font-sans">
                   {isSelectedDateBlocked ? (
-                    <span className="text-rose-400">⛔ {blockedReason || "Día Bloqueado / Feriado"}</span>
+                    <span className="text-rose-400">
+                      ⛔ {blockedReason || "Día Bloqueado / Feriado"}
+                    </span>
                   ) : (
                     `${selectedDayBookings.length} turno(s) agendado(s)`
                   )}
@@ -243,96 +271,118 @@ export function AgendaCalendarTab({
               )}
 
               {/* Show configured slots and any existing bookings on non-configured slots */}
-              {Array.from(new Set([...configuredSlots, ...selectedDayBookings.map((b) => b.time)])).sort().map((slot) => {
-                const bookingInSlot = selectedDayBookings.find((b) => b.time === slot);
+              {Array.from(
+                new Set([
+                  ...configuredSlots,
+                  ...selectedDayBookings.map((b) => b.time),
+                ]),
+              )
+                .sort()
+                .map((slot) => {
+                  const bookingInSlot = selectedDayBookings.find(
+                    (b) => b.time === slot,
+                  );
 
-                return (
-                  <div
-                    key={slot}
-                    className={`p-3.5 rounded-xl border text-xs transition-all ${
-                      bookingInSlot
-                        ? "bg-surface-raised border-accent/40 shadow-sm space-y-2"
-                        : "bg-surface-raised/40 border-border text-muted hover:bg-surface-raised"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-condensed font-bold text-accent-text text-sm">{slot} hs</span>
-                      {bookingInSlot ? (
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold ${
-                            bookingInSlot.status === "confirmado"
-                              ? "bg-emerald-500/20 text-emerald-300"
-                              : bookingInSlot.status === "realizado"
-                                ? "bg-sky-500/20 text-sky-300"
-                                : bookingInSlot.status === "cancelado"
-                                  ? "bg-rose-500/20 text-rose-300"
-                                  : "bg-amber-500/20 text-amber-300"
-                          }`}
-                        >
-                          {bookingInSlot.status}
+                  return (
+                    <div
+                      key={slot}
+                      className={`p-3.5 rounded-xl border text-xs transition-all ${
+                        bookingInSlot
+                          ? "bg-surface-raised border-accent/40 shadow-sm space-y-2"
+                          : "bg-surface-raised/40 border-border text-muted hover:bg-surface-raised"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-condensed font-bold text-accent-text text-sm">
+                          {slot} hs
                         </span>
-                      ) : (
-                        <button
-                          onClick={() => onOpenManualBookingForDate(selectedDateStr, slot)}
-                          className="text-[10px] text-muted hover:text-accent-text font-condensed font-bold uppercase tracking-wider underline flex items-center gap-1"
-                        >
-                          + Agendar en este horario
-                        </button>
+                        {bookingInSlot ? (
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold ${
+                              bookingInSlot.status === "confirmado"
+                                ? "bg-emerald-500/20 text-emerald-300"
+                                : bookingInSlot.status === "realizado"
+                                  ? "bg-sky-500/20 text-sky-300"
+                                  : bookingInSlot.status === "cancelado"
+                                    ? "bg-rose-500/20 text-rose-300"
+                                    : "bg-amber-500/20 text-amber-300"
+                            }`}
+                          >
+                            {bookingInSlot.status}
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() =>
+                              onOpenManualBookingForDate(selectedDateStr, slot)
+                            }
+                            className="text-[10px] text-muted hover:text-accent-text font-condensed font-bold uppercase tracking-wider underline flex items-center gap-1"
+                          >
+                            + Agendar en este horario
+                          </button>
+                        )}
+                      </div>
+
+                      {bookingInSlot && (
+                        <div className="space-y-1.5 pt-1">
+                          <div>
+                            <p className="font-condensed font-bold uppercase text-foreground text-sm">
+                              {bookingInSlot.customerName}
+                            </p>
+                            <p className="text-muted text-xs font-sans">
+                              {bookingInSlot.planTitle} ·{" "}
+                              <span className="font-mono text-accent-text font-semibold">
+                                {bookingInSlot.planPrice}
+                              </span>
+                            </p>
+                            {bookingInSlot.customerPhone && (
+                              <p className="text-muted/70 font-mono text-[11px]">
+                                {bookingInSlot.customerPhone}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Direct action buttons on calendar */}
+                          <div className="flex items-center gap-1.5 pt-1 border-t border-border/60">
+                            {onEditBooking && (
+                              <button
+                                onClick={() => onEditBooking(bookingInSlot)}
+                                className="px-2 py-1 rounded bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 font-condensed font-bold uppercase text-[10px] transition-colors"
+                              >
+                                Editar
+                              </button>
+                            )}
+                            <button
+                              onClick={() => onSelectBooking(bookingInSlot.id)}
+                              className="px-2 py-1 rounded bg-surface border border-border hover:border-accent text-foreground font-condensed font-bold uppercase text-[10px] transition-colors"
+                            >
+                              Recibo
+                            </button>
+                            {bookingInSlot.customerPhone && (
+                              <a
+                                href={buildQuickWhatsAppMessage(
+                                  "recordatorio",
+                                  bookingInSlot,
+                                  bankConfig || {
+                                    alias: "PRAVILO.ARG",
+                                    cbu: "0000003100010000000000",
+                                    titular: "Juan Ignacio Garrafa",
+                                    banco: "Mercado Pago / Banco",
+                                  },
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-condensed font-bold uppercase text-[10px] transition-colors"
+                                title="Enviar recordatorio por WhatsApp"
+                              >
+                                WA
+                              </a>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
-
-                    {bookingInSlot && (
-                      <div className="space-y-1.5 pt-1">
-                        <div>
-                          <p className="font-condensed font-bold uppercase text-foreground text-sm">
-                            {bookingInSlot.customerName}
-                          </p>
-                          <p className="text-muted text-xs font-sans">
-                            {bookingInSlot.planTitle} · <span className="font-mono text-accent-text font-semibold">{bookingInSlot.planPrice}</span>
-                          </p>
-                          {bookingInSlot.customerPhone && (
-                            <p className="text-muted/70 font-mono text-[11px]">{bookingInSlot.customerPhone}</p>
-                          )}
-                        </div>
-
-                        {/* Direct action buttons on calendar */}
-                        <div className="flex items-center gap-1.5 pt-1 border-t border-border/60">
-                          {onEditBooking && (
-                            <button
-                              onClick={() => onEditBooking(bookingInSlot)}
-                              className="px-2 py-1 rounded bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 font-condensed font-bold uppercase text-[10px] transition-colors"
-                            >
-                              ✏️ Editar
-                            </button>
-                          )}
-                          <button
-                            onClick={() => onSelectBooking(bookingInSlot.id)}
-                            className="px-2 py-1 rounded bg-surface border border-border hover:border-accent text-foreground font-condensed font-bold uppercase text-[10px] transition-colors"
-                          >
-                            🧾 Recibo
-                          </button>
-                          {bookingInSlot.customerPhone && (
-                            <a
-                              href={buildQuickWhatsAppMessage("recordatorio", bookingInSlot, bankConfig || {
-                                alias: "PRAVILO.ARG",
-                                cbu: "0000003100010000000000",
-                                titular: "Juan Ignacio Garrafa",
-                                banco: "Mercado Pago / Banco",
-                              })}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-condensed font-bold uppercase text-[10px] transition-colors"
-                              title="Enviar recordatorio por WhatsApp"
-                            >
-                              WA
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>

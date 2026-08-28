@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { BankConfig } from "@/lib/bookings";
+import { CardIcon } from "./Icons";
 
 interface BancoTabProps {
   bankConfig: BankConfig;
@@ -39,10 +40,12 @@ export function BancoTab({
       <div className="p-6 sm:p-8 rounded-2xl bg-surface border border-border space-y-6">
         <div>
           <h3 className="text-lg font-black font-condensed uppercase tracking-tight text-foreground flex items-center gap-2">
-            <span>💳</span> Datos Bancarios & Cobranzas
+            <CardIcon className="w-5 h-5 text-accent-text" /> Datos Bancarios &
+            Cobranzas
           </h3>
           <p className="text-xs text-muted mt-1 font-sans">
-            Estos datos se utilizan automáticamente al generar comprobantes de pago, solicitudes de seña y links de cobro por WhatsApp.
+            Estos datos se utilizan automáticamente al generar comprobantes de
+            pago, solicitudes de seña y links de cobro por WhatsApp.
           </p>
         </div>
 
@@ -56,7 +59,9 @@ export function BancoTab({
                 type="text"
                 required
                 value={localBank.alias}
-                onChange={(e) => setLocalBank({ ...localBank, alias: e.target.value })}
+                onChange={(e) =>
+                  setLocalBank({ ...localBank, alias: e.target.value })
+                }
                 placeholder="Ej. PRAVILO.ARG"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground font-mono uppercase focus:border-accent focus:outline-none"
               />
@@ -78,7 +83,9 @@ export function BancoTab({
               <input
                 type="text"
                 value={localBank.cbu}
-                onChange={(e) => setLocalBank({ ...localBank, cbu: e.target.value })}
+                onChange={(e) =>
+                  setLocalBank({ ...localBank, cbu: e.target.value })
+                }
                 placeholder="0000003100010000000000"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground font-mono focus:border-accent focus:outline-none"
               />
@@ -102,7 +109,13 @@ export function BancoTab({
               <input
                 type="text"
                 value={localBank.titular || localBank.accountHolder || ""}
-                onChange={(e) => setLocalBank({ ...localBank, titular: e.target.value, accountHolder: e.target.value })}
+                onChange={(e) =>
+                  setLocalBank({
+                    ...localBank,
+                    titular: e.target.value,
+                    accountHolder: e.target.value,
+                  })
+                }
                 placeholder="Juan I. Garrafa"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground focus:border-accent focus:outline-none font-sans"
               />
@@ -115,7 +128,13 @@ export function BancoTab({
               <input
                 type="text"
                 value={localBank.banco || localBank.bankName || ""}
-                onChange={(e) => setLocalBank({ ...localBank, banco: e.target.value, bankName: e.target.value })}
+                onChange={(e) =>
+                  setLocalBank({
+                    ...localBank,
+                    banco: e.target.value,
+                    bankName: e.target.value,
+                  })
+                }
                 placeholder="Mercado Pago / Banco Galicia"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground focus:border-accent focus:outline-none font-sans"
               />
@@ -129,7 +148,9 @@ export function BancoTab({
             <input
               type="text"
               value={localBank.cuit || ""}
-              onChange={(e) => setLocalBank({ ...localBank, cuit: e.target.value })}
+              onChange={(e) =>
+                setLocalBank({ ...localBank, cuit: e.target.value })
+              }
               placeholder="20-xxxxxxxx-x"
               className="w-full px-3.5 py-2.5 rounded-xl bg-surface-raised border border-border text-sm text-foreground font-mono focus:border-accent focus:outline-none"
             />
