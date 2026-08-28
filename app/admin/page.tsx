@@ -20,7 +20,6 @@ import {
   PaymentMethod,
   PaymentStatus,
   StudentClinicalProfile,
-  generateSampleBookings,
   generateSampleClinicalProfiles,
 } from "@/lib/bookings";
 
@@ -524,25 +523,46 @@ export default function AdminPage() {
     fetchBookings(false);
   }, []);
 
-  const handleReloadSamples = () => {
-    const freshBookings = generateSampleBookings();
-    const freshClinical = generateSampleClinicalProfiles();
-    setBookings(freshBookings);
-    setClinicalProfiles(freshClinical);
-    broadcastBookingsUpdate(freshBookings);
-    localStorage.setItem(
-      LOCAL_STORAGE_CLINICAL_KEY,
-      JSON.stringify(freshClinical),
-    );
+  const handleReloadSamples = async () => {
+    if (
+      !confirm(
+        `Esto REEMPLAZA los ${bookings.length} turnos actuales por turnos de prueba. ¿Continuar?`,
+      )
+    )
+      return;
 
-    fetch("/api/admin/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ resetWithSamples: true }),
-    }).catch(() => {});
-
-    setSaveStatus("✨ ¡Turnos nuevos cargados exitosamente!");
-    setTimeout(() => setSaveStatus(null), 3000);
+    try {
+      const res = await fetch("/api/admin/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resetWithSamples: true }),
+      });
+      const data = await res.json();
+      if (!data?.ok || !Array.isArray(data.bookings)) {
+        alert(data?.error || "No se pudieron cargar los turnos de prueba.");
+        return;
+      }
+      const freshClinical = generateSampleClinicalProfiles();
+      knownBookingIdsRef.current = new Set(
+        data.bookings.map((b: Booking) => b.id),
+      );
+      setBookings(data.bookings);
+      broadcastBookingsUpdate(data.bookings);
+      setClinicalProfiles(freshClinical);
+      localStorage.setItem(
+        LOCAL_STORAGE_CLINICAL_KEY,
+        JSON.stringify(freshClinical),
+      );
+      await saveConfigSlice(
+        { clinicalProfiles: freshClinical },
+        () => {},
+        "Los turnos se cargaron pero los perfiles clínicos de prueba no se guardaron.",
+      );
+      setSaveStatus("✨ Turnos de prueba cargados.");
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch {
+      alert("Error de conexión al cargar los turnos de prueba.");
+    }
   };
 
   const handleLogin = (e: React.FormEvent) => {

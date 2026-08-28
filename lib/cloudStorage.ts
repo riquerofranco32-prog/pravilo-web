@@ -106,21 +106,23 @@ export async function saveDBBookings(bookings: Booking[]): Promise<boolean> {
   }
 }
 
-function upsertLocalBooking(booking: Booking) {
+function upsertLocalBooking(booking: Booking): boolean {
   const current = getServerBookings();
   const index = current.findIndex((b) => b.id === booking.id);
   const updated =
     index >= 0
       ? current.map((b) => (b.id === booking.id ? booking : b))
       : [booking, ...current];
-  saveServerBookings(updated);
+  return saveServerBookings(updated);
 }
 
+// ponytail: without Firebase, disk is the only store. On Vercel that disk
+// is read-only + ephemeral, so writeFileSync fails: report that honestly
+// instead of pretending the in-memory mutation persisted.
 export async function upsertDBBooking(booking: Booking): Promise<boolean> {
   const db = getFirestoreDB();
   if (!db || !isFirebaseConfigured()) {
-    upsertLocalBooking(booking);
-    return true;
+    return upsertLocalBooking(booking);
   }
 
   try {
@@ -139,8 +141,7 @@ export async function deleteDBBooking(id: string): Promise<boolean> {
   const db = getFirestoreDB();
   if (!db || !isFirebaseConfigured()) {
     const current = getServerBookings();
-    saveServerBookings(current.filter((b) => b.id !== id));
-    return true;
+    return saveServerBookings(current.filter((b) => b.id !== id));
   }
 
   try {
@@ -181,10 +182,10 @@ export async function getDBScheduleConfig(): Promise<ScheduleConfig> {
 export async function saveDBScheduleConfig(
   config: ScheduleConfig,
 ): Promise<boolean> {
-  saveServerScheduleConfig(config);
+  const fsOk = saveServerScheduleConfig(config);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "schedule");
@@ -219,10 +220,10 @@ export async function getDBBankConfig(): Promise<BankConfig> {
 }
 
 export async function saveDBBankConfig(bank: BankConfig): Promise<boolean> {
-  saveServerBankConfig(bank);
+  const fsOk = saveServerBankConfig(bank);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "bank");
@@ -261,10 +262,10 @@ export async function getDBPlanPrices(): Promise<
 export async function saveDBPlanPrices(
   prices: Record<string, string | undefined>,
 ): Promise<boolean> {
-  saveServerPlanPrices(prices);
+  const fsOk = saveServerPlanPrices(prices);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "plan_prices");
@@ -301,10 +302,10 @@ export async function getDBClinicalProfiles(): Promise<Record<string, any>> {
 export async function saveDBClinicalProfiles(
   profiles: Record<string, any>,
 ): Promise<boolean> {
-  saveServerClinicalProfiles(profiles);
+  const fsOk = saveServerClinicalProfiles(profiles);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "clinical_profiles");
@@ -340,10 +341,10 @@ export async function getDBGiftCards(): Promise<GiftCard[]> {
 }
 
 export async function saveDBGiftCards(cards: GiftCard[]): Promise<boolean> {
-  saveServerGiftCards(cards);
+  const fsOk = saveServerGiftCards(cards);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "gift_cards");
@@ -383,10 +384,10 @@ export async function getDBGalleryImages(): Promise<GalleryImageItem[]> {
 export async function saveDBGalleryImages(
   images: GalleryImageItem[],
 ): Promise<boolean> {
-  saveServerGalleryImages(images);
+  const fsOk = saveServerGalleryImages(images);
 
   const db = getFirestoreDB();
-  if (!db || !isFirebaseConfigured()) return true;
+  if (!db || !isFirebaseConfigured()) return fsOk;
 
   try {
     const docRef = doc(db, "config", "gallery_images");
