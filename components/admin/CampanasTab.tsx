@@ -12,31 +12,52 @@ type CampaignSegment = "inactivos" | "renovacion" | "nuevos" | "todos";
 interface MessageTemplate {
   id: string;
   title: string;
+  icon: React.ReactNode;
   content: string;
 }
 
 const TEMPLATES: MessageTemplate[] = [
   {
     id: "reactivacion",
-    title: "🔥 Reactivación de Alumno Inactivo",
+    title: "Reactivación de Alumno Inactivo",
+    icon: (
+      <svg className="w-4 h-4 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+      </svg>
+    ),
     content:
       "¡Hola {nombre}! 👋 Te escribo desde PRAVILO ARG. Notamos que hace unas semanas no realizás tu sesión de descompresión fascial. Queríamos saber cómo viene respondiendo tu espalda y contarte que abrimos nuevos horarios para esta semana. ¿Te gustaría reservar tu sesión? 🧘‍♂️",
   },
   {
     id: "renovacion",
-    title: "⭐ Renovación de Pack con Beneficio",
+    title: "Renovación de Pack con Beneficio",
+    icon: (
+      <svg className="w-4 h-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+      </svg>
+    ),
     content:
       "¡Hola {nombre}! 🚀 Felicitaciones por completar tu plan en PRAVILO ARG. Para consolidar la corrección postural y mantener la descompresión de tu columna, tenemos disponible el Pack de 8 sesiones con beneficio exclusivo. ¿Querés que te reservemos tus días fijos?",
   },
   {
     id: "seguimiento",
-    title: "🩺 Chequeo de Estado Post-Sesión",
+    title: "Chequeo de Estado Post-Sesión",
+    icon: (
+      <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+    ),
     content:
       "¡Hola {nombre}! ¿Cómo amaneció tu cuerpo y tu movilidad luego de la sesión en PRAVILO ARG? Recordá hidratarte bien para favorecer la rehidratación de los discos intervertebrales. Cualquier molestia nos podés consultar por acá.",
   },
   {
     id: "promo_mes",
-    title: "🎁 Invitá a un Amigo / Gift Card",
+    title: "Invitá a un Amigo / Gift Card",
+    icon: (
+      <svg className="w-4 h-4 text-accent-text shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+      </svg>
+    ),
     content:
       "¡Hola {nombre}! En PRAVILO ARG lanzamos el programa de Gift Cards y vouchers para regalar una experiencia única de descompresión física a quien más quieras. Si te interesa regalar una sesión individual con dedicatoria personalizada, avísanos.",
   },
@@ -190,13 +211,14 @@ export function CampanasTab({ bookings }: CampanasTabProps) {
               <button
                 key={tpl.id}
                 onClick={() => handleSelectTemplate(tpl)}
-                className={`p-3 rounded-xl border text-left text-xs font-condensed font-bold uppercase tracking-wider transition-all ${
+                className={`p-3 rounded-xl border text-left text-xs font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 ${
                   selectedTemplateId === tpl.id
                     ? "bg-surface-raised border-accent text-accent-text shadow-md shadow-accent/15"
                     : "bg-surface-raised/40 border-border text-muted hover:text-foreground hover:border-border-highlight"
                 }`}
               >
-                {tpl.title}
+                {tpl.icon}
+                <span>{tpl.title}</span>
               </button>
             ))}
           </div>

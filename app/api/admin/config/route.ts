@@ -10,33 +10,61 @@ import {
   saveDBClinicalProfiles,
   getDBGiftCards,
   saveDBGiftCards,
+  getDBGalleryImages,
+  saveDBGalleryImages,
 } from "@/lib/cloudStorage";
 
 export async function GET() {
-  const [config, bankConfig, planPrices, clinicalProfiles, giftCards] =
-    await Promise.all([
+  try {
+    const [
+      config,
+      bankConfig,
+      planPrices,
+      clinicalProfiles,
+      giftCards,
+      galleryImages,
+    ] = await Promise.all([
       getDBScheduleConfig(),
       getDBBankConfig(),
       getDBPlanPrices(),
       getDBClinicalProfiles(),
       getDBGiftCards(),
+      getDBGalleryImages(),
     ]);
 
-  return NextResponse.json({
-    ok: true,
-    config,
-    bankConfig,
-    planPrices,
-    clinicalProfiles,
-    giftCards,
-  });
+    return NextResponse.json({
+      ok: true,
+      config,
+      bankConfig,
+      planPrices,
+      clinicalProfiles,
+      giftCards,
+      galleryImages,
+    });
+  } catch (err: unknown) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          err instanceof Error ? err.message : "Error al leer la configuración",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { config, bankConfig, planPrices, clinicalProfiles, giftCards, pin } =
-      body;
+    const {
+      config,
+      bankConfig,
+      planPrices,
+      clinicalProfiles,
+      giftCards,
+      galleryImages,
+      pin,
+    } = body;
 
     // Validación básica de PIN si se requiere
     const ADMIN_PIN = process.env.ADMIN_PIN || "pravilo2026";
@@ -70,6 +98,9 @@ export async function POST(req: NextRequest) {
     if (giftCards && Array.isArray(giftCards)) {
       promises.push(saveDBGiftCards(giftCards));
     }
+    if (galleryImages && Array.isArray(galleryImages)) {
+      promises.push(saveDBGalleryImages(galleryImages));
+    }
 
     const results = await Promise.all(promises);
     if (results.some((ok) => !ok)) {
@@ -85,12 +116,14 @@ export async function POST(req: NextRequest) {
       updatedPrices,
       updatedClinical,
       updatedGiftCards,
+      updatedGalleryImages,
     ] = await Promise.all([
       getDBScheduleConfig(),
       getDBBankConfig(),
       getDBPlanPrices(),
       getDBClinicalProfiles(),
       getDBGiftCards(),
+      getDBGalleryImages(),
     ]);
 
     return NextResponse.json({
@@ -100,6 +133,7 @@ export async function POST(req: NextRequest) {
       planPrices: updatedPrices,
       clinicalProfiles: updatedClinical,
       giftCards: updatedGiftCards,
+      galleryImages: updatedGalleryImages,
     });
   } catch (err: unknown) {
     return NextResponse.json(

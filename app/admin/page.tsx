@@ -38,6 +38,8 @@ import { TarifasTab, PlanPricingConfig } from "@/components/admin/TarifasTab";
 import { GiftCardsTab } from "@/components/admin/GiftCardsTab";
 import { FidelizacionTab } from "@/components/admin/FidelizacionTab";
 import { CampanasTab } from "@/components/admin/CampanasTab";
+import { GaleriaTab } from "@/components/admin/GaleriaTab";
+import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
 
 export default function AdminPage() {
   const [pin, setPin] = useState("");
@@ -79,6 +81,9 @@ export default function AdminPage() {
     Record<string, StudentClinicalProfile>
   >({});
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(
+    DEFAULT_GALLERY_IMAGES,
+  );
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   // Price State
@@ -267,17 +272,21 @@ export default function AdminPage() {
         if (data?.ok && Array.isArray(data.bookings)) {
           const incoming: Booking[] = data.bookings;
 
-          // Detect new bookings on live refresh (only if new id appeared)
+          // Detect new real bookings on live refresh (only if already loaded and created recently)
           if (!isInitialLoadRef.current && isSilent) {
-            const newOnes = incoming.filter(
-              (b) => !knownBookingIdsRef.current.has(b.id),
-            );
+            const now = Date.now();
+            const newOnes = incoming.filter((b) => {
+              if (knownBookingIdsRef.current.has(b.id)) return false;
+              if (b.id.startsWith("bk_sample")) return false;
+              const ageMs = now - new Date(b.createdAt).getTime();
+              return ageMs < 120000; // Created in last 2 minutes
+            });
             if (newOnes.length > 0) {
               notifyNewBooking(newOnes[0]);
             }
           }
 
-          // Register current known ids
+          // Register known ids
           knownBookingIdsRef.current = new Set(incoming.map((b) => b.id));
           isInitialLoadRef.current = false;
 
@@ -286,9 +295,41 @@ export default function AdminPage() {
             LOCAL_STORAGE_BOOKINGS_KEY,
             JSON.stringify(incoming),
           );
+        } else if (!isSilent) {
+          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                knownBookingIdsRef.current = new Set(
+                  parsed.map((b: Booking) => b.id),
+                );
+                isInitialLoadRef.current = false;
+                setBookings(parsed);
+                return;
+              }
+            } catch {}
+          }
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!isSilent) {
+          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              if (Array.isArray(parsed)) {
+                knownBookingIdsRef.current = new Set(
+                  parsed.map((b: Booking) => b.id),
+                );
+                isInitialLoadRef.current = false;
+                setBookings(parsed);
+                return;
+              }
+            } catch {}
+          }
+        }
+      });
   };
 
   // Real-time synchronization (Polling 3s + Tab Focus + Storage/Broadcast Events)
@@ -448,6 +489,17 @@ export default function AdminPage() {
             localStorage.setItem(
               LOCAL_STORAGE_GIFTCARDS_KEY,
               JSON.stringify(data.giftCards),
+            );
+          }
+          if (
+            data.galleryImages &&
+            Array.isArray(data.galleryImages) &&
+            data.galleryImages.length > 0
+          ) {
+            setGalleryImages(data.galleryImages);
+            localStorage.setItem(
+              "pravilo_gallery_images",
+              JSON.stringify(data.galleryImages),
             );
           }
         }
@@ -947,6 +999,28 @@ export default function AdminPage() {
     );
   };
 
+  const handleSaveGallery = async (updatedImages: GalleryImageItem[]) => {
+    setGalleryImages(updatedImages);
+    try {
+      localStorage.setItem(
+        "pravilo_gallery_images",
+        JSON.stringify(updatedImages),
+      );
+      const res = await fetch("/api/admin/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          galleryImages: updatedImages,
+          pin: pin || "pravilo2026",
+        }),
+      });
+      const data = await res.json();
+      return !!data?.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -1230,6 +1304,14 @@ export default function AdminPage() {
         )}
 
         {activeTab === "analiticas" && <AnaliticasTab bookings={bookings} />}
+
+        {activeTab === "galeria" && (
+          <GaleriaTab
+            galleryImages={galleryImages}
+            onSaveGallery={handleSaveGallery}
+            pin={pin}
+          />
+        )}
 
         {activeTab === "tarifas" && (
           <TarifasTab

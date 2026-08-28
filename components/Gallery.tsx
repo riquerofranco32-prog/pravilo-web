@@ -4,57 +4,63 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
-export type GalleryImg = {
-  src: string;
-  alt: string;
-  category?: "sesiones" | "estudio" | "equipamiento";
-};
-
-const CATEGORIES = [
-  { id: "todas", label: "Todas las Fotos" },
-  { id: "sesiones", label: "Sesiones & Ejercicios" },
-  { id: "estudio", label: "El Estudio" },
-  { id: "equipamiento", label: "Equipamiento & Detalles" },
-];
+type GalleryImg = { src: string; alt: string };
 
 export default function Gallery({
-  images,
+  images: initialImages,
 }: {
   images: GalleryImg[];
   gridClassName?: string;
   aspectClassName?: string;
   isMasonry?: boolean;
 }) {
-  const [activeCategory, setActiveCategory] = useState<string>("todas");
+  const [images, setImages] = useState<GalleryImg[]>(initialImages);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const filteredImages =
-    activeCategory === "todas"
-      ? images
-      : images.filter((img) => img.category === activeCategory);
+  useEffect(() => {
+    setImages(initialImages);
+  }, [initialImages]);
 
-  const handleCategoryChange = (catId: string) => {
-    setActiveCategory(catId);
-    setCurrentIndex(0);
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+  useEffect(() => {
+    const stored = localStorage.getItem("pravilo_gallery_images");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const visible = parsed.filter((img: any) => img.visible !== false);
+          if (visible.length > 0) {
+            setImages(visible);
+          }
+        }
+      } catch {}
     }
-  };
+
+    fetch("/api/admin/config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.galleryImages && Array.isArray(data.galleryImages) && data.galleryImages.length > 0) {
+          const visible = data.galleryImages.filter((img: any) => img.visible !== false);
+          if (visible.length > 0) {
+            setImages(visible);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const close = useCallback(() => setOpenIndex(null), []);
   const prevModal = useCallback(
     () =>
       setOpenIndex((i) =>
-        i === null ? null : (i - 1 + filteredImages.length) % filteredImages.length,
+        i === null ? null : (i - 1 + images.length) % images.length,
       ),
-    [filteredImages.length],
+    [images.length],
   );
   const nextModal = useCallback(
-    () =>
-      setOpenIndex((i) => (i === null ? null : (i + 1) % filteredImages.length)),
-    [filteredImages.length],
+    () => setOpenIndex((i) => (i === null ? null : (i + 1) % images.length)),
+    [images.length],
   );
 
   const scrollToSlide = (index: number) => {
@@ -74,7 +80,7 @@ export default function Gallery({
   };
 
   const handleNext = () => {
-    const nextIdx = Math.min(filteredImages.length - 1, currentIndex + 1);
+    const nextIdx = Math.min(images.length - 1, currentIndex + 1);
     scrollToSlide(nextIdx);
   };
 
@@ -87,18 +93,28 @@ export default function Gallery({
       const scrollLeft = container.scrollLeft;
       const slideWidth = container.offsetWidth * 0.82;
       const newIdx = Math.round(scrollLeft / slideWidth);
-      if (
-        newIdx !== currentIndex &&
-        newIdx >= 0 &&
-        newIdx < filteredImages.length
-      ) {
+      if (newIdx !== currentIndex && newIdx >= 0 && newIdx < images.length) {
         setCurrentIndex(newIdx);
       }
     };
 
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        container.scrollBy({
+          left: e.deltaY * 1.4,
+          behavior: "auto",
+        });
+      }
+    };
+
     container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [currentIndex, filteredImages.length]);
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, [currentIndex, images.length]);
 
   useEffect(() => {
     if (openIndex === null) return;
@@ -117,50 +133,15 @@ export default function Gallery({
 
   return (
     <>
-      <RevealOnScroll className="mt-8">
-        {/* Categorías / Filtros */}
-        <div className="mb-6 flex flex-wrap items-center justify-center gap-2 px-2">
-          {CATEGORIES.map((cat) => {
-            const count =
-              cat.id === "todas"
-                ? images.length
-                : images.filter((i) => i.category === cat.id).length;
-            const isActive = activeCategory === cat.id;
-
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => handleCategoryChange(cat.id)}
-                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-condensed font-bold uppercase tracking-wider transition-all duration-300 ${
-                  isActive
-                    ? "bg-accent text-accent-foreground shadow-[0_0_20px_rgba(160,26,26,0.4)] scale-105"
-                    : "border border-border bg-surface text-muted hover:border-accent/50 hover:text-foreground"
-                }`}
-              >
-                <span>{cat.label}</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[10px] ${
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-surface-raised text-muted"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
+      <RevealOnScroll className="mt-10">
         {/* Controles de Carrusel */}
         <div className="mb-6 flex items-center justify-between px-2">
           <div className="flex items-center gap-3">
             <span className="rounded-full border border-border bg-surface px-3 py-1 font-condensed text-xs font-bold uppercase tracking-wider text-accent-text">
-              {currentIndex + 1} / {filteredImages.length}
+              {currentIndex + 1} / {images.length}
             </span>
             <span className="hidden text-xs text-muted sm:inline-block">
-              Deslizá horizontalmente para explorar las fotos
+              Deslizá horizontalmente para ver el estudio y los ejercicios
             </span>
           </div>
 
@@ -177,7 +158,7 @@ export default function Gallery({
             <button
               type="button"
               onClick={handleNext}
-              disabled={currentIndex >= filteredImages.length - 1}
+              disabled={currentIndex >= images.length - 1}
               aria-label="Foto siguiente"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-lg text-foreground shadow-sm transition-all hover:border-accent hover:bg-surface-raised hover:text-accent-text disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
             >
@@ -191,7 +172,7 @@ export default function Gallery({
           ref={scrollRef}
           className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-6 pt-2 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none]"
         >
-          {filteredImages.map((img, i) => (
+          {images.map((img, i) => (
             <div
               key={img.src}
               className="w-[82vw] shrink-0 snap-center sm:w-[48vw] md:w-[36vw] lg:w-[27vw]"
@@ -225,7 +206,7 @@ export default function Gallery({
 
         {/* Indicadores de puntos con barra expandible */}
         <div className="mt-4 flex justify-center gap-1.5 overflow-x-auto py-2">
-          {filteredImages.map((_, i) => (
+          {images.map((_, i) => (
             <button
               key={i}
               type="button"
@@ -242,7 +223,7 @@ export default function Gallery({
       </RevealOnScroll>
 
       {/* Lightbox / Modal a pantalla completa */}
-      {openIndex !== null && filteredImages[openIndex] && (
+      {openIndex !== null && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl animate-fadeIn"
           onClick={close}
@@ -272,8 +253,8 @@ export default function Gallery({
           >
             <div className="relative max-h-[80vh] w-auto">
               <Image
-                src={filteredImages[openIndex].src}
-                alt={filteredImages[openIndex].alt}
+                src={images[openIndex].src}
+                alt={images[openIndex].alt}
                 width={1200}
                 height={1600}
                 sizes="95vw"
@@ -282,11 +263,11 @@ export default function Gallery({
             </div>
             <div className="mt-4 flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2 backdrop-blur-md">
               <span className="text-xs font-condensed font-bold text-accent-text uppercase tracking-wider">
-                {openIndex + 1} / {filteredImages.length}
+                {openIndex + 1} / {images.length}
               </span>
               <span className="text-white/40">·</span>
               <p className="text-xs font-medium text-white/90">
-                {filteredImages[openIndex].alt}
+                {images[openIndex].alt}
               </p>
             </div>
           </div>

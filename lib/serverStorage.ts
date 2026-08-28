@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Booking, BankConfig, DEFAULT_BANK_CONFIG } from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
+import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "./gallery";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
@@ -22,6 +23,7 @@ export const DEFAULT_PLAN_PRICES = {
 
 // In-memory memory fallback caches (for read-only serverless filesystems if any)
 let cachedBookings: Booking[] | null = null;
+let isBookingsLoaded = false;
 let cachedConfig: ScheduleConfig = { ...DEFAULT_SCHEDULE_CONFIG };
 let cachedBank: BankConfig = { ...DEFAULT_BANK_CONFIG };
 let cachedPrices: Record<string, string | undefined> = {
@@ -42,6 +44,10 @@ function ensureDataDir() {
 
 // ----------------- BOOKINGS -----------------
 export function getServerBookings(): Booking[] {
+  if (isBookingsLoaded && cachedBookings !== null) {
+    return cachedBookings;
+  }
+
   ensureDataDir();
 
   try {
@@ -50,26 +56,25 @@ export function getServerBookings(): Booking[] {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         cachedBookings = parsed;
-        return parsed;
+        isBookingsLoaded = true;
+        return cachedBookings;
       }
     }
   } catch (err) {
     console.error("Error reading bookings file:", err);
   }
 
-  if (cachedBookings !== null) {
-    return cachedBookings;
-  }
-
   // ponytail: no file and no cache means "no local data yet", not "seed fake
   // bookings". Auto-seeding here used to resurrect fabricated sample turnos
   // any time Firestore was unreachable and this fs fallback kicked in.
   cachedBookings = [];
+  isBookingsLoaded = true;
   return cachedBookings;
 }
 
 export function saveServerBookings(bookings: Booking[]): boolean {
   cachedBookings = bookings;
+  isBookingsLoaded = true;
   ensureDataDir();
 
   try {
@@ -264,6 +269,51 @@ export function saveServerGiftCards(cards: any[]): boolean {
     return true;
   } catch (err) {
     console.error("Error saving giftcards to file:", err);
+    return false;
+  }
+}
+
+const GALLERY_FILE = path.join(DATA_DIR, "gallery.json");
+let cachedGallery: GalleryImageItem[] | null = null;
+let isGalleryLoaded = false;
+
+export function getServerGalleryImages(): GalleryImageItem[] {
+  if (isGalleryLoaded && cachedGallery) {
+    return cachedGallery;
+  }
+
+  ensureDataDir();
+
+  try {
+    if (fs.existsSync(GALLERY_FILE)) {
+      const raw = fs.readFileSync(GALLERY_FILE, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        cachedGallery = parsed;
+        isGalleryLoaded = true;
+        return cachedGallery;
+      }
+    }
+  } catch (err) {
+    console.error("Error reading gallery file:", err);
+  }
+
+  cachedGallery = [...DEFAULT_GALLERY_IMAGES];
+  isGalleryLoaded = true;
+  saveServerGalleryImages(cachedGallery);
+  return cachedGallery;
+}
+
+export function saveServerGalleryImages(images: GalleryImageItem[]): boolean {
+  cachedGallery = images;
+  isGalleryLoaded = true;
+  ensureDataDir();
+
+  try {
+    fs.writeFileSync(GALLERY_FILE, JSON.stringify(images, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("Error saving gallery to file:", err);
     return false;
   }
 }

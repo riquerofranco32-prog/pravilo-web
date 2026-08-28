@@ -30,7 +30,8 @@ import {
   SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
-import { PLANES_EXPERIENCIA } from "@/lib/plans";
+import { DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
+import { getServerGalleryImages } from "@/lib/serverStorage";
 
 const NAV = [
   { href: "#que-es", label: "¿Qué es?" },
@@ -44,240 +45,45 @@ const NAV = [
 ];
 
 const GALERIA_ACCION = [
-  // El Estudio
+  {
+    src: "/images/pravilo-practica-alumna-suspension.jpg",
+    alt: "Alumna en suspensión total y extensión miofascial en PRAVILO",
+  },
+  {
+    src: "/images/pravilo-practica-traccion-horizontal.jpg",
+    alt: "Descompresión y tracción prona frente al cartel oficial",
+  },
+  {
+    src: "/images/pravilo-practica-plancha-lateral.jpg",
+    alt: "Trabajo de estabilidad, fuerza y control articular en suspensión",
+  },
+  {
+    src: "/images/pravilo-practica-traccion-vertical.jpg",
+    alt: "Elongación axial y apertura de hombros en el sistema de poleas",
+  },
+  {
+    src: "/images/pravilo-practica-descompresion-zenital.jpg",
+    alt: "Alineación y tracción progresiva en 4 puntos desde ángulo cenital",
+  },
   {
     src: "/images/espacio-completo.jpg",
     alt: "Vista panorámica del estudio PRAVILO ARG y estructura central",
-    category: "estudio" as const,
-  },
-  {
-    src: "/images/pravilo-estudio-completo.jpg",
-    alt: "Vista completa del estudio PRAVILO ARG",
-    category: "estudio" as const,
   },
   {
     src: "/images/pravilo-sign-suspension.jpg",
     alt: "Sesión de descompresión en suspensión frente al cartel PRAVILO",
-    category: "estudio" as const,
+  },
+  {
+    src: "/images/foto-img-3399.jpg",
+    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
   },
   {
     src: "/images/pravilo-neon-suspension.jpg",
     alt: "Sesión de suspensión con iluminación neón en el estudio",
-    category: "estudio" as const,
-  },
-  {
-    src: "/images/foto-img-3400.jpg",
-    alt: "Ingreso y cartel iluminado de PRAVILO ARG",
-    category: "estudio" as const,
-  },
-  {
-    src: "/images/foto-img-3416.jpg",
-    alt: "Ambiente e iluminación del estudio PRAVILO",
-    category: "estudio" as const,
-  },
-  {
-    src: "/images/foto-img-3445.jpg",
-    alt: "Cartel neón iluminado en el centro PRAVILO",
-    category: "estudio" as const,
-  },
-
-  // Sesiones & Ejercicios
-  {
-    src: "/images/foto-img-3392.jpg",
-    alt: "Evaluación y sesión individual guiada con el instructor Juan I. Garrafa",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3393.jpg",
-    alt: "Ejercicio de suspensión y alineación corporal completa",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3395.jpg",
-    alt: "Trabajo de descompresión articular en máquina PRAVILO",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3396.jpg",
-    alt: "Tracción asistida y elongación tridimensional",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3398.jpg",
-    alt: "Estiramiento fascial profundo en suspensión",
-    category: "sesiones" as const,
   },
   {
     src: "/images/pravilo-mirror-suspension.jpg",
     alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3401.jpg",
-    alt: "Alineación postural y apertura torácica en PRAVILO",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3403.jpg",
-    alt: "Descompresión espinal en suspensión completa",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3404.jpg",
-    alt: "Trabajo de fuerza isométrica y estabilidad en tracción",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3405.jpg",
-    alt: "Extensión tridimensional de miembros y columna",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3407.jpg",
-    alt: "Suspensión total para alivio de tensión muscular y articular",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3409.jpg",
-    alt: "Liberación de contracturas en cadena posterior",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3412.jpg",
-    alt: "Ajuste biomecánico personalizado durante la sesión",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3415.jpg",
-    alt: "Suspensión asistida para flexibilización fascial",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3421.jpg",
-    alt: "Inversión y descompresión intervertebral suave",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3423.jpg",
-    alt: "Activación de la zona media en estado de tracción",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3424.jpg",
-    alt: "Control corporal y postura en suspensión 1 a 1",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3425.jpg",
-    alt: "Movilidad articular asistida en marco PRAVILO",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3428.jpg",
-    alt: "Alineación de columna y apertura de cadera",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3433.jpg",
-    alt: "Descompresión de cintura escapular y hombros",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3435.jpg",
-    alt: "Elongación de isquiotibiales y cadena posterior",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3436.jpg",
-    alt: "Trabajo de rango de movimiento articular máximo",
-    category: "sesiones" as const,
-  },
-  {
-    src: "/images/foto-img-3437.jpg",
-    alt: "Control neuromuscular en tracción simétrica",
-    category: "sesiones" as const,
-  },
-
-  // Equipamiento & Detalles
-  {
-    src: "/images/foto-img-3399.jpg",
-    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/pravilo-pulley-tension.jpg",
-    alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3410.jpg",
-    alt: "Cincha de sujeción anatómica para muñecas y tobillos",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3411.jpg",
-    alt: "Detalle de rodamientos y poleas de alta resistencia",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3417.jpg",
-    alt: "Estructura metálica reforzada del marco PRAVILO",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3438.jpg",
-    alt: "Sistema de cuerdas náuticas de alta tensión",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3439.jpg",
-    alt: "Cinchas de cuero genuino acolchadas para máximo confort",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3440.jpg",
-    alt: "Pesos y contrapesos graduables para tracción controlada",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3441.jpg",
-    alt: "Mosquetones y herrajes de seguridad industrial",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3442.jpg",
-    alt: "Mecanismo de elevación y calibración de carga",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3443.jpg",
-    alt: "Piso amortiguado y área de trabajo de PRAVILO",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3444.jpg",
-    alt: "Vista detallada de la máquina y tensores",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3446.jpg",
-    alt: "Uniones y soldaduras de la estructura de PRAVILO",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3447.jpg",
-    alt: "Correas de ajuste rápido para tobillos y muñecas",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3448.jpg",
-    alt: "Torre de discos y calibración progresiva de peso",
-    category: "equipamiento" as const,
-  },
-  {
-    src: "/images/foto-img-3449.jpg",
-    alt: "Estructura y calibración de pesos en PRAVILO",
-    category: "equipamiento" as const,
   },
 ];
 
@@ -629,12 +435,14 @@ export default function Home() {
         </ParallaxHero>
 
         {/* Cinta de credenciales */}
-        <div className="border-y border-border bg-gradient-to-r from-accent via-[#c42525] to-accent py-3.5 shadow-md">
-          <Marquee
-            items={CREDENCIALES}
-            itemClassName="font-condensed text-sm font-black tracking-wider uppercase text-accent-foreground"
-          />
-        </div>
+        <RevealOnScroll>
+          <div className="border-y border-border bg-gradient-to-r from-accent via-[#c42525] to-accent py-3.5 shadow-md">
+            <Marquee
+              items={CREDENCIALES}
+              itemClassName="font-condensed text-sm font-black tracking-wider uppercase text-accent-foreground"
+            />
+          </div>
+        </RevealOnScroll>
 
         {/* ¿QUÉ ES PRAVILO? */}
         <section
@@ -642,62 +450,74 @@ export default function Home() {
           className="relative mx-auto max-w-6xl px-6 py-16 md:py-20 overflow-hidden"
         >
           <div className="grid gap-14 lg:grid-cols-[1.1fr_400px] lg:items-start">
-            <RevealOnScroll>
-              <span className="eyebrow">¿Qué es el método?</span>
-              <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-                El secreto milenario de descompresión y alineación
-              </h2>
-              <p className="mt-6 text-lg leading-relaxed text-muted">
-                PRAVILO es un método ancestral eslavo de entrenamiento y
-                recuperación que utiliza un sistema de suspensión y tracción
-                progresiva en 4 puntos. Al interactuar con la gravedad y el
-                propio peso, se libera la presión intervertebral y se expanden
-                las cadenas miofasciales profundas que no alcanza el
-                estiramiento convencional.
-              </p>
+            <div className="space-y-8">
+              <RevealOnScroll>
+                <span className="eyebrow">¿Qué es el método?</span>
+                <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+                  El secreto milenario
+                </h2>
+              </RevealOnScroll>
+
+              <RevealOnScroll delay={80}>
+                <p className="text-lg leading-relaxed text-muted">
+                  PRAVILO es un método ancestral eslavo de entrenamiento y
+                  recuperación que utiliza un sistema de suspensión y tracción
+                  progresiva en 4 puntos. Al interactuar con la gravedad y el
+                  propio peso, se libera la presión intervertebral y se expanden
+                  las cadenas miofasciales profundas que no alcanza el
+                  estiramiento convencional.
+                </p>
+              </RevealOnScroll>
 
               {/* Pull quote destacado */}
-              <div className="mt-8 relative">
-                <span
-                  aria-hidden
-                  className="absolute -top-6 -left-1 font-condensed text-7xl font-black text-accent/25 select-none"
-                >
-                  &ldquo;
-                </span>
-                <p className="font-condensed text-2xl font-bold leading-snug text-foreground md:text-3xl pl-8">
-                  Tu fascia guarda más que tensión: guarda tu historia postural.
-                </p>
-              </div>
+              <RevealOnScroll delay={100}>
+                <div className="relative">
+                  <span
+                    aria-hidden
+                    className="absolute -top-6 -left-1 font-condensed text-7xl font-black text-accent/25 select-none"
+                  >
+                    &ldquo;
+                  </span>
+                  <p className="font-condensed text-2xl font-bold leading-snug text-foreground md:text-3xl pl-8">
+                    Tu fascia guarda más que tensión: guarda tu historia postural.
+                  </p>
+                </div>
+              </RevealOnScroll>
 
               {/* Foto intercalada en mobile/desktop */}
-              <div className="relative mt-8 overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_50px_-20px_rgba(160,26,26,0.4)]">
-                <Image
-                  src="/images/foto-img-3399.jpg"
-                  alt="El aparato PRAVILO — sistema de cuerdas y tensión"
-                  width={900}
-                  height={600}
-                  sizes="(min-width: 1024px) 600px, 100vw"
-                  className="h-auto w-full object-cover transition-transform duration-700 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white">
-                  <span className="font-condensed font-bold uppercase tracking-wider bg-black/60 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md">
-                    Estructura original PRAVILO
-                  </span>
+              <RevealOnScroll delay={100} direction="scale">
+                <div className="relative overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_50px_-20px_rgba(160,26,26,0.4)]">
+                  <Image
+                    src="/images/foto-img-3399.jpg"
+                    alt="El aparato PRAVILO — sistema de cuerdas y tensión"
+                    width={900}
+                    height={600}
+                    sizes="(min-width: 1024px) 600px, 100vw"
+                    className="h-auto w-full object-cover transition-transform duration-700 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white">
+                    <span className="font-condensed font-bold uppercase tracking-wider bg-black/60 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md">
+                      Estructura original PRAVILO
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </RevealOnScroll>
 
-              <p className="mt-8 text-lg leading-relaxed text-muted">
-                Detrás de cada sesión existe una metodología milimétricamente
-                adaptada a las características, lesiones previas y objetivos de
-                cada persona, siempre bajo guía constante y personalizada.
-              </p>
-            </RevealOnScroll>
+              <RevealOnScroll delay={80}>
+                <p className="text-lg leading-relaxed text-muted">
+                  Detrás de cada sesión existe una metodología milimétricamente
+                  adaptada a las características, lesiones previas y objetivos de
+                  cada persona, siempre bajo guía constante y personalizada.
+                </p>
+              </RevealOnScroll>
+            </div>
 
             {/* Foto lateral fija en desktop */}
             <RevealOnScroll
               className="hidden lg:block"
-              style={{ transitionDelay: "150ms" }}
+              delay={120}
+              direction="scale"
             >
               <div className="sticky top-28 overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_60px_-20px_rgba(160,26,26,0.45)] group">
                 <Image
@@ -739,10 +559,10 @@ export default function Home() {
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
               {/* Fotografía del Instructor con Marco de Estudio */}
-              <RevealOnScroll className="w-full max-w-xs shrink-0 md:max-w-sm">
+              <RevealOnScroll className="w-full max-w-xs shrink-0 md:max-w-sm" direction="scale">
                 <div className="relative overflow-hidden rounded-3xl border border-border-highlight shadow-[0_0_60px_-15px_rgba(160,26,26,0.4)] group">
                   <Image
-                    src="/images/foto-img-3392.jpg"
+                    src="/images/juan-garrafa-instructor.jpg"
                     alt="Juan I. Garrafa, instructor oficial de PRAVILO ARG"
                     width={760}
                     height={1010}
@@ -762,57 +582,62 @@ export default function Home() {
               </RevealOnScroll>
 
               {/* Biografía y Declaración */}
-              <RevealOnScroll
-                className="flex-1 text-center md:text-left"
-                style={{ transitionDelay: "120ms" }}
-              >
-                <span className="eyebrow">Tu Guía en PRAVILO</span>
-                <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-                  Juan I. Garrafa
-                </h2>
+              <div className="flex-1 text-center md:text-left space-y-6">
+                <RevealOnScroll>
+                  <span className="eyebrow">Tu Guía en PRAVILO</span>
+                  <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+                    Juan I. Garrafa
+                  </h2>
+                </RevealOnScroll>
 
                 {/* Badges de Certificación */}
-                <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
-                  <span className="rounded-full border border-accent/30 bg-accent/10 px-3.5 py-1 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
-                    1° Instructor de PRAVILO en Argentina
-                  </span>
-                  <span className="rounded-full border border-border bg-surface-raised px-3.5 py-1 text-xs font-condensed font-semibold text-muted">
-                    Profesor de Educación Física
-                  </span>
-                  <span className="rounded-full border border-border bg-surface-raised px-3.5 py-1 text-xs font-condensed font-semibold text-muted">
-                    Antropometrista Nivel I
-                  </span>
-                </div>
+                <RevealOnScroll delay={80}>
+                  <div className="flex flex-wrap justify-center gap-2 md:justify-start">
+                    <span className="rounded-full border border-accent/30 bg-accent/10 px-3.5 py-1 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text">
+                      1° Instructor de PRAVILO en Argentina
+                    </span>
+                    <span className="rounded-full border border-border bg-surface-raised px-3.5 py-1 text-xs font-condensed font-semibold text-muted">
+                      Profesor de Educación Física
+                    </span>
+                    <span className="rounded-full border border-border bg-surface-raised px-3.5 py-1 text-xs font-condensed font-semibold text-muted">
+                      Antropometrista Nivel I
+                    </span>
+                  </div>
+                </RevealOnScroll>
 
-                <blockquote className="relative mt-7 text-base leading-relaxed text-muted/90 italic border-l-2 border-accent pl-6 py-2 bg-accent/5 rounded-r-2xl">
-                  &ldquo;Mi interés por PRAVILO surgió a partir de una búsqueda
-                  personal. Conviviendo con un dolor crónico, conocí este método
-                  mientras buscaba nuevas herramientas para abordar mi propia
-                  situación. Esa experiencia despertó mi interés por profundizar
-                  en su práctica y formación profesional. A partir de allí nació
-                  PRAVILO ARG, con el objetivo de acercar este método a
-                  Argentina y crear un espacio para quienes buscan una nueva
-                  forma de trabajar sobre su cuerpo, superar sus propias
-                  limitaciones o alcanzar sus objetivos personales y
-                  deportivos.&rdquo;
-                </blockquote>
+                <RevealOnScroll delay={120}>
+                  <blockquote className="relative text-base leading-relaxed text-muted/90 italic border-l-2 border-accent pl-6 py-2 bg-accent/5 rounded-r-2xl">
+                    &ldquo;Mi interés por PRAVILO surgió a partir de una búsqueda
+                    personal. Conviviendo con un dolor crónico, conocí este método
+                    mientras buscaba nuevas herramientas para abordar mi propia
+                    situación. Esa experiencia despertó mi interés por profundizar
+                    en su práctica y formación profesional. A partir de allí nació
+                    PRAVILO ARG, con el objetivo de acercar este método a
+                    Argentina y crear un espacio para quienes buscan una nueva
+                    forma de trabajar sobre su cuerpo, superar sus propias
+                    limitaciones o alcanzar sus objetivos personales y
+                    deportivos.&rdquo;
+                  </blockquote>
+                </RevealOnScroll>
 
-                <div className="mt-8 flex justify-center md:justify-start">
-                  <MagneticButton>
-                    <a
-                      href={whatsappLink(
-                        "Hola Juan! Me gustaría hacerte una consulta sobre el método PRAVILO.",
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-shiny inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-condensed text-sm font-bold uppercase tracking-wider text-accent-foreground shadow-md hover:opacity-95"
-                    >
-                      <span>Hablar directamente con Juan</span>
-                      <span>→</span>
-                    </a>
-                  </MagneticButton>
-                </div>
-              </RevealOnScroll>
+                <RevealOnScroll delay={160}>
+                  <div className="flex justify-center md:justify-start">
+                    <MagneticButton>
+                      <a
+                        href={whatsappLink(
+                          "Hola Juan! Me gustaría hacerte una consulta sobre el método PRAVILO.",
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-shiny inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-condensed text-sm font-bold uppercase tracking-wider text-accent-foreground shadow-md hover:opacity-95"
+                      >
+                        <span>Hablar directamente con Juan</span>
+                        <span>→</span>
+                      </a>
+                    </MagneticButton>
+                  </div>
+                </RevealOnScroll>
+              </div>
             </div>
           </div>
         </section>
@@ -831,7 +656,14 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <Gallery images={GALERIA_ACCION} />
+            {(() => {
+              const serverGallery = getServerGalleryImages();
+              const activeGallery = (serverGallery && serverGallery.length > 0 ? serverGallery : DEFAULT_GALLERY_IMAGES)
+                .filter((img) => img.visible !== false)
+                .map((img) => ({ src: img.src, alt: img.alt }));
+
+              return <Gallery images={activeGallery} />;
+            })()}
           </div>
         </section>
 
@@ -843,68 +675,73 @@ export default function Home() {
         <PricingSection />
 
         <section className="mx-auto max-w-6xl px-6 pb-16">
-
           {/* Bloque Compromiso de Bienestar */}
-          <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">
-            <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="shield" className="h-4 w-4" />
-                  <span>Estudio 100% Privado</span>
-                </span>
-                <p className="text-xs text-muted">
-                  Sin ruidos de gimnasio ni distracciones. El espacio completo
-                  está reservado exclusivamente para vos.
-                </p>
-              </div>
+          <RevealOnScroll>
+            <div className="mt-10 rounded-3xl border border-border-highlight bg-surface-raised/70 p-6 sm:p-8 backdrop-blur-md">
+              <div className="grid gap-6 sm:grid-cols-3 text-center sm:text-left">
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="shield" className="h-4 w-4" />
+                    <span>Estudio 100% Privado</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    Sin ruidos de gimnasio ni distracciones. El espacio completo
+                    está reservado exclusivamente para vos.
+                  </p>
+                </div>
 
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="tension" className="h-4 w-4" />
-                  <span>Tensión Milimétrica</span>
-                </span>
-                <p className="text-xs text-muted">
-                  La carga e intensidad se adaptan paso a paso a tu nivel de
-                  confort, sin forzar ninguna articulación.
-                </p>
-              </div>
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="tension" className="h-4 w-4" />
+                    <span>Tensión Milimétrica</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    La carga e intensidad se adaptan paso a paso a tu nivel de
+                    confort, sin forzar ninguna articulación.
+                  </p>
+                </div>
 
-              <div className="space-y-1">
-                <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
-                  <PlanPerkIcon name="clipboard" className="h-4 w-4" />
-                  <span>Evaluación Biomecánica</span>
-                </span>
-                <p className="text-xs text-muted">
-                  Se analiza tu postura, rango de movimiento y antecedentes
-                  previos antes de iniciar la tracción.
-                </p>
+                <div className="space-y-1">
+                  <span className="font-condensed text-base font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
+                    <PlanPerkIcon name="clipboard" className="h-4 w-4" />
+                    <span>Evaluación Biomecánica</span>
+                  </span>
+                  <p className="text-xs text-muted">
+                    Se analiza tu postura, rango de movimiento y antecedentes
+                    previos antes de iniciar la tracción.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </RevealOnScroll>
 
           {/* Banner de Gift Card VIP */}
-          <div className="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
-            <div>
-              <span className="inline-block rounded-full bg-accent/20 border border-accent/40 px-3 py-0.5 font-condensed text-[11px] font-bold uppercase tracking-wider text-accent-text mb-2">
-                Experiencia para regalar
-              </span>
-              <h3 className="font-condensed text-2xl font-black text-foreground">
-                ¿Buscás hacer un regalo diferente y memorable?
-              </h3>
-              <p className="mt-1 text-sm text-muted">
-                Encargá un voucher digital de PRAVILO para un cumpleaños o fecha
-                especial con dedicatoria personalizada.
-              </p>
+          <RevealOnScroll delay={100}>
+            <div className="mt-10 flex flex-col items-center justify-between gap-6 rounded-3xl border border-accent/40 bg-gradient-to-r from-accent/15 via-surface-raised to-surface-raised p-8 text-center sm:flex-row sm:text-left shadow-xl">
+              <div>
+                <span className="inline-block rounded-full bg-accent/20 border border-accent/40 px-3 py-0.5 font-condensed text-[11px] font-bold uppercase tracking-wider text-accent-text mb-2">
+                  Experiencia para regalar
+                </span>
+                <h3 className="font-condensed text-2xl font-black text-foreground">
+                  ¿Buscás hacer un regalo diferente y memorable?
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  Encargá un voucher digital de PRAVILO para un cumpleaños o fecha
+                  especial con dedicatoria personalizada.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <GiftCardModal />
+              </div>
             </div>
-            <div className="shrink-0">
-              <GiftCardModal />
-            </div>
-          </div>
+          </RevealOnScroll>
 
-          <p className="mt-6 text-center text-xs text-muted">
-            Precios de referencia para el estudio de Plottier. Confirmación
-            inmediata vía WhatsApp.
-          </p>
+          <RevealOnScroll delay={150}>
+            <p className="mt-6 text-center text-xs text-muted">
+              Precios de referencia para el estudio de Plottier. Confirmación
+              inmediata vía WhatsApp.
+            </p>
+          </RevealOnScroll>
         </section>
 
         {/* RESEÑAS DE GOOGLE */}
@@ -941,9 +778,11 @@ export default function Home() {
               </p>
             </RevealOnScroll>
 
-            <FAQAccordion />
+            <RevealOnScroll delay={100}>
+              <FAQAccordion />
+            </RevealOnScroll>
 
-            <div className="mt-12 text-center">
+            <RevealOnScroll delay={150} className="mt-12 text-center">
               <p className="text-sm text-muted">
                 ¿Tenés alguna consulta puntual sobre tu estado físico?
               </p>
@@ -962,7 +801,7 @@ export default function Home() {
                   </a>
                 </MagneticButton>
               </div>
-            </div>
+            </RevealOnScroll>
           </div>
         </section>
 
@@ -1052,7 +891,7 @@ export default function Home() {
               </div>
             </RevealOnScroll>
 
-            <RevealOnScroll>
+            <RevealOnScroll delay={100} direction="scale">
               <div className="overflow-hidden rounded-3xl border border-border-highlight shadow-2xl">
                 <iframe
                   src={MAPS_EMBED_SRC}
@@ -1113,7 +952,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="border-t border-border bg-background px-6 py-14 text-center text-sm text-muted">
-        <div className="mx-auto max-w-6xl">
+        <RevealOnScroll className="mx-auto max-w-6xl">
           <Link
             href="/"
             className="inline-block transition-opacity hover:opacity-90"
@@ -1189,19 +1028,25 @@ export default function Home() {
                 href="https://se7endev.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-1 transition-colors hover:text-accent-text"
+                className="group inline-flex items-center gap-2 transition-all opacity-80 hover:opacity-100"
+                title="Desarrollado por Se7en Studio"
               >
-                Hecho por{" "}
-                <span className="font-semibold text-foreground/80 transition-colors group-hover:text-accent-text">
-                  Se7en Studio
-                </span>
-                <span className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                  &nearr;
+                <span className="text-xs text-muted group-hover:text-foreground transition-colors">Hecho por</span>
+                <div className="relative h-5 w-24 sm:h-6 sm:w-28 transition-transform group-hover:scale-105">
+                  <Image
+                    src="/images/se7en-studio-logo.png"
+                    alt="Se7en Studio"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-xs text-muted transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text">
+                  ↗
                 </span>
               </a>
             </div>
           </div>
-        </div>
+        </RevealOnScroll>
       </footer>
     </>
   );

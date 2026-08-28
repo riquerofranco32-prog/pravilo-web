@@ -12,6 +12,7 @@ import {
 import { getFirestoreDB, isFirebaseConfigured } from "./firebaseConfig";
 import { Booking, BankConfig, DEFAULT_BANK_CONFIG, GiftCard } from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
+import { GalleryImageItem, DEFAULT_GALLERY_IMAGES } from "./gallery";
 import {
   getServerBookings,
   saveServerBookings,
@@ -25,6 +26,8 @@ import {
   saveServerClinicalProfiles,
   getServerGiftCards,
   saveServerGiftCards,
+  getServerGalleryImages,
+  saveServerGalleryImages,
   DEFAULT_PLAN_PRICES,
 } from "./serverStorage";
 
@@ -348,6 +351,49 @@ export async function saveDBGiftCards(cards: GiftCard[]): Promise<boolean> {
     return true;
   } catch (err) {
     console.error("Error saving gift cards to Firestore:", err);
+    return false;
+  }
+}
+
+// ----------------- GALLERY IMAGES -----------------
+export async function getDBGalleryImages(): Promise<GalleryImageItem[]> {
+  const db = getFirestoreDB();
+  if (!db || !isFirebaseConfigured()) {
+    return getServerGalleryImages();
+  }
+
+  try {
+    const docRef = doc(db, "config", "gallery_images");
+    const snapshot = await getDoc(docRef);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      const list = Array.isArray(data?.images)
+        ? data.images
+        : DEFAULT_GALLERY_IMAGES;
+      saveServerGalleryImages(list);
+      return list;
+    }
+  } catch (err) {
+    console.error("Error reading gallery images from Firestore:", err);
+  }
+
+  return getServerGalleryImages();
+}
+
+export async function saveDBGalleryImages(
+  images: GalleryImageItem[],
+): Promise<boolean> {
+  saveServerGalleryImages(images);
+
+  const db = getFirestoreDB();
+  if (!db || !isFirebaseConfigured()) return true;
+
+  try {
+    const docRef = doc(db, "config", "gallery_images");
+    await setDoc(docRef, stripUndefined({ images }));
+    return true;
+  } catch (err) {
+    console.error("Error saving gallery images to Firestore:", err);
     return false;
   }
 }

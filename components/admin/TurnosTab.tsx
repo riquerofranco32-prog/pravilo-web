@@ -7,6 +7,8 @@ import {
   PaymentStatus,
   buildGoogleCalendarUrl,
   buildQuickWhatsAppMessage,
+  formatDateTimeExact,
+  formatRelativeTime,
 } from "@/lib/bookings";
 
 interface TurnosTabProps {
@@ -79,16 +81,27 @@ export function TurnosTab({
 
     // Payment Filter
     if (filterPayment !== "todos") {
-      if (filterPayment === "pendiente" && b.paymentStatus !== "pendiente" && b.paymentStatus !== undefined) return false;
+      if (
+        filterPayment === "pendiente" &&
+        b.paymentStatus !== "pendiente" &&
+        b.paymentStatus !== undefined
+      )
+        return false;
       if (filterPayment === "seña" && b.paymentStatus !== "seña") return false;
-      if (filterPayment === "pagado" && !b.paymentStatus?.startsWith("pagado")) return false;
+      if (filterPayment === "pagado" && !b.paymentStatus?.startsWith("pagado"))
+        return false;
     }
 
     // Date Mode Filter
     if (filterDateMode === "hoy" && b.date !== todayStr) return false;
     if (filterDateMode === "manana" && b.date !== tomorrowStr) return false;
-    if (filterDateMode === "semana" && (b.date < todayStr || b.date > in7DaysStr)) return false;
-    if (filterDateMode === "pendientes" && b.status !== "pendiente") return false;
+    if (
+      filterDateMode === "semana" &&
+      (b.date < todayStr || b.date > in7DaysStr)
+    )
+      return false;
+    if (filterDateMode === "pendientes" && b.status !== "pendiente")
+      return false;
 
     return true;
   });
@@ -96,7 +109,7 @@ export function TurnosTab({
   return (
     <div className="space-y-6">
       {/* Search and Filters Bar */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border space-y-4 shadow-sm">
+      <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
@@ -106,14 +119,19 @@ export function TurnosTab({
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             <input
               id="admin-search-input"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por alumno, teléfono, plan, fecha o patología..."
+              placeholder="Buscar por alumno, teléfono, plan o tag (Atajo: presiona '/')"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-raised border border-border text-xs sm:text-sm text-foreground placeholder-muted/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all font-sans"
             />
             {searchQuery && (
@@ -136,8 +154,18 @@ export function TurnosTab({
                   : "text-muted hover:text-foreground"
               }`}
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
               </svg>
               Tarjetas
             </button>
@@ -149,8 +177,18 @@ export function TurnosTab({
                   : "text-muted hover:text-foreground"
               }`}
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                />
               </svg>
               Tabla
             </button>
@@ -184,16 +222,29 @@ export function TurnosTab({
             {onReloadSamples && (
               <button
                 onClick={onReloadSamples}
-                className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wider text-accent-text transition-all flex items-center gap-1"
+                className="px-3 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-accent text-xs font-condensed font-bold uppercase tracking-wider text-accent-text transition-all flex items-center gap-1.5"
                 title="Cargar o actualizar turnos realistas de muestra"
               >
-                <span>✨</span> Cargar Turnos
+                <svg
+                  className="w-3.5 h-3.5 text-accent-text"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                  />
+                </svg>
+                <span>Cargar Turnos</span>
               </button>
             )}
           </div>
 
           {/* Status & Payment Selectors */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
@@ -222,7 +273,9 @@ export function TurnosTab({
 
       {/* Results Count */}
       <div className="flex items-center justify-between text-xs font-condensed uppercase tracking-wider text-muted px-1">
-        <span>Mostrando {filteredBookings.length} de {bookings.length} turnos</span>
+        <span>
+          Mostrando {filteredBookings.length} de {bookings.length} turnos
+        </span>
         {searchQuery && <span>Filtro activo: &ldquo;{searchQuery}&rdquo;</span>}
       </div>
 
@@ -230,21 +283,49 @@ export function TurnosTab({
       {filteredBookings.length === 0 ? (
         <div className="text-center py-16 p-8 rounded-2xl bg-surface border border-dashed border-border space-y-4">
           <div className="w-12 h-12 rounded-full bg-surface-raised mx-auto flex items-center justify-center text-muted">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
           </div>
           <div>
-            <p className="text-base font-condensed font-bold uppercase tracking-wider text-foreground">No se encontraron turnos con los filtros actuales.</p>
-            <p className="text-xs text-muted font-sans mt-1">Podés cargar turnos de prueba realistas o crear un turno nuevo manualmente.</p>
+            <p className="text-base font-condensed font-bold uppercase tracking-wider text-foreground">
+              No se encontraron turnos con los filtros actuales.
+            </p>
+            <p className="text-xs text-muted font-sans mt-1">
+              Podés cargar turnos de prueba realistas o crear un turno nuevo
+              manualmente.
+            </p>
           </div>
           {onReloadSamples && (
             <div className="pt-2">
               <button
                 onClick={onReloadSamples}
-                className="btn-shiny px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all"
+                className="btn-shiny px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-condensed font-bold uppercase tracking-wider text-xs shadow-lg shadow-accent/25 hover:opacity-95 transition-all inline-flex items-center gap-2"
               >
-                ✨ Cargar Turnos de Prueba / Nuevos Turnos
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                  />
+                </svg>
+                <span>Cargar Turnos de Prueba / Nuevos Turnos</span>
               </button>
             </div>
           )}
@@ -267,7 +348,7 @@ export function TurnosTab({
                 }`}
               >
                 <div>
-                  {/* Top Bar: Date, Slot, Edit & Status */}
+                  {/* Top Bar: Date, Slot & Status */}
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 text-accent-text text-xs font-condensed font-bold">
@@ -292,31 +373,68 @@ export function TurnosTab({
                       {/* Edit Button */}
                       <button
                         onClick={() => onEditBooking(b)}
-                        className="px-2 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-sky-500/50 text-sky-400 hover:text-sky-300 text-[11px] font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-1"
+                        className="px-2 py-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-sky-500/50 text-sky-400 hover:text-sky-300 text-[11px] font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-1"
                         title="Editar o Reprogramar Turno"
                       >
-                        <span>✏️</span>
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
                         <span>Editar</span>
                       </button>
 
                       {/* Status dropdown */}
                       <select
                         value={b.status}
-                        onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                        className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2 py-1 rounded-lg border focus:outline-none ${
+                        onChange={(e) =>
+                          onUpdateStatus(
+                            b.id,
+                            e.target.value as Booking["status"],
+                          )
+                        }
+                        className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-lg border focus:outline-none cursor-pointer ${
                           b.status === "confirmado"
-                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                            ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/60"
                             : b.status === "realizado"
-                              ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                              ? "bg-sky-950/90 text-sky-300 border-sky-500/60"
                               : b.status === "cancelado"
-                                ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                                : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                                ? "bg-rose-950/90 text-rose-300 border-rose-500/60"
+                                : "bg-amber-950/90 text-amber-300 border-amber-500/60"
                         }`}
                       >
-                        <option value="pendiente">Pendiente</option>
-                        <option value="confirmado">Confirmado</option>
-                        <option value="realizado">Realizado</option>
-                        <option value="cancelado">Cancelado</option>
+                        <option
+                          value="pendiente"
+                          className="bg-[#18191c] text-amber-300 font-bold py-1.5"
+                        >
+                          ● Pendiente
+                        </option>
+                        <option
+                          value="confirmado"
+                          className="bg-[#18191c] text-emerald-400 font-bold py-1.5"
+                        >
+                          ● Confirmado
+                        </option>
+                        <option
+                          value="realizado"
+                          className="bg-[#18191c] text-sky-400 font-bold py-1.5"
+                        >
+                          ● Realizado
+                        </option>
+                        <option
+                          value="cancelado"
+                          className="bg-[#18191c] text-rose-400 font-bold py-1.5"
+                        >
+                          ● Cancelado
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -325,7 +443,10 @@ export function TurnosTab({
                   <div className="space-y-1 mb-3">
                     <div className="flex items-center justify-between">
                       <h4
-                        onClick={() => b.customerPhone && onOpenStudentCrm(b.customerPhone, b.customerName)}
+                        onClick={() =>
+                          b.customerPhone &&
+                          onOpenStudentCrm(b.customerPhone, b.customerName)
+                        }
                         className="text-base font-condensed font-bold uppercase tracking-wide text-foreground hover:text-accent-text cursor-pointer transition-colors"
                         title="Ver historial / ficha clínica"
                       >
@@ -333,7 +454,9 @@ export function TurnosTab({
                       </h4>
                       {b.customerPhone && (
                         <button
-                          onClick={() => onOpenStudentCrm(b.customerPhone!, b.customerName)}
+                          onClick={() =>
+                            onOpenStudentCrm(b.customerPhone!, b.customerName)
+                          }
                           className="text-[10px] font-condensed font-bold uppercase tracking-wider text-muted hover:text-accent-text underline"
                         >
                           Ficha CRM →
@@ -348,15 +471,21 @@ export function TurnosTab({
                   {/* Plan & Payment Badge */}
                   <div className="p-3 rounded-xl bg-surface-raised border border-border space-y-2 mb-3">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-foreground font-condensed font-bold uppercase tracking-wide">{b.planTitle}</span>
-                      <span className="font-mono text-accent-text font-bold">{b.planPrice}</span>
+                      <span className="text-foreground font-condensed font-bold uppercase tracking-wide">
+                        {b.planTitle}
+                      </span>
+                      <span className="font-mono text-accent-text font-bold">
+                        {b.planPrice}
+                      </span>
                     </div>
 
                     {/* Pack progress if pack */}
                     {totalSess > 1 && (
                       <div className="space-y-1">
                         <div className="flex justify-between items-center text-[11px] text-muted">
-                          <span className="font-condensed uppercase tracking-wider">Progreso de Pack:</span>
+                          <span className="font-condensed uppercase tracking-wider">
+                            Progreso de Pack:
+                          </span>
                           <span className="font-mono text-foreground font-semibold">
                             {completedSess}/{totalSess} sesiones
                           </span>
@@ -364,7 +493,9 @@ export function TurnosTab({
                         <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden flex">
                           <div
                             className="bg-accent h-full transition-all"
-                            style={{ width: `${(completedSess / totalSess) * 100}%` }}
+                            style={{
+                              width: `${(completedSess / totalSess) * 100}%`,
+                            }}
                           />
                         </div>
                       </div>
@@ -393,7 +524,9 @@ export function TurnosTab({
                               ? "Pagado 100%"
                               : "Pago Pendiente"}
                         </span>
-                        <span className="text-[10px] text-accent-text font-condensed font-bold uppercase underline">Recibo 🧾</span>
+                        <span className="text-[10px] text-accent-text font-condensed font-bold uppercase underline">
+                          Recibo 🧾
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -458,7 +591,9 @@ export function TurnosTab({
                         title="Click para editar nota interna"
                       >
                         <span className="truncate font-sans text-xs">
-                          {b.internalNotes ? `📝 ${b.internalNotes}` : "+ Agregar nota interna del instructor..."}
+                          {b.internalNotes
+                            ? `📝 ${b.internalNotes}`
+                            : "+ Agregar nota interna del instructor..."}
                         </span>
                       </div>
                     )}
@@ -471,47 +606,71 @@ export function TurnosTab({
                   {b.customerPhone ? (
                     <div className="relative flex-1">
                       <button
-                        onClick={() => setActiveWaMenuId(activeWaMenuId === b.id ? null : b.id)}
-                        className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-condensed font-bold uppercase tracking-wide flex items-center justify-center gap-1.5 transition-all"
+                        onClick={() =>
+                          setActiveWaMenuId(
+                            activeWaMenuId === b.id ? null : b.id,
+                          )
+                        }
+                        className="w-full py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] border border-[#25D366]/40 text-white font-bold text-xs font-condensed uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-[#25D366]/20 transition-all"
                       >
-                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <svg
+                          className="w-3.5 h-3.5 fill-white shrink-0"
+                          viewBox="0 0 24 24"
+                        >
                           <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                         </svg>
-                        <span>WhatsApp</span>
-                        <svg className="w-3 h-3 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <span className="text-white font-bold">WhatsApp</span>
+                        <svg
+                          className="w-3 h-3 text-white ml-auto"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M19 9l-7 7-7-7"
+                          />
                         </svg>
                       </button>
 
                       {/* Dropdown Options */}
                       {activeWaMenuId === b.id && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setActiveWaMenuId(null)}
-                          />
-                          <div className="absolute left-0 bottom-full mb-1 w-56 bg-surface-raised border border-border rounded-xl shadow-2xl p-1.5 z-20 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-                            {[
-                              { type: "confirmar", label: "Confirmar Turno" },
-                              { type: "recordatorio", label: "Recordatorio de Sesión" },
-                              { type: "pago", label: "Enviar Datos de Pago" },
-                              { type: "ubicacion", label: "Cómo llegar / Mapa" },
-                              { type: "seguimiento_post", label: "Seguimiento Post-Sesión" },
-                              { type: "renovacion", label: "Ofrecer Renovación Pack" },
-                            ].map((item) => (
-                              <a
-                                key={item.type}
-                                href={buildQuickWhatsAppMessage(item.type as any, b, bankConfig)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => setActiveWaMenuId(null)}
-                                className="block px-3 py-1.5 rounded-lg text-xs text-foreground/80 hover:text-foreground hover:bg-surface transition-colors"
-                              >
-                                {item.label}
-                              </a>
-                            ))}
-                          </div>
-                        </>
+                        <div className="absolute left-0 bottom-full mb-1 w-56 bg-[#18191c] border border-white/[0.1] rounded-xl shadow-2xl p-1.5 z-20 space-y-0.5">
+                          {[
+                            { type: "confirmar", label: "Confirmar Turno" },
+                            {
+                              type: "recordatorio",
+                              label: "Recordatorio de Sesión",
+                            },
+                            { type: "pago", label: "Enviar Datos de Pago" },
+                            { type: "ubicacion", label: "Cómo llegar / Mapa" },
+                            {
+                              type: "seguimiento_post",
+                              label: "Seguimiento Post-Sesión",
+                            },
+                            {
+                              type: "renovacion",
+                              label: "Ofrecer Renovación Pack",
+                            },
+                          ].map((item) => (
+                            <a
+                              key={item.type}
+                              href={buildQuickWhatsAppMessage(
+                                item.type as any,
+                                b,
+                                bankConfig,
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setActiveWaMenuId(null)}
+                              className="block px-3 py-1.5 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
+                            >
+                              {item.label}
+                            </a>
+                          ))}
+                        </div>
                       )}
                     </div>
                   ) : null}
@@ -519,8 +678,10 @@ export function TurnosTab({
                   {/* Pack increment button */}
                   {totalSess > 1 && (
                     <button
-                      onClick={() => onIncrementSession(b.id, completedSess, totalSess)}
-                      className="p-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border text-foreground/70 hover:text-foreground text-xs"
+                      onClick={() =>
+                        onIncrementSession(b.id, completedSess, totalSess)
+                      }
+                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-xs"
                       title="Registrar +1 sesión realizada en el pack"
                     >
                       +1 Sesión
@@ -532,7 +693,7 @@ export function TurnosTab({
                     href={buildGoogleCalendarUrl(b)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border text-foreground/70 hover:text-foreground text-xs"
+                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-xs"
                     title="Añadir a Google Calendar"
                   >
                     📅
@@ -541,7 +702,7 @@ export function TurnosTab({
                   {/* Delete */}
                   <button
                     onClick={() => onDeleteBooking(b.id)}
-                    className="p-1.5 rounded-lg bg-surface-raised hover:bg-rose-500/20 border border-border hover:border-rose-500/40 text-muted hover:text-rose-400 text-xs transition-colors"
+                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-rose-500/20 text-white/40 hover:text-rose-400 text-xs transition-colors"
                     title="Eliminar registro"
                   >
                     🗑️
@@ -553,9 +714,9 @@ export function TurnosTab({
         </div>
       ) : (
         /* Table View */
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface">
-          <table className="w-full text-left text-xs text-foreground/80">
-            <thead className="bg-surface-raised text-[11px] font-condensed uppercase tracking-wider text-muted border-b border-border">
+        <div className="overflow-x-auto rounded-2xl border border-white/[0.08] bg-white/[0.01]">
+          <table className="w-full text-left text-xs text-white/80">
+            <thead className="bg-white/[0.03] text-[11px] font-mono text-white/50 uppercase tracking-wider border-b border-white/[0.08]">
               <tr>
                 <th className="px-4 py-3">Fecha / Hora</th>
                 <th className="px-4 py-3">Alumno</th>
@@ -565,70 +726,117 @@ export function TurnosTab({
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-white/[0.04]">
               {filteredBookings.map((b) => (
-                <tr key={b.id} className="hover:bg-surface-raised/50 transition-colors">
+                <tr
+                  key={b.id}
+                  className="hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="px-4 py-3 font-mono">
-                    <span className="text-accent-text font-bold">{b.time} hs</span>
-                    <span className="text-muted block text-[11px]">{b.date}</span>
+                    <span className="text-amber-400 font-bold">
+                      {b.time} hs
+                    </span>
+                    <span className="text-white/50 block text-[11px]">
+                      {b.date}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      onClick={() => b.customerPhone && onOpenStudentCrm(b.customerPhone, b.customerName)}
-                      className="font-semibold text-foreground hover:text-accent-text cursor-pointer block"
+                      onClick={() =>
+                        b.customerPhone &&
+                        onOpenStudentCrm(b.customerPhone, b.customerName)
+                      }
+                      className="font-semibold text-white hover:text-amber-300 cursor-pointer block"
                     >
                       {b.customerName}
                     </span>
-                    <span className="text-muted text-[11px] font-mono">{b.customerPhone}</span>
+                    <span className="text-white/40 text-[11px] font-mono">
+                      {b.customerPhone}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="font-medium text-foreground">{b.planTitle}</span>
-                    <span className="text-accent-text font-mono block text-[11px]">{b.planPrice}</span>
+                    <span>{b.planTitle}</span>
+                    <span className="text-amber-400 font-mono block text-[11px]">
+                      {b.planPrice}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={b.status}
-                      onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className="px-2 py-1 rounded bg-surface-raised border border-border text-[11px] font-condensed uppercase text-foreground focus:outline-none"
+                      onChange={(e) =>
+                        onUpdateStatus(
+                          b.id,
+                          e.target.value as Booking["status"],
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-[#18191c] border border-white/20 text-xs font-condensed font-bold uppercase text-white cursor-pointer focus:outline-none"
                     >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="realizado">Realizado</option>
-                      <option value="cancelado">Cancelado</option>
+                      <option
+                        value="pendiente"
+                        className="bg-[#18191c] text-amber-300 font-bold py-1"
+                      >
+                        ● Pendiente
+                      </option>
+                      <option
+                        value="confirmado"
+                        className="bg-[#18191c] text-emerald-400 font-bold py-1"
+                      >
+                        ● Confirmado
+                      </option>
+                      <option
+                        value="realizado"
+                        className="bg-[#18191c] text-sky-400 font-bold py-1"
+                      >
+                        ● Realizado
+                      </option>
+                      <option
+                        value="cancelado"
+                        className="bg-[#18191c] text-rose-400 font-bold py-1"
+                      >
+                        ● Cancelado
+                      </option>
                     </select>
                   </td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => onOpenReceiptModal(b)}
-                      className="text-xs font-mono text-accent-text hover:underline font-bold"
+                      className="text-xs font-mono text-amber-300 hover:underline"
                     >
                       {b.paymentStatus || "pendiente"}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-right space-x-1.5">
+                  <td className="px-4 py-3 text-right space-x-2">
                     <button
                       onClick={() => onEditBooking(b)}
-                      className="p-1.5 rounded-lg bg-sky-500/15 text-sky-400 hover:bg-sky-500/25 text-[11px] inline-block font-condensed font-bold uppercase"
-                      title="Editar / Reprogramar Turno"
+                      className="p-1 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 text-[11px]"
                     >
-                      ✏️ Editar
+                      Editar
                     </button>
                     {b.customerPhone && (
                       <a
-                        href={buildQuickWhatsAppMessage("confirmar", b, bankConfig)}
+                        href={buildQuickWhatsAppMessage(
+                          "confirmar",
+                          b,
+                          bankConfig,
+                        )}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 text-[11px] inline-block font-condensed font-bold uppercase"
+                        className="px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-bold hover:bg-[#20ba59] text-[11px] font-condensed uppercase tracking-wider inline-flex items-center gap-1 shadow-sm"
                       >
-                        WA
+                        <svg
+                          className="w-3 h-3 fill-white shrink-0"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
+                        </svg>
+                        <span>WA</span>
                       </a>
                     )}
                     <button
                       onClick={() => onDeleteBooking(b.id)}
-                      className="p-1.5 rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 text-[11px]"
-                      title="Eliminar"
+                      className="p-1 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 text-[11px]"
                     >
-                      🗑️
+                      Borrar
                     </button>
                   </td>
                 </tr>

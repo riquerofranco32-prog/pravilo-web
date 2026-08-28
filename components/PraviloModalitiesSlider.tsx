@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 export function PraviloModalitiesSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -54,7 +55,8 @@ export function PraviloModalitiesSlider() {
               : "border border-border bg-surface text-muted hover:border-accent/50 hover:text-foreground"
           }`}
         >
-          <span>⚡ PRAVILO DEPORTIVO</span>
+          <BenefitIcon name="deporte" className="w-3.5 h-3.5 shrink-0" />
+          <span>PRAVILO DEPORTIVO</span>
         </button>
         <button
           type="button"
@@ -65,7 +67,8 @@ export function PraviloModalitiesSlider() {
               : "border border-border bg-surface text-muted hover:border-emerald-500/50 hover:text-foreground"
           }`}
         >
-          <span>🌿 PRAVILO TERAPÉUTICO</span>
+          <BenefitIcon name="terapia" className="w-3.5 h-3.5 shrink-0" />
+          <span>PRAVILO TERAPÉUTICO</span>
         </button>
       </RevealOnScroll>
 
@@ -172,37 +175,39 @@ export function PraviloModalitiesSlider() {
               className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-white to-emerald-400 shadow-[0_0_20px_rgba(255,255,255,0.6)] pointer-events-none"
               style={{ left: `${sliderPosition}%` }}
             >
-              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-surface-raised text-white shadow-2xl transition-transform hover:scale-110">
-                <span className="text-sm font-bold tracking-tighter">◀ ▶</span>
+              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-surface-raised text-white shadow-2xl transition-transform hover:scale-110">
+                <BenefitIcon name="dragHorizontal" className="w-5 h-5 text-white" />
               </div>
             </div>
           </div>
 
           <p className="mt-3 text-center text-xs text-muted flex items-center justify-center gap-1.5">
-            <span>↔</span>
+            <BenefitIcon name="dragHorizontal" className="w-4 h-4 text-muted inline-block" />
             <span>Deslizá la línea horizontalmente para descubrir ambas orientaciones</span>
           </p>
 
           {/* Bloque de Cierre y Filosofía */}
-          <div className="mt-8 rounded-2xl border border-border bg-background/90 p-6 sm:p-8 text-center space-y-4">
-            <h3 className="font-condensed text-xl sm:text-2xl font-black text-foreground">
-              PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
-            </h3>
-            <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted leading-relaxed">
-              No necesitás ser deportista ni tener experiencia previa para
-              practicar PRAVILO. <br className="hidden sm:inline" />
-              <strong className="text-foreground font-semibold">
-                Vos elegís hacia dónde llevar la experiencia.
-              </strong>
-            </p>
+          <RevealOnScroll delay={100}>
+            <div className="mt-8 rounded-2xl border border-border bg-background/90 p-6 sm:p-8 text-center space-y-4">
+              <h3 className="font-condensed text-xl sm:text-2xl font-black text-foreground">
+                PRAVILO trabaja de manera integral cuerpo, mente y espíritu.
+              </h3>
+              <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted leading-relaxed">
+                No necesitás ser deportista ni tener experiencia previa para
+                practicar PRAVILO. <br className="hidden sm:inline" />
+                <strong className="text-foreground font-semibold">
+                  Vos elegís hacia dónde llevar la experiencia.
+                </strong>
+              </p>
 
-            <div className="pt-3 flex justify-center">
-              <BookingWizard
-                buttonText="Reservar mi sesión inicial personalizada →"
-                className="btn-shiny rounded-full bg-accent px-8 py-3.5 font-condensed text-base font-bold uppercase tracking-wider text-accent-foreground shadow-lg hover:scale-105 transition-all"
-              />
+              <div className="pt-3 flex justify-center">
+                <BookingWizard
+                  buttonText="Reservar mi sesión inicial personalizada →"
+                  className="btn-shiny rounded-full bg-accent px-8 py-3.5 font-condensed text-base font-bold uppercase tracking-wider text-accent-foreground shadow-lg hover:scale-105 transition-all"
+                />
+              </div>
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </RevealOnScroll>
     </section>

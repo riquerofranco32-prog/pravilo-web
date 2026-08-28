@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import BookingWizard from "./BookingWizard";
+import BenefitIcon from "./BenefitIcon";
 
 interface BenefitCardData {
   id: string;
@@ -13,6 +14,12 @@ interface BenefitCardData {
   fullDesc: string;
   scienceNote: string;
   iconSvg: React.ReactNode;
+  iconBg: string;
+  iconBorder: string;
+  iconColor: string;
+  tagColor: string;
+  glowColor: string;
+  accentLine: string;
 }
 
 const BENEFICIOS_ARG: BenefitCardData[] = [
@@ -27,10 +34,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "La vida cotidiana, las horas sentado frente a la pantalla o los entrenamientos de impacto comprimen progresivamente la columna. En PRAVILO, la suspensión simétrica en 4 puntos reparte la carga de manera perfecta, creando espacio entre vértebras y permitiendo que los discos respiren y se rehidraten sin impacto articular.",
     scienceNote: "Restaura el espacio intervertebral y descomprime raíces nerviosas (como el ciático) de forma suave y controlada.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-rose-500/25 to-orange-500/25 shadow-[0_0_15px_rgba(244,63,94,0.3)]",
+    iconBorder: "border-rose-500/50",
+    iconColor: "text-rose-300",
+    tagColor: "text-rose-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(244,63,94,0.45)] hover:border-rose-400",
+    accentLine: "from-rose-500 via-orange-400 to-rose-500",
   },
   {
     id: "fascia",
@@ -43,10 +56,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "La fascia es el tejido conectivo que envuelve cada músculo del cuerpo. Cuando se acorta o rigidiza por mala postura, limita todo tu movimiento. La tracción tridimensional estira estas cadenas en toda su longitud, disolviendo adherencias profundas y devolviéndote una elasticidad real.",
     scienceNote: "Libera la tensión miofascial profunda y aumenta el rango de movimiento articular en hombros, cadera y cuello.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-amber-500/25 to-yellow-500/25 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+    iconBorder: "border-amber-500/50",
+    iconColor: "text-amber-300",
+    tagColor: "text-amber-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] hover:border-amber-400",
+    accentLine: "from-amber-400 via-yellow-300 to-amber-500",
   },
   {
     id: "circulacion",
@@ -59,10 +78,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "Un músculo contracturado de forma permanente actúa como un torniquete sobre las arterias y venas que lo atraviesan. Al relajar esas zonas críticas durante la tracción, se reactiva el retorno venoso hacia el corazón, facilitando la nutrición celular y una recuperación acelerada de la musculatura.",
     scienceNote: "Optimiza la perfusión sanguínea periférica, alivia la pesadez en extremidades y nutre tejidos profundos.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-sky-500/25 to-blue-600/25 shadow-[0_0_15px_rgba(14,165,233,0.3)]",
+    iconBorder: "border-sky-500/50",
+    iconColor: "text-sky-300",
+    tagColor: "text-sky-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(14,165,233,0.45)] hover:border-sky-400",
+    accentLine: "from-sky-400 via-cyan-300 to-blue-500",
   },
   {
     id: "nervioso",
@@ -75,10 +100,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "La mente y el cuerpo están en diálogo continuo: las preocupaciones se transforman en corazas físicas. Al flotar en el dispositivo bajo una guía segura, el sistema nervioso central apaga la respuesta de 'lucha o huida' y activa el tono parasimpático, generando una sensación inmediata de ligereza y paz.",
     scienceNote: "Estimulación del nervio vago y reducción natural de los picos de cortisol y tensión muscular refleja.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-purple-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+    iconBorder: "border-purple-500/50",
+    iconColor: "text-purple-300",
+    tagColor: "text-purple-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(168,85,247,0.45)] hover:border-purple-400",
+    accentLine: "from-purple-400 via-fuchsia-300 to-indigo-500",
   },
   {
     id: "drenaje",
@@ -91,10 +122,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "El sistema linfático no cuenta con un corazón propio para bombear; depende exclusivamente del movimiento y la alternancia de presiones en los tejidos. La apertura articular en PRAVILO actúa como una bomba hidráulica natural que descongestiona articulaciones cargadas y acelera la eliminación de desechos metabólicos.",
     scienceNote: "Promueve el drenaje linfático intersticial y colabora en desinflamar zonas articulares sobrecargadas.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-emerald-500/25 to-teal-500/25 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+    iconBorder: "border-emerald-500/50",
+    iconColor: "text-emerald-300",
+    tagColor: "text-emerald-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(16,185,129,0.45)] hover:border-emerald-400",
+    accentLine: "from-emerald-400 via-teal-300 to-emerald-500",
   },
   {
     id: "energia",
@@ -107,10 +144,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "Sostener contracturas crónicas en el cuello o la espalda es como manejar un auto con el freno de mano puesto: agota tu energía y te deja fatigado antes de tiempo. Al desbloquear esa rigidez, el cuerpo ahorra ese gasto silencioso y recuperás un impulso fresco para tu día a día.",
     scienceNote: "Disminuye el gasto energético parasitario de las contracturas crónicas y mejora la oxigenación general.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-yellow-400/25 to-amber-600/25 shadow-[0_0_15px_rgba(234,179,8,0.3)]",
+    iconBorder: "border-yellow-400/50",
+    iconColor: "text-yellow-300",
+    tagColor: "text-yellow-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(234,179,8,0.45)] hover:border-yellow-400",
+    accentLine: "from-yellow-300 via-amber-300 to-orange-500",
   },
   {
     id: "postura",
@@ -123,10 +166,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "Al suspenderte de forma simétrica, el cuerpo evidencia de inmediato qué lado está compensando de más. El sistema nervioso reprograma la alineación de hombros, columna y pelvis, ayudándote a pararte más erguido, con menos esfuerzo y mayor presencia.",
     scienceNote: "Reprogramación propioceptiva del esquema corporal y fortalecimiento de la musculatura postural profunda.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-blue-500/25 to-indigo-600/25 shadow-[0_0_15px_rgba(59,130,246,0.3)]",
+    iconBorder: "border-blue-500/50",
+    iconColor: "text-blue-300",
+    tagColor: "text-blue-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(59,130,246,0.45)] hover:border-blue-400",
+    accentLine: "from-blue-400 via-cyan-300 to-indigo-500",
   },
   {
     id: "resiliencia",
@@ -139,10 +188,16 @@ const BENEFICIOS_ARG: BenefitCardData[] = [
       "En el aparato, la clave para relajarse no es hacer fuerza, sino exhalar y confiar en la estructura. Esta capacidad de mantener la respiración profunda y la mente serena frente a una sensación desconocida se traslada de inmediato a cómo manejás el estrés en tu vida cotidiana.",
     scienceNote: "Mejora la variabilidad de la frecuencia cardíaca (VFC) y la respuesta adaptativa al estrés mental y laboral.",
     iconSvg: (
-      <svg className="w-8 h-8 text-accent-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
+    iconBg: "bg-gradient-to-br from-pink-500/25 to-rose-600/25 shadow-[0_0_15px_rgba(236,72,153,0.3)]",
+    iconBorder: "border-pink-500/50",
+    iconColor: "text-pink-300",
+    tagColor: "text-pink-300",
+    glowColor: "hover:shadow-[0_0_30px_rgba(236,72,153,0.45)] hover:border-pink-400",
+    accentLine: "from-pink-400 via-rose-300 to-fuchsia-500",
   },
 ];
 
@@ -154,7 +209,7 @@ export function PraviloMoscowBenefitsSection() {
       {/* Glow background accent */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="mx-auto max-w-6xl relative z-10 space-y-12">
+      <div className="mx-auto max-w-6xl relative z-10 space-y-10">
         {/* Header */}
         <RevealOnScroll className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-raised border border-border text-accent-text text-xs font-condensed font-bold uppercase tracking-widest">
@@ -171,7 +226,7 @@ export function PraviloMoscowBenefitsSection() {
           </p>
 
           <div className="pt-2 inline-flex items-center gap-2 text-xs font-condensed font-bold uppercase tracking-wider text-accent-text bg-accent/10 border border-accent/20 px-4 py-1.5 rounded-full animate-bounce">
-            <span>👇</span>
+            <BenefitIcon name="chevronDown" className="w-3.5 h-3.5" />
             <span>Tocá cada tarjeta para conocer los efectos en tu cuerpo</span>
           </div>
         </RevealOnScroll>
@@ -184,23 +239,27 @@ export function PraviloMoscowBenefitsSection() {
             return (
               <RevealOnScroll
                 key={b.id}
-                style={{ transitionDelay: `${(i % 4) * 80}ms` }}
+                delay={(i % 2) * 60}
               >
                 <div
                   onClick={() => setSelectedBenefit(b)}
-                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${
+                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${b.glowColor} ${
                     isSelected
                       ? "bg-surface-raised border-accent shadow-xl shadow-accent/20 ring-1 ring-accent scale-[1.02]"
-                      : "bg-surface-raised/50 border-border hover:border-accent/60 hover:bg-surface-raised hover:scale-[1.01]"
+                      : "bg-surface-raised/60 border-border hover:bg-surface-raised hover:scale-[1.02]"
                   }`}
                 >
                   {/* Subtle top accent line */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${b.accentLine} opacity-0 group-hover:opacity-100 transition-opacity`}
+                  />
 
                   <div className="space-y-4">
                     {/* Icon & Number */}
                     <div className="flex items-start justify-between">
-                      <div className="p-3 rounded-xl bg-surface border border-border group-hover:border-accent/40 group-hover:bg-accent/10 transition-all">
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110 ${b.iconBg} ${b.iconBorder} ${b.iconColor}`}
+                      >
                         {b.iconSvg}
                       </div>
                       <span className="font-condensed text-xs font-bold text-muted/60 group-hover:text-accent-text font-mono">
@@ -210,7 +269,9 @@ export function PraviloMoscowBenefitsSection() {
 
                     {/* Tag & Title */}
                     <div className="space-y-1">
-                      <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text block">
+                      <span
+                        className={`text-[10px] font-condensed font-bold uppercase tracking-wider block transition-colors ${b.tagColor}`}
+                      >
                         {b.tag}
                       </span>
                       <h3 className="font-condensed text-lg sm:text-xl font-bold uppercase text-foreground group-hover:text-accent-text transition-colors leading-tight">
@@ -225,7 +286,9 @@ export function PraviloMoscowBenefitsSection() {
                   </div>
 
                   {/* Click to expand hint */}
-                  <div className="pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-condensed font-bold uppercase tracking-wider text-accent-text group-hover:translate-x-0.5 transition-transform">
+                  <div
+                    className={`pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-condensed font-bold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform ${b.tagColor}`}
+                  >
                     <span>Ver detalle</span>
                     <span>→</span>
                   </div>
@@ -234,23 +297,6 @@ export function PraviloMoscowBenefitsSection() {
             );
           })}
         </div>
-
-        {/* Bottom CTA Box */}
-        <RevealOnScroll className="p-8 rounded-3xl bg-surface-raised border border-border flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left shadow-xl">
-          <div className="space-y-1 max-w-xl">
-            <h4 className="font-condensed text-xl font-black uppercase text-foreground">
-              Comprobá el alivio en tu propia estructura
-            </h4>
-            <p className="text-xs sm:text-sm text-muted font-sans">
-              Evaluación personalizada y sesión guiada de 60 minutos en Plottier, Neuquén.
-            </p>
-          </div>
-
-          <BookingWizard
-            buttonText="Reservar Turno de Evaluación"
-            className="btn-shiny px-8 py-3.5 rounded-2xl bg-accent text-accent-foreground font-condensed font-black uppercase tracking-wider text-sm shadow-xl shadow-accent/25 hover:scale-105 active:scale-95 transition-all shrink-0"
-          />
-        </RevealOnScroll>
       </div>
 
       {/* Modal Interactivo de Detalle Biomecánico */}
@@ -273,11 +319,15 @@ export function PraviloMoscowBenefitsSection() {
 
             {/* Modal Header */}
             <div className="flex items-center gap-4">
-              <div className="p-3.5 rounded-2xl bg-accent/15 border border-accent/30 text-accent-text shrink-0">
+              <div
+                className={`p-3.5 rounded-2xl border ${selectedBenefit.iconBg} ${selectedBenefit.iconBorder} ${selectedBenefit.iconColor} shrink-0`}
+              >
                 {selectedBenefit.iconSvg}
               </div>
               <div>
-                <span className="text-[11px] font-condensed font-bold uppercase tracking-wider text-accent-text">
+                <span
+                  className={`text-[11px] font-condensed font-bold uppercase tracking-wider ${selectedBenefit.tagColor}`}
+                >
                   {selectedBenefit.number} • {selectedBenefit.tag}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black font-condensed uppercase tracking-tight text-foreground">
@@ -293,8 +343,9 @@ export function PraviloMoscowBenefitsSection() {
               </div>
 
               <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 space-y-1">
-                <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text block">
-                  🔬 Enfoque Biomecánico:
+                <span className="text-[10px] font-condensed font-bold uppercase tracking-wider text-accent-text flex items-center gap-1.5">
+                  <BenefitIcon name="microscope" className="w-3.5 h-3.5" />
+                  <span>Enfoque Biomecánico:</span>
                 </span>
                 <p className="text-xs text-muted font-sans italic">
                   {selectedBenefit.scienceNote}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 interface FAQItem {
   question: string;
@@ -64,7 +65,7 @@ export default function FAQAccordion() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Category Pills */}
-      <div className="flex flex-wrap justify-center gap-2">
+      <RevealOnScroll className="flex flex-wrap justify-center gap-2">
         {CATEGORIES.map((cat) => {
           const isSelected = activeCategory === cat.id;
           return (
@@ -85,70 +86,66 @@ export default function FAQAccordion() {
             </button>
           );
         })}
-      </div>
+      </RevealOnScroll>
 
       {/* Accordion Items */}
       <div className="space-y-3.5 pt-2">
         {filteredFaqs.map((faq, index) => {
           const isOpen = openIndex === index;
           return (
-            <div
-              key={faq.question}
-              className={`rounded-2xl border transition-all duration-300 ${
-                isOpen
-                  ? "border-accent/50 bg-surface-raised shadow-[0_8px_30px_-10px_rgba(160,26,26,0.35)]"
-                  : "border-border bg-surface/80 hover:border-border-highlight hover:bg-surface-raised"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => handleToggle(index)}
-                aria-expanded={isOpen}
-                className="flex w-full items-center justify-between p-5 text-left transition-colors sm:p-6"
+            <RevealOnScroll key={faq.question} delay={(index % 3) * 60}>
+              <div
+                className={`rounded-2xl border transition-all duration-300 ${
+                  isOpen
+                    ? "border-accent/50 bg-surface-raised shadow-[0_8px_30px_-10px_rgba(160,26,26,0.35)]"
+                    : "border-border bg-surface/80 hover:border-border-highlight hover:bg-surface-raised"
+                }`}
               >
-                <div className="flex items-center gap-3.5 pr-2">
+                <button
+                  type="button"
+                  onClick={() => handleToggle(index)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between p-5 text-left transition-colors sm:p-6"
+                >
+                  <div className="flex items-center gap-3.5 pr-2">
+                    <span
+                      className={`font-condensed text-sm font-bold transition-colors ${
+                        isOpen ? "text-accent-text" : "text-muted/60"
+                      }`}
+                    >
+                      0{index + 1}
+                    </span>
+                    <span className="font-condensed text-lg font-bold text-foreground sm:text-xl">
+                      {faq.question}
+                    </span>
+                  </div>
                   <span
-                    className={`font-condensed text-sm font-bold transition-colors ${
-                      isOpen ? "text-accent-text" : "text-muted/60"
+                    className={`ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                      isOpen
+                        ? "rotate-180 border-accent bg-accent text-accent-foreground shadow-[0_0_15px_-3px_var(--accent)]"
+                        : "border-border bg-background text-muted"
                     }`}
                   >
-                    0{index + 1}
+                    <svg viewBox="0 0 20 20" className="h-4 w-4 fill-current">
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </span>
-                  <span className="font-condensed text-lg font-bold text-foreground sm:text-xl">
-                    {faq.question}
-                  </span>
-                </div>
-                <span
-                  className={`ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                    isOpen
-                      ? "rotate-180 border-accent bg-accent text-accent-foreground shadow-[0_0_15px_-3px_var(--accent)]"
-                      : "border-border bg-background text-muted"
-                  }`}
-                >
-                  <svg
-                    viewBox="0 0 20 20"
-                    className="h-4 w-4 fill-current"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
+                </button>
 
-              {isOpen && (
-                <div className="border-t border-border/60 px-5 pt-3 pb-5 text-sm leading-relaxed text-muted sm:px-6 sm:pb-6 animate-fadeIn">
-                  <p>{faq.answer}</p>
-                </div>
-              )}
-            </div>
+                {isOpen && (
+                  <div className="border-t border-border/60 px-5 pt-3 pb-5 text-sm leading-relaxed text-muted sm:px-6 sm:pb-6 animate-fadeIn">
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            </RevealOnScroll>
           );
         })}
       </div>
     </div>
   );
 }
-
-
