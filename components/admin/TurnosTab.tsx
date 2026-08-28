@@ -7,8 +7,6 @@ import {
   PaymentStatus,
   buildGoogleCalendarUrl,
   buildQuickWhatsAppMessage,
-  formatDateTimeExact,
-  formatRelativeTime,
 } from "@/lib/bookings";
 
 interface TurnosTabProps {
@@ -21,6 +19,7 @@ interface TurnosTabProps {
   onDeleteBooking: (id: string) => void;
   onOpenReceiptModal: (booking: Booking) => void;
   onOpenStudentCrm: (phone: string, name: string) => void;
+  onEditBooking: (booking: Booking) => void;
   onReloadSamples?: () => void;
 }
 
@@ -34,6 +33,7 @@ export function TurnosTab({
   onDeleteBooking,
   onOpenReceiptModal,
   onOpenStudentCrm,
+  onEditBooking,
   onReloadSamples,
 }: TurnosTabProps) {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
@@ -96,7 +96,7 @@ export function TurnosTab({
   return (
     <div className="space-y-6">
       {/* Search and Filters Bar */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border space-y-4 shadow-sm">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
@@ -113,7 +113,7 @@ export function TurnosTab({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por alumno, teléfono, plan o tag (Atajo: presiona '/')"
+              placeholder="Buscar por alumno, teléfono, plan, fecha o patología..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-raised border border-border text-xs sm:text-sm text-foreground placeholder-muted/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all font-sans"
             />
             {searchQuery && (
@@ -193,7 +193,7 @@ export function TurnosTab({
           </div>
 
           {/* Status & Payment Selectors */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
@@ -267,7 +267,7 @@ export function TurnosTab({
                 }`}
               >
                 <div>
-                  {/* Top Bar: Date, Slot & Status */}
+                  {/* Top Bar: Date, Slot, Edit & Status */}
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/30 text-accent-text text-xs font-condensed font-bold">
@@ -288,25 +288,37 @@ export function TurnosTab({
                       </span>
                     </div>
 
-                    {/* Status dropdown */}
-                    <select
-                      value={b.status}
-                      onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2 py-1 rounded-lg border focus:outline-none ${
-                        b.status === "confirmado"
-                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                          : b.status === "realizado"
-                            ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
-                            : b.status === "cancelado"
-                              ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                              : "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                      }`}
-                    >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="realizado">Realizado</option>
-                      <option value="cancelado">Cancelado</option>
-                    </select>
+                    <div className="flex items-center gap-1.5">
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => onEditBooking(b)}
+                        className="px-2 py-1 rounded-lg bg-surface-raised hover:bg-surface border border-border hover:border-sky-500/50 text-sky-400 hover:text-sky-300 text-[11px] font-condensed font-bold uppercase tracking-wider transition-all flex items-center gap-1"
+                        title="Editar o Reprogramar Turno"
+                      >
+                        <span>✏️</span>
+                        <span>Editar</span>
+                      </button>
+
+                      {/* Status dropdown */}
+                      <select
+                        value={b.status}
+                        onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
+                        className={`text-[11px] font-condensed font-bold uppercase tracking-wider px-2 py-1 rounded-lg border focus:outline-none ${
+                          b.status === "confirmado"
+                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                            : b.status === "realizado"
+                              ? "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                              : b.status === "cancelado"
+                                ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
+                                : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                        }`}
+                      >
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="realizado">Realizado</option>
+                        <option value="cancelado">Cancelado</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Customer Info */}
@@ -473,27 +485,33 @@ export function TurnosTab({
 
                       {/* Dropdown Options */}
                       {activeWaMenuId === b.id && (
-                        <div className="absolute left-0 bottom-full mb-1 w-56 bg-[#18191c] border border-white/[0.1] rounded-xl shadow-2xl p-1.5 z-20 space-y-0.5">
-                          {[
-                            { type: "confirmar", label: "Confirmar Turno" },
-                            { type: "recordatorio", label: "Recordatorio de Sesión" },
-                            { type: "pago", label: "Enviar Datos de Pago" },
-                            { type: "ubicacion", label: "Cómo llegar / Mapa" },
-                            { type: "seguimiento_post", label: "Seguimiento Post-Sesión" },
-                            { type: "renovacion", label: "Ofrecer Renovación Pack" },
-                          ].map((item) => (
-                            <a
-                              key={item.type}
-                              href={buildQuickWhatsAppMessage(item.type as any, b, bankConfig)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => setActiveWaMenuId(null)}
-                              className="block px-3 py-1.5 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
-                            >
-                              {item.label}
-                            </a>
-                          ))}
-                        </div>
+                        <>
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setActiveWaMenuId(null)}
+                          />
+                          <div className="absolute left-0 bottom-full mb-1 w-56 bg-surface-raised border border-border rounded-xl shadow-2xl p-1.5 z-20 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                            {[
+                              { type: "confirmar", label: "Confirmar Turno" },
+                              { type: "recordatorio", label: "Recordatorio de Sesión" },
+                              { type: "pago", label: "Enviar Datos de Pago" },
+                              { type: "ubicacion", label: "Cómo llegar / Mapa" },
+                              { type: "seguimiento_post", label: "Seguimiento Post-Sesión" },
+                              { type: "renovacion", label: "Ofrecer Renovación Pack" },
+                            ].map((item) => (
+                              <a
+                                key={item.type}
+                                href={buildQuickWhatsAppMessage(item.type as any, b, bankConfig)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setActiveWaMenuId(null)}
+                                className="block px-3 py-1.5 rounded-lg text-xs text-foreground/80 hover:text-foreground hover:bg-surface transition-colors"
+                              >
+                                {item.label}
+                              </a>
+                            ))}
+                          </div>
+                        </>
                       )}
                     </div>
                   ) : null}
@@ -502,7 +520,7 @@ export function TurnosTab({
                   {totalSess > 1 && (
                     <button
                       onClick={() => onIncrementSession(b.id, completedSess, totalSess)}
-                      className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-xs"
+                      className="p-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border text-foreground/70 hover:text-foreground text-xs"
                       title="Registrar +1 sesión realizada en el pack"
                     >
                       +1 Sesión
@@ -514,7 +532,7 @@ export function TurnosTab({
                     href={buildGoogleCalendarUrl(b)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white text-xs"
+                    className="p-1.5 rounded-lg bg-surface-raised hover:bg-surface border border-border text-foreground/70 hover:text-foreground text-xs"
                     title="Añadir a Google Calendar"
                   >
                     📅
@@ -523,7 +541,7 @@ export function TurnosTab({
                   {/* Delete */}
                   <button
                     onClick={() => onDeleteBooking(b.id)}
-                    className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-rose-500/20 text-white/40 hover:text-rose-400 text-xs transition-colors"
+                    className="p-1.5 rounded-lg bg-surface-raised hover:bg-rose-500/20 border border-border hover:border-rose-500/40 text-muted hover:text-rose-400 text-xs transition-colors"
                     title="Eliminar registro"
                   >
                     🗑️
@@ -535,9 +553,9 @@ export function TurnosTab({
         </div>
       ) : (
         /* Table View */
-        <div className="overflow-x-auto rounded-2xl border border-white/[0.08] bg-white/[0.01]">
-          <table className="w-full text-left text-xs text-white/80">
-            <thead className="bg-white/[0.03] text-[11px] font-mono text-white/50 uppercase tracking-wider border-b border-white/[0.08]">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface">
+          <table className="w-full text-left text-xs text-foreground/80">
+            <thead className="bg-surface-raised text-[11px] font-condensed uppercase tracking-wider text-muted border-b border-border">
               <tr>
                 <th className="px-4 py-3">Fecha / Hora</th>
                 <th className="px-4 py-3">Alumno</th>
@@ -547,31 +565,31 @@ export function TurnosTab({
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.04]">
+            <tbody className="divide-y divide-border">
               {filteredBookings.map((b) => (
-                <tr key={b.id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={b.id} className="hover:bg-surface-raised/50 transition-colors">
                   <td className="px-4 py-3 font-mono">
-                    <span className="text-amber-400 font-bold">{b.time} hs</span>
-                    <span className="text-white/50 block text-[11px]">{b.date}</span>
+                    <span className="text-accent-text font-bold">{b.time} hs</span>
+                    <span className="text-muted block text-[11px]">{b.date}</span>
                   </td>
                   <td className="px-4 py-3">
                     <span
                       onClick={() => b.customerPhone && onOpenStudentCrm(b.customerPhone, b.customerName)}
-                      className="font-semibold text-white hover:text-amber-300 cursor-pointer block"
+                      className="font-semibold text-foreground hover:text-accent-text cursor-pointer block"
                     >
                       {b.customerName}
                     </span>
-                    <span className="text-white/40 text-[11px] font-mono">{b.customerPhone}</span>
+                    <span className="text-muted text-[11px] font-mono">{b.customerPhone}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span>{b.planTitle}</span>
-                    <span className="text-amber-400 font-mono block text-[11px]">{b.planPrice}</span>
+                    <span className="font-medium text-foreground">{b.planTitle}</span>
+                    <span className="text-accent-text font-mono block text-[11px]">{b.planPrice}</span>
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={b.status}
                       onChange={(e) => onUpdateStatus(b.id, e.target.value as Booking["status"])}
-                      className="px-2 py-1 rounded bg-[#18191c] border border-white/[0.1] text-[11px]"
+                      className="px-2 py-1 rounded bg-surface-raised border border-border text-[11px] font-condensed uppercase text-foreground focus:outline-none"
                     >
                       <option value="pendiente">Pendiente</option>
                       <option value="confirmado">Confirmado</option>
@@ -582,27 +600,35 @@ export function TurnosTab({
                   <td className="px-4 py-3">
                     <button
                       onClick={() => onOpenReceiptModal(b)}
-                      className="text-xs font-mono text-amber-300 hover:underline"
+                      className="text-xs font-mono text-accent-text hover:underline font-bold"
                     >
                       {b.paymentStatus || "pendiente"}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-right space-x-2">
+                  <td className="px-4 py-3 text-right space-x-1.5">
+                    <button
+                      onClick={() => onEditBooking(b)}
+                      className="p-1.5 rounded-lg bg-sky-500/15 text-sky-400 hover:bg-sky-500/25 text-[11px] inline-block font-condensed font-bold uppercase"
+                      title="Editar / Reprogramar Turno"
+                    >
+                      ✏️ Editar
+                    </button>
                     {b.customerPhone && (
                       <a
                         href={buildQuickWhatsAppMessage("confirmar", b, bankConfig)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[11px] inline-block"
+                        className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 text-[11px] inline-block font-condensed font-bold uppercase"
                       >
                         WA
                       </a>
                     )}
                     <button
                       onClick={() => onDeleteBooking(b.id)}
-                      className="p-1 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 text-[11px]"
+                      className="p-1.5 rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 text-[11px]"
+                      title="Eliminar"
                     >
-                      Borrar
+                      🗑️
                     </button>
                   </td>
                 </tr>

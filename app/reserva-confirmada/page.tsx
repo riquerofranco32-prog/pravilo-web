@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { whatsappLink, LOCATION, WHATSAPP_NUMBER } from "@/lib/constants";
-import { getServerBankConfig } from "@/lib/serverStorage";
+import { getDBBankConfig } from "@/lib/cloudStorage";
 
 export default async function ReservaConfirmada({
   searchParams,
@@ -15,7 +15,7 @@ export default async function ReservaConfirmada({
   }>;
 }) {
   const params = await searchParams;
-  const bankConfig = getServerBankConfig();
+  const bankConfig = await getDBBankConfig();
   const plan = params.plan || "1 Sesión Individual";
   const price = params.price || "$35.000";
   const date = params.date || "";

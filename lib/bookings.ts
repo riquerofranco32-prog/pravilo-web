@@ -18,6 +18,7 @@ export interface ClinicalEvolutionLog {
 }
 
 export interface StudentClinicalProfile {
+  studentName?: string;
   conditionReason?: string; // Motivo de consulta (ej. Lumbalgia L5, Hernia, Contractura, Movilidad)
   painLevelInitial?: number; // 1 a 10
   painLevelCurrent?: number; // 1 a 10

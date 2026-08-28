@@ -44,7 +44,7 @@ export default function BookingWizard({
       const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           setBookings(parsed);
         }
       }
@@ -54,8 +54,9 @@ export default function BookingWizard({
     fetch("/api/admin/bookings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
+        if (data?.ok && Array.isArray(data.bookings)) {
           setBookings(data.bookings);
+          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(data.bookings));
         }
       })
       .catch(() => {});

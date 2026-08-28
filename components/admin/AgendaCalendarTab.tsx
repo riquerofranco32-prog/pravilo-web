@@ -2,20 +2,24 @@
 
 import React, { useState, useMemo } from "react";
 import { ScheduleConfig, getAvailableSlots } from "@/lib/availability";
-import { Booking } from "@/lib/bookings";
+import { Booking, buildQuickWhatsAppMessage, BankConfig } from "@/lib/bookings";
 
 interface AgendaCalendarTabProps {
   bookings: Booking[];
   config: ScheduleConfig;
+  bankConfig?: BankConfig;
   onOpenManualBookingForDate: (date: string, slot?: string) => void;
   onSelectBooking: (id: string) => void;
+  onEditBooking?: (booking: Booking) => void;
 }
 
 export function AgendaCalendarTab({
   bookings,
   config,
+  bankConfig,
   onOpenManualBookingForDate,
   onSelectBooking,
+  onEditBooking,
 }: AgendaCalendarTabProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState(
@@ -72,7 +76,7 @@ export function AgendaCalendarTab({
   return (
     <div className="space-y-6">
       {/* Calendar Top Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border shadow-sm">
         <div className="flex items-center gap-3">
           <h3 className="text-xl sm:text-2xl font-black capitalize text-foreground font-condensed uppercase tracking-wider">
             {monthName}
@@ -215,7 +219,7 @@ export function AgendaCalendarTab({
               {!isSelectedDateBlocked && (
                 <button
                   onClick={() => onOpenManualBookingForDate(selectedDateStr)}
-                  className="btn-shiny px-3 py-1 rounded-lg bg-accent text-accent-foreground text-xs font-condensed font-bold uppercase tracking-wider shadow"
+                  className="btn-shiny px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-xs font-condensed font-bold uppercase tracking-wider shadow"
                 >
                   + Turno
                 </button>
@@ -223,48 +227,107 @@ export function AgendaCalendarTab({
             </div>
 
             {/* Slots timeline */}
-            <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-[520px] overflow-y-auto pr-1">
               {configuredSlots.length === 0 && !isSelectedDateBlocked && (
-                <p className="text-xs text-muted italic py-4 text-center font-sans">
-                  Este día no tiene horarios configurados en la grilla semanal.
-                </p>
+                <div className="text-center py-6 space-y-2">
+                  <p className="text-xs text-muted italic font-sans">
+                    Este día no tiene horarios en la grilla semanal estándar.
+                  </p>
+                  <button
+                    onClick={() => onOpenManualBookingForDate(selectedDateStr)}
+                    className="px-3 py-1 rounded-lg bg-surface-raised border border-border text-xs font-condensed font-bold uppercase text-accent-text hover:border-accent"
+                  >
+                    + Agendar turno manual aquí
+                  </button>
+                </div>
               )}
 
-              {configuredSlots.map((slot) => {
+              {/* Show configured slots and any existing bookings on non-configured slots */}
+              {Array.from(new Set([...configuredSlots, ...selectedDayBookings.map((b) => b.time)])).sort().map((slot) => {
                 const bookingInSlot = selectedDayBookings.find((b) => b.time === slot);
 
                 return (
                   <div
                     key={slot}
-                    className={`p-3 rounded-xl border text-xs transition-all ${
+                    className={`p-3.5 rounded-xl border text-xs transition-all ${
                       bookingInSlot
-                        ? "bg-surface-raised border-accent/40 shadow"
+                        ? "bg-surface-raised border-accent/40 shadow-sm space-y-2"
                         : "bg-surface-raised/40 border-border text-muted hover:bg-surface-raised"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-condensed font-bold text-accent-text text-sm">{slot} hs</span>
                       {bookingInSlot ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold bg-emerald-500/20 text-emerald-300">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-condensed font-bold ${
+                            bookingInSlot.status === "confirmado"
+                              ? "bg-emerald-500/20 text-emerald-300"
+                              : bookingInSlot.status === "realizado"
+                                ? "bg-sky-500/20 text-sky-300"
+                                : bookingInSlot.status === "cancelado"
+                                  ? "bg-rose-500/20 text-rose-300"
+                                  : "bg-amber-500/20 text-amber-300"
+                          }`}
+                        >
                           {bookingInSlot.status}
                         </span>
                       ) : (
                         <button
                           onClick={() => onOpenManualBookingForDate(selectedDateStr, slot)}
-                          className="text-[10px] text-muted hover:text-accent-text font-condensed font-bold uppercase tracking-wider underline"
+                          className="text-[10px] text-muted hover:text-accent-text font-condensed font-bold uppercase tracking-wider underline flex items-center gap-1"
                         >
-                          + Agendar aquí
+                          + Agendar en este horario
                         </button>
                       )}
                     </div>
 
                     {bookingInSlot && (
-                      <div className="mt-2 space-y-0.5">
-                        <p className="font-condensed font-bold uppercase text-foreground text-sm">{bookingInSlot.customerName}</p>
-                        <p className="text-muted text-xs font-sans">{bookingInSlot.planTitle}</p>
-                        {bookingInSlot.customerPhone && (
-                          <p className="text-muted/60 font-mono text-[10px]">{bookingInSlot.customerPhone}</p>
-                        )}
+                      <div className="space-y-1.5 pt-1">
+                        <div>
+                          <p className="font-condensed font-bold uppercase text-foreground text-sm">
+                            {bookingInSlot.customerName}
+                          </p>
+                          <p className="text-muted text-xs font-sans">
+                            {bookingInSlot.planTitle} · <span className="font-mono text-accent-text font-semibold">{bookingInSlot.planPrice}</span>
+                          </p>
+                          {bookingInSlot.customerPhone && (
+                            <p className="text-muted/70 font-mono text-[11px]">{bookingInSlot.customerPhone}</p>
+                          )}
+                        </div>
+
+                        {/* Direct action buttons on calendar */}
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-border/60">
+                          {onEditBooking && (
+                            <button
+                              onClick={() => onEditBooking(bookingInSlot)}
+                              className="px-2 py-1 rounded bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 font-condensed font-bold uppercase text-[10px] transition-colors"
+                            >
+                              ✏️ Editar
+                            </button>
+                          )}
+                          <button
+                            onClick={() => onSelectBooking(bookingInSlot.id)}
+                            className="px-2 py-1 rounded bg-surface border border-border hover:border-accent text-foreground font-condensed font-bold uppercase text-[10px] transition-colors"
+                          >
+                            🧾 Recibo
+                          </button>
+                          {bookingInSlot.customerPhone && (
+                            <a
+                              href={buildQuickWhatsAppMessage("recordatorio", bookingInSlot, bankConfig || {
+                                alias: "PRAVILO.ARG",
+                                cbu: "0000003100010000000000",
+                                titular: "Juan Ignacio Garrafa",
+                                banco: "Mercado Pago / Banco",
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-condensed font-bold uppercase text-[10px] transition-colors"
+                              title="Enviar recordatorio por WhatsApp"
+                            >
+                              WA
+                            </a>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>

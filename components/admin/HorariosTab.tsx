@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScheduleConfig } from "@/lib/availability";
 import { BlockedDatesManager } from "./BlockedDatesManager";
 
@@ -42,6 +42,10 @@ export function HorariosTab({
 }: HorariosTabProps) {
   const [localConfig, setLocalConfig] = useState<ScheduleConfig>(config);
   const [newSlotTime, setNewSlotTime] = useState<{ [dayIndex: number]: string }>({});
+
+  useEffect(() => {
+    setLocalConfig(config);
+  }, [config]);
 
   const handleToggleDay = (dayIndex: number) => {
     const updatedDays = localConfig.days.map((d) =>
@@ -226,7 +230,13 @@ export function HorariosTab({
       </div>
 
       {/* Blocked Dates Section */}
-      <BlockedDatesManager config={localConfig} onUpdateConfig={onSaveConfig} />
+      <BlockedDatesManager
+        config={localConfig}
+        onUpdateConfig={(newConf) => {
+          setLocalConfig(newConf);
+          onSaveConfig(newConf);
+        }}
+      />
     </div>
   );
 }

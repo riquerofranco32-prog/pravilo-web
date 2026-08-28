@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Booking, generateSampleBookings } from "@/lib/bookings";
-import { getServerBookings, saveServerBookings } from "@/lib/serverStorage";
+import {
+  getDBBookings,
+  saveDBBookings,
+  upsertDBBooking,
+  deleteDBBooking,
+} from "@/lib/cloudStorage";
 
 export async function GET() {
-  const bookings = getServerBookings();
-  return NextResponse.json({
-    ok: true,
-    bookings,
-  });
+  try {
+    const bookings = await getDBBookings();
+    return NextResponse.json({
+      ok: true,
+      bookings,
+    });
+  } catch (err: unknown) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: err instanceof Error ? err.message : "Error al leer turnos",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -16,10 +31,30 @@ export async function POST(req: NextRequest) {
 
     if (body.resetWithSamples) {
       const samples = generateSampleBookings();
-      saveServerBookings(samples);
+      const saved = await saveDBBookings(samples);
+      if (!saved) {
+        return NextResponse.json(
+          { ok: false, error: "No se pudieron guardar los turnos de ejemplo" },
+          { status: 500 },
+        );
+      }
       return NextResponse.json({
         ok: true,
         bookings: samples,
+      });
+    }
+
+    if (body.importAllBookings && Array.isArray(body.importAllBookings)) {
+      const saved = await saveDBBookings(body.importAllBookings);
+      if (!saved) {
+        return NextResponse.json(
+          { ok: false, error: "No se pudo importar el respaldo" },
+          { status: 500 },
+        );
+      }
+      return NextResponse.json({
+        ok: true,
+        bookings: body.importAllBookings,
       });
     }
 
@@ -75,9 +110,14 @@ export async function POST(req: NextRequest) {
       status,
     };
 
-    const currentBookings = getServerBookings();
-    const updatedBookings = [newBooking, ...currentBookings];
-    saveServerBookings(updatedBookings);
+    const saved = await upsertDBBooking(newBooking);
+    if (!saved) {
+      return NextResponse.json(
+        { ok: false, error: "No se pudo guardar el turno" },
+        { status: 500 },
+      );
+    }
+    const updatedBookings = await getDBBookings();
 
     return NextResponse.json({
       ok: true,
@@ -86,7 +126,10 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     return NextResponse.json(
-      { ok: false, error: err instanceof Error ? err.message : "Error al registrar turno" },
+      {
+        ok: false,
+        error: err instanceof Error ? err.message : "Error al registrar turno",
+      },
       { status: 500 },
     );
   }
@@ -97,14 +140,22 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const {
       id,
+      date,
+      time,
+      planTitle,
+      planPrice,
+      customerName,
+      customerPhone,
+      customerNotes,
+      internalNotes,
       status,
       paymentStatus,
       amountPaid,
       totalAmount,
       paymentMethod,
       tags,
-      internalNotes,
       sessionsCompleted,
+      totalSessions,
       clinicalProfile,
     } = body;
 
@@ -115,24 +166,45 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const currentBookings = getServerBookings();
-    const updatedBookings = currentBookings.map((b) => {
-      if (b.id !== id) return b;
-      return {
-        ...b,
-        ...(status !== undefined ? { status } : {}),
-        ...(paymentStatus !== undefined ? { paymentStatus } : {}),
-        ...(amountPaid !== undefined ? { amountPaid } : {}),
-        ...(totalAmount !== undefined ? { totalAmount } : {}),
-        ...(paymentMethod !== undefined ? { paymentMethod } : {}),
-        ...(tags !== undefined ? { tags } : {}),
-        ...(internalNotes !== undefined ? { internalNotes } : {}),
-        ...(sessionsCompleted !== undefined ? { sessionsCompleted } : {}),
-        ...(clinicalProfile !== undefined ? { clinicalProfile } : {}),
-      };
-    });
+    const currentBookings = await getDBBookings();
+    const existing = currentBookings.find((b) => b.id === id);
 
-    saveServerBookings(updatedBookings);
+    if (!existing) {
+      return NextResponse.json(
+        { ok: false, error: "Turno no encontrado" },
+        { status: 404 },
+      );
+    }
+
+    const updatedBooking: Booking = {
+      ...existing,
+      ...(date !== undefined ? { date } : {}),
+      ...(time !== undefined ? { time } : {}),
+      ...(planTitle !== undefined ? { planTitle } : {}),
+      ...(planPrice !== undefined ? { planPrice } : {}),
+      ...(customerName !== undefined ? { customerName } : {}),
+      ...(customerPhone !== undefined ? { customerPhone } : {}),
+      ...(customerNotes !== undefined ? { customerNotes } : {}),
+      ...(internalNotes !== undefined ? { internalNotes } : {}),
+      ...(status !== undefined ? { status } : {}),
+      ...(paymentStatus !== undefined ? { paymentStatus } : {}),
+      ...(amountPaid !== undefined ? { amountPaid } : {}),
+      ...(totalAmount !== undefined ? { totalAmount } : {}),
+      ...(paymentMethod !== undefined ? { paymentMethod } : {}),
+      ...(tags !== undefined ? { tags } : {}),
+      ...(sessionsCompleted !== undefined ? { sessionsCompleted } : {}),
+      ...(totalSessions !== undefined ? { totalSessions } : {}),
+      ...(clinicalProfile !== undefined ? { clinicalProfile } : {}),
+    };
+
+    const saved = await upsertDBBooking(updatedBooking);
+    if (!saved) {
+      return NextResponse.json(
+        { ok: false, error: "No se pudo guardar el turno" },
+        { status: 500 },
+      );
+    }
+    const updatedBookings = await getDBBookings();
 
     return NextResponse.json({
       ok: true,
@@ -158,9 +230,14 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const currentBookings = getServerBookings();
-    const updatedBookings = currentBookings.filter((b) => b.id !== id);
-    saveServerBookings(updatedBookings);
+    const deleted = await deleteDBBooking(id);
+    if (!deleted) {
+      return NextResponse.json(
+        { ok: false, error: "No se pudo eliminar el turno" },
+        { status: 500 },
+      );
+    }
+    const updatedBookings = await getDBBookings();
 
     return NextResponse.json({
       ok: true,

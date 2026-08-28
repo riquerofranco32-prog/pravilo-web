@@ -145,7 +145,10 @@ export default function AdminPage() {
       id: booking.id,
       title: `⚡ ¡Nuevo Turno Registrado!`,
       subtitle: `${booking.customerName} · ${booking.planTitle} (${booking.date} a las ${booking.time} hs)`,
-      time: new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     });
 
     if (
@@ -166,7 +169,10 @@ export default function AdminPage() {
 
   const broadcastBookingsUpdate = (updatedList: Booking[]) => {
     try {
-      localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(updatedList));
+      localStorage.setItem(
+        LOCAL_STORAGE_BOOKINGS_KEY,
+        JSON.stringify(updatedList),
+      );
       localStorage.setItem("pravilo_last_sync_timestamp", String(Date.now()));
       if (typeof window !== "undefined" && "BroadcastChannel" in window) {
         const bc = new BroadcastChannel("pravilo_sync_channel");
@@ -179,7 +185,10 @@ export default function AdminPage() {
   const handleToggleAudio = async () => {
     if (!audioEnabled) {
       if (typeof window !== "undefined" && "Notification" in window) {
-        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        if (
+          Notification.permission !== "granted" &&
+          Notification.permission !== "denied"
+        ) {
           await Notification.requestPermission();
         }
       }
@@ -214,7 +223,11 @@ export default function AdminPage() {
         if (diff >= 0 && diff <= 15) {
           notifiedBookingsRef.current.add(b.id);
           playChimeSound();
-          if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+          if (
+            typeof window !== "undefined" &&
+            "Notification" in window &&
+            Notification.permission === "granted"
+          ) {
             new Notification(`⏰ Próximo Turno: ${b.customerName}`, {
               body: `Sesión de ${b.planTitle} a las ${b.time} hs (en ${diff} minutos).`,
               icon: "/favicon.ico",
@@ -229,9 +242,21 @@ export default function AdminPage() {
 
   // Modals & Drawers
   const [showAlertsDrawer, setShowAlertsDrawer] = useState(false);
-  const [showManualModal, setShowManualModal] = useState(false);
-  const [activeReceiptBooking, setActiveReceiptBooking] = useState<Booking | null>(null);
-  const [selectedStudentPhone, setSelectedStudentPhone] = useState<string | null>(null);
+  const [bookingModalState, setBookingModalState] = useState<{
+    isOpen: boolean;
+    bookingToEdit: Booking | null;
+    initialDate?: string;
+    initialSlot?: string;
+    initialStudent?: { name: string; phone: string };
+  }>({
+    isOpen: false,
+    bookingToEdit: null,
+  });
+  const [activeReceiptBooking, setActiveReceiptBooking] =
+    useState<Booking | null>(null);
+  const [selectedStudentPhone, setSelectedStudentPhone] = useState<
+    string | null
+  >(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -239,64 +264,31 @@ export default function AdminPage() {
     fetch("/api/admin/bookings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.ok && Array.isArray(data.bookings) && data.bookings.length > 0) {
+        if (data?.ok && Array.isArray(data.bookings)) {
           const incoming: Booking[] = data.bookings;
 
-          // Detect new bookings on live refresh
+          // Detect new bookings on live refresh (only if new id appeared)
           if (!isInitialLoadRef.current && isSilent) {
-            const newOnes = incoming.filter((b) => !knownBookingIdsRef.current.has(b.id));
+            const newOnes = incoming.filter(
+              (b) => !knownBookingIdsRef.current.has(b.id),
+            );
             if (newOnes.length > 0) {
               notifyNewBooking(newOnes[0]);
             }
           }
 
-          // Register known ids
-          incoming.forEach((b) => knownBookingIdsRef.current.add(b.id));
+          // Register current known ids
+          knownBookingIdsRef.current = new Set(incoming.map((b) => b.id));
           isInitialLoadRef.current = false;
 
           setBookings(incoming);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(incoming));
-        } else if (!isSilent) {
-          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
-                isInitialLoadRef.current = false;
-                setBookings(parsed);
-                return;
-              }
-            } catch {}
-          }
-          const samples = generateSampleBookings();
-          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
-          isInitialLoadRef.current = false;
-          setBookings(samples);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
+          localStorage.setItem(
+            LOCAL_STORAGE_BOOKINGS_KEY,
+            JSON.stringify(incoming),
+          );
         }
       })
-      .catch(() => {
-        if (!isSilent) {
-          const stored = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
-          if (stored) {
-            try {
-              const parsed = JSON.parse(stored);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                parsed.forEach((b: Booking) => knownBookingIdsRef.current.add(b.id));
-                isInitialLoadRef.current = false;
-                setBookings(parsed);
-                return;
-              }
-            } catch {}
-          }
-          const samples = generateSampleBookings();
-          samples.forEach((b) => knownBookingIdsRef.current.add(b.id));
-          isInitialLoadRef.current = false;
-          setBookings(samples);
-          localStorage.setItem(LOCAL_STORAGE_BOOKINGS_KEY, JSON.stringify(samples));
-        }
-      });
+      .catch(() => {});
   };
 
   // Real-time synchronization (Polling 3s + Tab Focus + Storage/Broadcast Events)
@@ -319,7 +311,10 @@ export default function AdminPage() {
 
     // 3. Storage event listener (sync across tabs in same browser)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === LOCAL_STORAGE_BOOKINGS_KEY || e.key === "pravilo_last_sync_timestamp") {
+      if (
+        e.key === LOCAL_STORAGE_BOOKINGS_KEY ||
+        e.key === "pravilo_last_sync_timestamp"
+      ) {
         fetchBookings(true);
       }
     };
@@ -331,7 +326,10 @@ export default function AdminPage() {
       if (typeof window !== "undefined" && "BroadcastChannel" in window) {
         bc = new BroadcastChannel("pravilo_sync_channel");
         bc.onmessage = (event) => {
-          if (event.data?.type === "NEW_BOOKING" || event.data?.type === "UPDATE_BOOKINGS") {
+          if (
+            event.data?.type === "NEW_BOOKING" ||
+            event.data?.type === "UPDATE_BOOKINGS"
+          ) {
             fetchBookings(true);
           }
         };
@@ -383,22 +381,10 @@ export default function AdminPage() {
     if (storedClinical) {
       try {
         const parsed = JSON.parse(storedClinical);
-        if (Object.keys(parsed).length > 0) {
+        if (typeof parsed === "object" && parsed !== null) {
           setClinicalProfiles(parsed);
-        } else {
-          const samples = generateSampleClinicalProfiles();
-          setClinicalProfiles(samples);
-          localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
         }
-      } catch {
-        const samples = generateSampleClinicalProfiles();
-        setClinicalProfiles(samples);
-        localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
-      }
-    } else {
-      const samples = generateSampleClinicalProfiles();
-      setClinicalProfiles(samples);
-      localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(samples));
+      } catch {}
     }
 
     // Gift Cards
@@ -409,7 +395,9 @@ export default function AdminPage() {
       } catch {}
     }
 
-    const savedPrices = localStorage.getItem("pravilo_plan_prices") || localStorage.getItem(LOCAL_STORAGE_PRICES_KEY);
+    const savedPrices =
+      localStorage.getItem("pravilo_plan_prices") ||
+      localStorage.getItem(LOCAL_STORAGE_PRICES_KEY);
     if (savedPrices) {
       try {
         setPlanPrices(JSON.parse(savedPrices));
@@ -445,14 +433,17 @@ export default function AdminPage() {
               JSON.stringify(data.planPrices),
             );
           }
-          if (data.clinicalProfiles && Object.keys(data.clinicalProfiles).length > 0) {
+          if (
+            data.clinicalProfiles &&
+            typeof data.clinicalProfiles === "object"
+          ) {
             setClinicalProfiles(data.clinicalProfiles);
             localStorage.setItem(
               LOCAL_STORAGE_CLINICAL_KEY,
               JSON.stringify(data.clinicalProfiles),
             );
           }
-          if (data.giftCards && Array.isArray(data.giftCards) && data.giftCards.length > 0) {
+          if (data.giftCards && Array.isArray(data.giftCards)) {
             setGiftCards(data.giftCards);
             localStorage.setItem(
               LOCAL_STORAGE_GIFTCARDS_KEY,
@@ -463,7 +454,21 @@ export default function AdminPage() {
       })
       .catch(() => {});
 
-    // Bookings
+    // Initial load from localStorage
+    const storedBookings = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
+    if (storedBookings) {
+      try {
+        const parsed = JSON.parse(storedBookings);
+        if (Array.isArray(parsed)) {
+          knownBookingIdsRef.current = new Set(
+            parsed.map((b: Booking) => b.id),
+          );
+          setBookings(parsed);
+        }
+      } catch {}
+    }
+
+    // Canonical server fetch
     fetchBookings(false);
   }, []);
 
@@ -473,7 +478,10 @@ export default function AdminPage() {
     setBookings(freshBookings);
     setClinicalProfiles(freshClinical);
     broadcastBookingsUpdate(freshBookings);
-    localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(freshClinical));
+    localStorage.setItem(
+      LOCAL_STORAGE_CLINICAL_KEY,
+      JSON.stringify(freshClinical),
+    );
 
     fetch("/api/admin/bookings", {
       method: "POST",
@@ -507,10 +515,20 @@ export default function AdminPage() {
     localStorage.removeItem("pravilo_admin_auth");
   };
 
+  // ponytail: shared rollback so a failed PATCH/DELETE never leaves the UI
+  // showing a change that never actually persisted.
+  const revertBookingsAndAlert = (previous: Booking[], message: string) => {
+    setBookings(previous);
+    broadcastBookingsUpdate(previous);
+    knownBookingIdsRef.current = new Set(previous.map((b) => b.id));
+    alert(message);
+  };
+
   const handleUpdateBookingStatus = async (
     id: string,
     newStatus: Booking["status"],
   ) => {
+    const previous = bookings;
     // Optimistic instant update
     const updated = bookings.map((b) =>
       b.id === id ? { ...b, status: newStatus } : b,
@@ -528,14 +546,25 @@ export default function AdminPage() {
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
+      } else {
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo actualizar el estado del turno.",
+        );
       }
-    } catch {}
+    } catch {
+      revertBookingsAndAlert(
+        previous,
+        "Error de conexión al actualizar el turno.",
+      );
+    }
   };
 
   const handleUpdatePaymentStatus = async (
     id: string,
     paymentStatus: PaymentStatus,
   ) => {
+    const previous = bookings;
     // Optimistic instant update
     const updated = bookings.map((b) =>
       b.id === id ? { ...b, paymentStatus } : b,
@@ -553,8 +582,18 @@ export default function AdminPage() {
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
+      } else {
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo actualizar el pago.",
+        );
       }
-    } catch {}
+    } catch {
+      revertBookingsAndAlert(
+        previous,
+        "Error de conexión al actualizar el pago.",
+      );
+    }
   };
 
   const handleSavePaymentDetail = async (
@@ -565,6 +604,7 @@ export default function AdminPage() {
       paymentMethod?: PaymentMethod;
     },
   ) => {
+    const previous = bookings;
     // Optimistic instant update
     const updated = bookings.map((b) =>
       b.id === id ? { ...b, ...updates } : b,
@@ -582,11 +622,19 @@ export default function AdminPage() {
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
+      } else {
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo guardar el detalle de pago.",
+        );
       }
-    } catch {}
+    } catch {
+      revertBookingsAndAlert(previous, "Error de conexión al guardar el pago.");
+    }
   };
 
   const handleSaveInternalNote = async (id: string, note: string) => {
+    const previous = bookings;
     // Optimistic instant update
     const updated = bookings.map((b) =>
       b.id === id ? { ...b, internalNotes: note } : b,
@@ -604,8 +652,15 @@ export default function AdminPage() {
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
+      } else {
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo guardar la nota.",
+        );
       }
-    } catch {}
+    } catch {
+      revertBookingsAndAlert(previous, "Error de conexión al guardar la nota.");
+    }
   };
 
   const handleIncrementSession = async (
@@ -614,11 +669,15 @@ export default function AdminPage() {
     total: number = 1,
   ) => {
     const nextVal = Math.min(total, current + 1);
-    const nextStatus: Booking["status"] = nextVal === total ? "realizado" : "confirmado";
+    const nextStatus: Booking["status"] =
+      nextVal === total ? "realizado" : "confirmado";
 
+    const previous = bookings;
     // Optimistic instant update
     const updated: Booking[] = bookings.map((b) =>
-      b.id === id ? { ...b, sessionsCompleted: nextVal, status: nextStatus } : b,
+      b.id === id
+        ? { ...b, sessionsCompleted: nextVal, status: nextStatus }
+        : b,
     );
     setBookings(updated);
     broadcastBookingsUpdate(updated);
@@ -637,118 +696,255 @@ export default function AdminPage() {
       if (data?.ok && data.bookings) {
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
+      } else {
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo registrar la sesión.",
+        );
       }
-    } catch {}
+    } catch {
+      revertBookingsAndAlert(
+        previous,
+        "Error de conexión al registrar la sesión.",
+      );
+    }
   };
 
   const handleDeleteBooking = async (id: string) => {
     if (!confirm("¿Eliminar este registro de turno?")) return;
 
+    const previous = bookings;
     // Optimistic instant update
     const updated = bookings.filter((b) => b.id !== id);
+    knownBookingIdsRef.current.delete(id);
     setBookings(updated);
     broadcastBookingsUpdate(updated);
 
-    try {
-      const res = await fetch(`/api/admin/bookings?id=${id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data?.ok && data.bookings) {
-        setBookings(data.bookings);
-        broadcastBookingsUpdate(data.bookings);
-      }
-    } catch {}
-  };
+    if (activeReceiptBooking?.id === id) {
+      setActiveReceiptBooking(null);
+    }
+    if (bookingModalState.bookingToEdit?.id === id) {
+      setBookingModalState({ isOpen: false, bookingToEdit: null });
+    }
 
-  const handleCreateManualBooking = async (payload: Partial<Booking>) => {
     try {
-      const res = await fetch("/api/admin/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `/api/admin/bookings?id=${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+        },
+      );
       const data = await res.json();
-      if (data?.ok && data.bookings) {
+      if (data?.ok && Array.isArray(data.bookings)) {
+        knownBookingIdsRef.current = new Set(
+          data.bookings.map((b: Booking) => b.id),
+        );
         setBookings(data.bookings);
         broadcastBookingsUpdate(data.bookings);
       } else {
-        fetchBookings(false);
+        revertBookingsAndAlert(
+          previous,
+          data?.error || "No se pudo eliminar el turno. Intentá de nuevo.",
+        );
       }
     } catch {
-      fetchBookings(false);
+      revertBookingsAndAlert(
+        previous,
+        "Error de conexión al eliminar el turno. Intentá de nuevo.",
+      );
     }
   };
 
-  const handleSaveScheduleConfig = async (newConfig: ScheduleConfig) => {
-    setConfig(newConfig);
-    localStorage.setItem(LOCAL_STORAGE_SCHEDULE_KEY, JSON.stringify(newConfig));
+  const handleSaveBooking = async (
+    payload: Partial<Booking>,
+    isEditing?: boolean,
+  ) => {
+    if (isEditing && payload.id) {
+      const previous = bookings;
+      // Optimistic instant update
+      const updated = bookings.map((b) =>
+        b.id === payload.id ? ({ ...b, ...payload } as Booking) : b,
+      );
+      setBookings(updated);
+      broadcastBookingsUpdate(updated);
 
+      try {
+        const res = await fetch("/api/admin/bookings", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data?.ok && data.bookings) {
+          setBookings(data.bookings);
+          broadcastBookingsUpdate(data.bookings);
+        } else {
+          revertBookingsAndAlert(
+            previous,
+            data?.error || "No se pudo guardar el turno.",
+          );
+        }
+      } catch {
+        revertBookingsAndAlert(
+          previous,
+          "Error de conexión al guardar el turno.",
+        );
+      }
+    } else {
+      // New booking creation
+      try {
+        const res = await fetch("/api/admin/bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data?.ok && data.bookings) {
+          setBookings(data.bookings);
+          broadcastBookingsUpdate(data.bookings);
+        } else {
+          fetchBookings(false);
+        }
+      } catch {
+        fetchBookings(false);
+      }
+    }
+  };
+
+  // ponytail: shared "save one config slice, roll back + alert on failure"
+  // so a failed persist never leaves the UI claiming success it didn't earn.
+  const saveConfigSlice = async (
+    body: Record<string, unknown>,
+    onFailure: () => void,
+    failureMessage: string,
+  ): Promise<boolean> => {
     try {
       const res = await fetch("/api/admin/config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ config: newConfig, pin: pin || "pravilo2026" }),
+        body: JSON.stringify({ ...body, pin: pin || "pravilo2026" }),
       });
-      if (res.ok) {
-        setSaveStatus("✓ Horarios y feriados guardados correctamente.");
-      }
+      const data = await res.json().catch(() => null);
+      if (data?.ok) return true;
+      onFailure();
+      alert(data?.error || failureMessage);
+      return false;
     } catch {
-      setSaveStatus("✓ Guardado localmente.");
+      onFailure();
+      alert(failureMessage);
+      return false;
     }
-    setTimeout(() => setSaveStatus(null), 3000);
   };
 
-  const handleSaveBankConfig = (newBank: BankConfig) => {
+  const handleSaveScheduleConfig = async (newConfig: ScheduleConfig) => {
+    const previous = config;
+    setConfig(newConfig);
+    localStorage.setItem(LOCAL_STORAGE_SCHEDULE_KEY, JSON.stringify(newConfig));
+
+    const saved = await saveConfigSlice(
+      { config: newConfig },
+      () => {
+        setConfig(previous);
+        localStorage.setItem(
+          LOCAL_STORAGE_SCHEDULE_KEY,
+          JSON.stringify(previous),
+        );
+      },
+      "No se pudieron guardar los horarios y feriados.",
+    );
+    if (saved) {
+      setSaveStatus("✓ Horarios y feriados guardados correctamente.");
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+  };
+
+  const handleSaveBankConfig = async (newBank: BankConfig) => {
+    const previous = bankConfig;
     setBankConfig(newBank);
     localStorage.setItem(LOCAL_STORAGE_BANK_KEY, JSON.stringify(newBank));
-    fetch("/api/admin/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bankConfig: newBank, pin: pin || "pravilo2026" }),
-    }).catch(() => {});
-    setSaveStatus("✓ Datos bancarios guardados correctamente.");
-    setTimeout(() => setSaveStatus(null), 3000);
+
+    const saved = await saveConfigSlice(
+      { bankConfig: newBank },
+      () => {
+        setBankConfig(previous);
+        localStorage.setItem(LOCAL_STORAGE_BANK_KEY, JSON.stringify(previous));
+      },
+      "No se pudieron guardar los datos bancarios.",
+    );
+    if (saved) {
+      setSaveStatus("✓ Datos bancarios guardados correctamente.");
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
   };
 
-  const handleSaveClinicalProfile = (
+  const handleSaveClinicalProfile = async (
     phone: string,
     profile: StudentClinicalProfile,
   ) => {
+    const previous = clinicalProfiles;
     const updated = {
       ...clinicalProfiles,
       [phone]: profile,
     };
     setClinicalProfiles(updated);
     localStorage.setItem(LOCAL_STORAGE_CLINICAL_KEY, JSON.stringify(updated));
-    fetch("/api/admin/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clinicalProfiles: updated, pin: pin || "pravilo2026" }),
-    }).catch(() => {});
+
+    await saveConfigSlice(
+      { clinicalProfiles: updated },
+      () => {
+        setClinicalProfiles(previous);
+        localStorage.setItem(
+          LOCAL_STORAGE_CLINICAL_KEY,
+          JSON.stringify(previous),
+        );
+      },
+      "No se pudo guardar el perfil clínico del alumno.",
+    );
   };
 
-  const handleSavePrices = (newPrices: PlanPricingConfig) => {
+  const handleSavePrices = async (newPrices: PlanPricingConfig) => {
+    const previous = planPrices;
     setPlanPrices(newPrices);
     localStorage.setItem("pravilo_plan_prices", JSON.stringify(newPrices));
     localStorage.setItem(LOCAL_STORAGE_PRICES_KEY, JSON.stringify(newPrices));
-    fetch("/api/admin/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ planPrices: newPrices, pin: pin || "pravilo2026" }),
-    }).catch(() => {});
-    setSaveStatus("✓ Tarifas guardadas y publicadas correctamente.");
-    setTimeout(() => setSaveStatus(null), 3000);
+
+    const saved = await saveConfigSlice(
+      { planPrices: newPrices },
+      () => {
+        setPlanPrices(previous);
+        localStorage.setItem("pravilo_plan_prices", JSON.stringify(previous));
+        localStorage.setItem(
+          LOCAL_STORAGE_PRICES_KEY,
+          JSON.stringify(previous),
+        );
+      },
+      "No se pudieron guardar las tarifas.",
+    );
+    if (saved) {
+      setSaveStatus("✓ Tarifas guardadas y publicadas correctamente.");
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
   };
 
-  const handleSaveGiftCards = (updatedCards: GiftCard[]) => {
+  const handleSaveGiftCards = async (updatedCards: GiftCard[]) => {
+    const previous = giftCards;
     setGiftCards(updatedCards);
-    localStorage.setItem(LOCAL_STORAGE_GIFTCARDS_KEY, JSON.stringify(updatedCards));
-    fetch("/api/admin/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ giftCards: updatedCards, pin: pin || "pravilo2026" }),
-    }).catch(() => {});
+    localStorage.setItem(
+      LOCAL_STORAGE_GIFTCARDS_KEY,
+      JSON.stringify(updatedCards),
+    );
+
+    await saveConfigSlice(
+      { giftCards: updatedCards },
+      () => {
+        setGiftCards(previous);
+        localStorage.setItem(
+          LOCAL_STORAGE_GIFTCARDS_KEY,
+          JSON.stringify(previous),
+        );
+      },
+      "No se pudieron guardar las gift cards.",
+    );
   };
 
   const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -756,18 +952,33 @@ export default function AdminPage() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       try {
         const raw = evt.target?.result as string;
         const parsed = JSON.parse(raw);
 
         if (parsed.bookings && Array.isArray(parsed.bookings)) {
           setBookings(parsed.bookings);
-          fetch("/api/admin/bookings", {
+          knownBookingIdsRef.current = new Set(
+            parsed.bookings.map((b: Booking) => b.id),
+          );
+          localStorage.setItem(
+            LOCAL_STORAGE_BOOKINGS_KEY,
+            JSON.stringify(parsed.bookings),
+          );
+          const bookingsRes = await fetch("/api/admin/bookings", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parsed.bookings[0]),
-          }).catch(() => {});
+            body: JSON.stringify({ importAllBookings: parsed.bookings }),
+          }).catch(() => null);
+          const bookingsData = await bookingsRes?.json().catch(() => null);
+          if (!bookingsData?.ok) {
+            alert(
+              bookingsData?.error ||
+                "No se pudieron importar los turnos del respaldo.",
+            );
+            return;
+          }
         }
         if (parsed.config) {
           setConfig(parsed.config);
@@ -803,8 +1014,37 @@ export default function AdminPage() {
             "pravilo_plan_prices",
             JSON.stringify(parsed.planPrices),
           );
+          localStorage.setItem(
+            LOCAL_STORAGE_PRICES_KEY,
+            JSON.stringify(parsed.planPrices),
+          );
         }
-        alert("¡Copia de respaldo restaurada exitosamente!");
+
+        // Sync all config to server / Firestore
+        const configRes = await fetch("/api/admin/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            config: parsed.config,
+            bankConfig: parsed.bankConfig,
+            planPrices: parsed.planPrices,
+            clinicalProfiles: parsed.clinicalProfiles,
+            giftCards: parsed.giftCards,
+            pin: pin || "pravilo2026",
+          }),
+        }).catch(() => null);
+        const configData = await configRes?.json().catch(() => null);
+        if (!configData?.ok) {
+          alert(
+            configData?.error ||
+              "Los turnos se importaron pero la configuración no se pudo sincronizar.",
+          );
+          return;
+        }
+
+        alert(
+          "¡Copia de respaldo restaurada y sincronizada en la nube exitosamente!",
+        );
       } catch {
         alert("El archivo no tiene un formato JSON válido.");
       }
@@ -848,7 +1088,9 @@ export default function AdminPage() {
             <h1 className="text-2xl font-black tracking-tight text-foreground font-condensed uppercase">
               PRAVILO <span className="text-accent-text">ADMIN</span>
             </h1>
-            <p className="text-xs text-muted">Ingresá el PIN de seguridad del estudio</p>
+            <p className="text-xs text-muted">
+              Ingresá el PIN de seguridad del estudio
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -905,7 +1147,12 @@ export default function AdminPage() {
         audioEnabled={audioEnabled}
         onToggleAudio={handleToggleAudio}
         onOpenAlerts={() => setShowAlertsDrawer(true)}
-        onOpenManualBooking={() => setShowManualModal(true)}
+        onOpenManualBooking={() =>
+          setBookingModalState({
+            isOpen: true,
+            bookingToEdit: null,
+          })
+        }
         onLogout={handleLogout}
         onImportBackup={handleImportBackup}
         fileInputRef={fileInputRef}
@@ -927,6 +1174,12 @@ export default function AdminPage() {
               setSelectedStudentPhone(phone);
               setActiveTab("crm");
             }}
+            onEditBooking={(booking) =>
+              setBookingModalState({
+                isOpen: true,
+                bookingToEdit: booking,
+              })
+            }
             onReloadSamples={handleReloadSamples}
           />
         )}
@@ -938,6 +1191,13 @@ export default function AdminPage() {
             onSaveClinicalProfile={handleSaveClinicalProfile}
             selectedStudentPhone={selectedStudentPhone}
             onSelectStudentPhone={setSelectedStudentPhone}
+            onScheduleBookingForStudent={(name, phone) =>
+              setBookingModalState({
+                isOpen: true,
+                bookingToEdit: null,
+                initialStudent: { name, phone },
+              })
+            }
           />
         )}
 
@@ -947,13 +1207,25 @@ export default function AdminPage() {
           <AgendaCalendarTab
             bookings={bookings}
             config={config}
+            bankConfig={bankConfig}
             onOpenManualBookingForDate={(date, slot) => {
-              setShowManualModal(true);
+              setBookingModalState({
+                isOpen: true,
+                bookingToEdit: null,
+                initialDate: date,
+                initialSlot: slot,
+              });
             }}
             onSelectBooking={(id) => {
               const b = bookings.find((bk) => bk.id === id);
               if (b) setActiveReceiptBooking(b);
             }}
+            onEditBooking={(booking) =>
+              setBookingModalState({
+                isOpen: true,
+                bookingToEdit: booking,
+              })
+            }
           />
         )}
 
@@ -1011,11 +1283,20 @@ export default function AdminPage() {
       />
 
       <ManualBookingModal
-        isOpen={showManualModal}
-        onClose={() => setShowManualModal(false)}
+        isOpen={bookingModalState.isOpen}
+        onClose={() =>
+          setBookingModalState({
+            isOpen: false,
+            bookingToEdit: null,
+          })
+        }
         config={config}
         planPrices={planPrices}
-        onCreated={handleCreateManualBooking}
+        bookingToEdit={bookingModalState.bookingToEdit}
+        initialDate={bookingModalState.initialDate}
+        initialSlot={bookingModalState.initialSlot}
+        initialStudent={bookingModalState.initialStudent}
+        onSaveBooking={handleSaveBooking}
       />
 
       <PaymentReceiptModal

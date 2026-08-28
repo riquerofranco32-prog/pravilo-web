@@ -1,19 +1,34 @@
 import fs from "fs";
 import path from "path";
-import { Booking, BankConfig, DEFAULT_BANK_CONFIG, generateSampleBookings } from "./bookings";
+import { Booking, BankConfig, DEFAULT_BANK_CONFIG } from "./bookings";
 import { DEFAULT_SCHEDULE_CONFIG, ScheduleConfig } from "./availability";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
 const CONFIG_FILE = path.join(DATA_DIR, "config.json");
 const BANK_FILE = path.join(DATA_DIR, "bank.json");
+const PRICES_FILE = path.join(DATA_DIR, "prices.json");
+const CLINICAL_FILE = path.join(DATA_DIR, "clinical.json");
+const GIFTCARDS_FILE = path.join(DATA_DIR, "giftcards.json");
 
-// In-memory memory fallback caches
+export const DEFAULT_PLAN_PRICES = {
+  individual: "$35.000",
+  pack8: "$240.000",
+  pack12: "$300.000",
+  individualDesc: "Precio de lanzamiento · 60 min.",
+  pack8Desc: "$30.000 por sesión · Vigencia: 2 meses.",
+  pack12Desc: "$25.000 por sesión · Vigencia: 3 meses.",
+};
+
+// In-memory memory fallback caches (for read-only serverless filesystems if any)
 let cachedBookings: Booking[] | null = null;
 let cachedConfig: ScheduleConfig = { ...DEFAULT_SCHEDULE_CONFIG };
 let cachedBank: BankConfig = { ...DEFAULT_BANK_CONFIG };
-let isConfigLoaded = false;
-let isBankLoaded = false;
+let cachedPrices: Record<string, string | undefined> = {
+  ...DEFAULT_PLAN_PRICES,
+};
+let cachedClinical: Record<string, any> = {};
+let cachedGiftCards: any[] = [];
 
 function ensureDataDir() {
   try {
@@ -27,29 +42,30 @@ function ensureDataDir() {
 
 // ----------------- BOOKINGS -----------------
 export function getServerBookings(): Booking[] {
-  if (cachedBookings && cachedBookings.length > 0) {
-    return cachedBookings;
-  }
-
   ensureDataDir();
 
   try {
     if (fs.existsSync(BOOKINGS_FILE)) {
       const raw = fs.readFileSync(BOOKINGS_FILE, "utf-8");
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         cachedBookings = parsed;
-        return cachedBookings;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading bookings file:", err);
   }
 
-  const initial = generateSampleBookings();
-  cachedBookings = initial;
-  saveServerBookings(initial);
-  return initial;
+  if (cachedBookings !== null) {
+    return cachedBookings;
+  }
+
+  // ponytail: no file and no cache means "no local data yet", not "seed fake
+  // bookings". Auto-seeding here used to resurrect fabricated sample turnos
+  // any time Firestore was unreachable and this fs fallback kicked in.
+  cachedBookings = [];
+  return cachedBookings;
 }
 
 export function saveServerBookings(bookings: Booking[]): boolean {
@@ -67,10 +83,6 @@ export function saveServerBookings(bookings: Booking[]): boolean {
 
 // ----------------- SCHEDULE CONFIG -----------------
 export function getServerScheduleConfig(): ScheduleConfig {
-  if (isConfigLoaded) {
-    return cachedConfig;
-  }
-
   ensureDataDir();
 
   try {
@@ -79,23 +91,24 @@ export function getServerScheduleConfig(): ScheduleConfig {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.days)) {
         cachedConfig = parsed;
-        isConfigLoaded = true;
-        return cachedConfig;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading config file:", err);
   }
 
+  if (cachedConfig) {
+    return cachedConfig;
+  }
+
   cachedConfig = { ...DEFAULT_SCHEDULE_CONFIG };
-  isConfigLoaded = true;
   saveServerScheduleConfig(cachedConfig);
   return cachedConfig;
 }
 
 export function saveServerScheduleConfig(config: ScheduleConfig): boolean {
   cachedConfig = config;
-  isConfigLoaded = true;
   ensureDataDir();
 
   try {
@@ -109,10 +122,6 @@ export function saveServerScheduleConfig(config: ScheduleConfig): boolean {
 
 // ----------------- BANK CONFIG -----------------
 export function getServerBankConfig(): BankConfig {
-  if (isBankLoaded) {
-    return cachedBank;
-  }
-
   ensureDataDir();
 
   try {
@@ -121,23 +130,24 @@ export function getServerBankConfig(): BankConfig {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.alias) {
         cachedBank = parsed;
-        isBankLoaded = true;
-        return cachedBank;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading bank file:", err);
   }
 
+  if (cachedBank) {
+    return cachedBank;
+  }
+
   cachedBank = { ...DEFAULT_BANK_CONFIG };
-  isBankLoaded = true;
   saveServerBankConfig(cachedBank);
   return cachedBank;
 }
 
 export function saveServerBankConfig(bank: BankConfig): boolean {
   cachedBank = bank;
-  isBankLoaded = true;
   ensureDataDir();
 
   try {
@@ -150,24 +160,7 @@ export function saveServerBankConfig(bank: BankConfig): boolean {
 }
 
 // ----------------- PLAN PRICES CONFIG -----------------
-const PRICES_FILE = path.join(DATA_DIR, "prices.json");
-export const DEFAULT_PLAN_PRICES = {
-  individual: "$35.000",
-  pack8: "$240.000",
-  pack12: "$300.000",
-  individualDesc: "Precio de lanzamiento · 60 min.",
-  pack8Desc: "$30.000 por sesión · Vigencia: 2 meses.",
-  pack12Desc: "$25.000 por sesión · Vigencia: 3 meses.",
-};
-
-let cachedPrices: Record<string, string | undefined> = { ...DEFAULT_PLAN_PRICES };
-let isPricesLoaded = false;
-
 export function getServerPlanPrices(): Record<string, string | undefined> {
-  if (isPricesLoaded) {
-    return cachedPrices;
-  }
-
   ensureDataDir();
 
   try {
@@ -176,23 +169,26 @@ export function getServerPlanPrices(): Record<string, string | undefined> {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.individual) {
         cachedPrices = parsed;
-        isPricesLoaded = true;
-        return cachedPrices;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading prices file:", err);
   }
 
+  if (cachedPrices) {
+    return cachedPrices;
+  }
+
   cachedPrices = { ...DEFAULT_PLAN_PRICES };
-  isPricesLoaded = true;
   saveServerPlanPrices(cachedPrices);
   return cachedPrices;
 }
 
-export function saveServerPlanPrices(prices: Record<string, string | undefined>): boolean {
+export function saveServerPlanPrices(
+  prices: Record<string, string | undefined>,
+): boolean {
   cachedPrices = prices;
-  isPricesLoaded = true;
   ensureDataDir();
 
   try {
@@ -205,15 +201,7 @@ export function saveServerPlanPrices(prices: Record<string, string | undefined>)
 }
 
 // ----------------- CLINICAL PROFILES -----------------
-const CLINICAL_FILE = path.join(DATA_DIR, "clinical.json");
-let cachedClinical: Record<string, any> = {};
-let isClinicalLoaded = false;
-
 export function getServerClinicalProfiles(): Record<string, any> {
-  if (isClinicalLoaded) {
-    return cachedClinical;
-  }
-
   ensureDataDir();
 
   try {
@@ -222,22 +210,20 @@ export function getServerClinicalProfiles(): Record<string, any> {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === "object") {
         cachedClinical = parsed;
-        isClinicalLoaded = true;
-        return cachedClinical;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading clinical file:", err);
   }
 
-  cachedClinical = {};
-  isClinicalLoaded = true;
-  return cachedClinical;
+  return cachedClinical || {};
 }
 
-export function saveServerClinicalProfiles(profiles: Record<string, any>): boolean {
+export function saveServerClinicalProfiles(
+  profiles: Record<string, any>,
+): boolean {
   cachedClinical = profiles;
-  isClinicalLoaded = true;
   ensureDataDir();
 
   try {
@@ -250,15 +236,7 @@ export function saveServerClinicalProfiles(profiles: Record<string, any>): boole
 }
 
 // ----------------- GIFT CARDS -----------------
-const GIFTCARDS_FILE = path.join(DATA_DIR, "giftcards.json");
-let cachedGiftCards: any[] = [];
-let isGiftCardsLoaded = false;
-
 export function getServerGiftCards(): any[] {
-  if (isGiftCardsLoaded) {
-    return cachedGiftCards;
-  }
-
   ensureDataDir();
 
   try {
@@ -267,22 +245,18 @@ export function getServerGiftCards(): any[] {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         cachedGiftCards = parsed;
-        isGiftCardsLoaded = true;
-        return cachedGiftCards;
+        return parsed;
       }
     }
   } catch (err) {
     console.error("Error reading giftcards file:", err);
   }
 
-  cachedGiftCards = [];
-  isGiftCardsLoaded = true;
-  return cachedGiftCards;
+  return cachedGiftCards || [];
 }
 
 export function saveServerGiftCards(cards: any[]): boolean {
   cachedGiftCards = cards;
-  isGiftCardsLoaded = true;
   ensureDataDir();
 
   try {

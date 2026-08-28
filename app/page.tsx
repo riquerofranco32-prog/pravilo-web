@@ -44,41 +44,240 @@ const NAV = [
 ];
 
 const GALERIA_ACCION = [
+  // El Estudio
   {
     src: "/images/espacio-completo.jpg",
     alt: "Vista panorámica del estudio PRAVILO ARG y estructura central",
-  },
-  {
-    src: "/images/pravilo-sign-suspension.jpg",
-    alt: "Sesión de descompresión en suspensión frente al cartel PRAVILO",
-  },
-  {
-    src: "/images/foto-img-3399.jpg",
-    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
-  },
-  {
-    src: "/images/pravilo-neon-suspension.jpg",
-    alt: "Sesión de suspensión con iluminación neón en el estudio",
+    category: "estudio" as const,
   },
   {
     src: "/images/pravilo-estudio-completo.jpg",
     alt: "Vista completa del estudio PRAVILO ARG",
+    category: "estudio" as const,
   },
   {
-    src: "/images/pravilo-mirror-suspension.jpg",
-    alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
+    src: "/images/pravilo-sign-suspension.jpg",
+    alt: "Sesión de descompresión en suspensión frente al cartel PRAVILO",
+    category: "estudio" as const,
+  },
+  {
+    src: "/images/pravilo-neon-suspension.jpg",
+    alt: "Sesión de suspensión con iluminación neón en el estudio",
+    category: "estudio" as const,
   },
   {
     src: "/images/foto-img-3400.jpg",
     alt: "Ingreso y cartel iluminado de PRAVILO ARG",
+    category: "estudio" as const,
+  },
+  {
+    src: "/images/foto-img-3416.jpg",
+    alt: "Ambiente e iluminación del estudio PRAVILO",
+    category: "estudio" as const,
+  },
+  {
+    src: "/images/foto-img-3445.jpg",
+    alt: "Cartel neón iluminado en el centro PRAVILO",
+    category: "estudio" as const,
+  },
+
+  // Sesiones & Ejercicios
+  {
+    src: "/images/foto-img-3392.jpg",
+    alt: "Evaluación y sesión individual guiada con el instructor Juan I. Garrafa",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3393.jpg",
+    alt: "Ejercicio de suspensión y alineación corporal completa",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3395.jpg",
+    alt: "Trabajo de descompresión articular en máquina PRAVILO",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3396.jpg",
+    alt: "Tracción asistida y elongación tridimensional",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3398.jpg",
+    alt: "Estiramiento fascial profundo en suspensión",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/pravilo-mirror-suspension.jpg",
+    alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3401.jpg",
+    alt: "Alineación postural y apertura torácica en PRAVILO",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3403.jpg",
+    alt: "Descompresión espinal en suspensión completa",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3404.jpg",
+    alt: "Trabajo de fuerza isométrica y estabilidad en tracción",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3405.jpg",
+    alt: "Extensión tridimensional de miembros y columna",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3407.jpg",
+    alt: "Suspensión total para alivio de tensión muscular y articular",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3409.jpg",
+    alt: "Liberación de contracturas en cadena posterior",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3412.jpg",
+    alt: "Ajuste biomecánico personalizado durante la sesión",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3415.jpg",
+    alt: "Suspensión asistida para flexibilización fascial",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3421.jpg",
+    alt: "Inversión y descompresión intervertebral suave",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3423.jpg",
+    alt: "Activación de la zona media en estado de tracción",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3424.jpg",
+    alt: "Control corporal y postura en suspensión 1 a 1",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3425.jpg",
+    alt: "Movilidad articular asistida en marco PRAVILO",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3428.jpg",
+    alt: "Alineación de columna y apertura de cadera",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3433.jpg",
+    alt: "Descompresión de cintura escapular y hombros",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3435.jpg",
+    alt: "Elongación de isquiotibiales y cadena posterior",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3436.jpg",
+    alt: "Trabajo de rango de movimiento articular máximo",
+    category: "sesiones" as const,
+  },
+  {
+    src: "/images/foto-img-3437.jpg",
+    alt: "Control neuromuscular en tracción simétrica",
+    category: "sesiones" as const,
+  },
+
+  // Equipamiento & Detalles
+  {
+    src: "/images/foto-img-3399.jpg",
+    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
+    category: "equipamiento" as const,
   },
   {
     src: "/images/pravilo-pulley-tension.jpg",
     alt: "Trabajo de tracción en el sistema de poleas de PRAVILO",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3410.jpg",
+    alt: "Cincha de sujeción anatómica para muñecas y tobillos",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3411.jpg",
+    alt: "Detalle de rodamientos y poleas de alta resistencia",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3417.jpg",
+    alt: "Estructura metálica reforzada del marco PRAVILO",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3438.jpg",
+    alt: "Sistema de cuerdas náuticas de alta tensión",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3439.jpg",
+    alt: "Cinchas de cuero genuino acolchadas para máximo confort",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3440.jpg",
+    alt: "Pesos y contrapesos graduables para tracción controlada",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3441.jpg",
+    alt: "Mosquetones y herrajes de seguridad industrial",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3442.jpg",
+    alt: "Mecanismo de elevación y calibración de carga",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3443.jpg",
+    alt: "Piso amortiguado y área de trabajo de PRAVILO",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3444.jpg",
+    alt: "Vista detallada de la máquina y tensores",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3446.jpg",
+    alt: "Uniones y soldaduras de la estructura de PRAVILO",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3447.jpg",
+    alt: "Correas de ajuste rápido para tobillos y muñecas",
+    category: "equipamiento" as const,
+  },
+  {
+    src: "/images/foto-img-3448.jpg",
+    alt: "Torre de discos y calibración progresiva de peso",
+    category: "equipamiento" as const,
   },
   {
     src: "/images/foto-img-3449.jpg",
     alt: "Estructura y calibración de pesos en PRAVILO",
+    category: "equipamiento" as const,
   },
 ];
 

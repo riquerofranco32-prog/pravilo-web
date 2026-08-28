@@ -4,7 +4,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
-type GalleryImg = { src: string; alt: string };
+export type GalleryImg = {
+  src: string;
+  alt: string;
+  category?: "sesiones" | "estudio" | "equipamiento";
+};
+
+const CATEGORIES = [
+  { id: "todas", label: "Todas las Fotos" },
+  { id: "sesiones", label: "Sesiones & Ejercicios" },
+  { id: "estudio", label: "El Estudio" },
+  { id: "equipamiento", label: "Equipamiento & Detalles" },
+];
 
 export default function Gallery({
   images,
@@ -14,21 +25,36 @@ export default function Gallery({
   aspectClassName?: string;
   isMasonry?: boolean;
 }) {
+  const [activeCategory, setActiveCategory] = useState<string>("todas");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const filteredImages =
+    activeCategory === "todas"
+      ? images
+      : images.filter((img) => img.category === activeCategory);
+
+  const handleCategoryChange = (catId: string) => {
+    setActiveCategory(catId);
+    setCurrentIndex(0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+    }
+  };
 
   const close = useCallback(() => setOpenIndex(null), []);
   const prevModal = useCallback(
     () =>
       setOpenIndex((i) =>
-        i === null ? null : (i - 1 + images.length) % images.length,
+        i === null ? null : (i - 1 + filteredImages.length) % filteredImages.length,
       ),
-    [images.length],
+    [filteredImages.length],
   );
   const nextModal = useCallback(
-    () => setOpenIndex((i) => (i === null ? null : (i + 1) % images.length)),
-    [images.length],
+    () =>
+      setOpenIndex((i) => (i === null ? null : (i + 1) % filteredImages.length)),
+    [filteredImages.length],
   );
 
   const scrollToSlide = (index: number) => {
@@ -48,7 +74,7 @@ export default function Gallery({
   };
 
   const handleNext = () => {
-    const nextIdx = Math.min(images.length - 1, currentIndex + 1);
+    const nextIdx = Math.min(filteredImages.length - 1, currentIndex + 1);
     scrollToSlide(nextIdx);
   };
 
@@ -61,14 +87,18 @@ export default function Gallery({
       const scrollLeft = container.scrollLeft;
       const slideWidth = container.offsetWidth * 0.82;
       const newIdx = Math.round(scrollLeft / slideWidth);
-      if (newIdx !== currentIndex && newIdx >= 0 && newIdx < images.length) {
+      if (
+        newIdx !== currentIndex &&
+        newIdx >= 0 &&
+        newIdx < filteredImages.length
+      ) {
         setCurrentIndex(newIdx);
       }
     };
 
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [currentIndex, images.length]);
+  }, [currentIndex, filteredImages.length]);
 
   useEffect(() => {
     if (openIndex === null) return;
@@ -87,15 +117,50 @@ export default function Gallery({
 
   return (
     <>
-      <RevealOnScroll className="mt-10">
+      <RevealOnScroll className="mt-8">
+        {/* Categorías / Filtros */}
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2 px-2">
+          {CATEGORIES.map((cat) => {
+            const count =
+              cat.id === "todas"
+                ? images.length
+                : images.filter((i) => i.category === cat.id).length;
+            const isActive = activeCategory === cat.id;
+
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => handleCategoryChange(cat.id)}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-condensed font-bold uppercase tracking-wider transition-all duration-300 ${
+                  isActive
+                    ? "bg-accent text-accent-foreground shadow-[0_0_20px_rgba(160,26,26,0.4)] scale-105"
+                    : "border border-border bg-surface text-muted hover:border-accent/50 hover:text-foreground"
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] ${
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-surface-raised text-muted"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Controles de Carrusel */}
         <div className="mb-6 flex items-center justify-between px-2">
           <div className="flex items-center gap-3">
             <span className="rounded-full border border-border bg-surface px-3 py-1 font-condensed text-xs font-bold uppercase tracking-wider text-accent-text">
-              {currentIndex + 1} / {images.length}
+              {currentIndex + 1} / {filteredImages.length}
             </span>
             <span className="hidden text-xs text-muted sm:inline-block">
-              Deslizá horizontalmente para ver el estudio y los ejercicios
+              Deslizá horizontalmente para explorar las fotos
             </span>
           </div>
 
@@ -112,7 +177,7 @@ export default function Gallery({
             <button
               type="button"
               onClick={handleNext}
-              disabled={currentIndex >= images.length - 1}
+              disabled={currentIndex >= filteredImages.length - 1}
               aria-label="Foto siguiente"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-lg text-foreground shadow-sm transition-all hover:border-accent hover:bg-surface-raised hover:text-accent-text disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
             >
@@ -126,7 +191,7 @@ export default function Gallery({
           ref={scrollRef}
           className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-6 pt-2 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none]"
         >
-          {images.map((img, i) => (
+          {filteredImages.map((img, i) => (
             <div
               key={img.src}
               className="w-[82vw] shrink-0 snap-center sm:w-[48vw] md:w-[36vw] lg:w-[27vw]"
@@ -160,7 +225,7 @@ export default function Gallery({
 
         {/* Indicadores de puntos con barra expandible */}
         <div className="mt-4 flex justify-center gap-1.5 overflow-x-auto py-2">
-          {images.map((_, i) => (
+          {filteredImages.map((_, i) => (
             <button
               key={i}
               type="button"
@@ -177,7 +242,7 @@ export default function Gallery({
       </RevealOnScroll>
 
       {/* Lightbox / Modal a pantalla completa */}
-      {openIndex !== null && (
+      {openIndex !== null && filteredImages[openIndex] && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl animate-fadeIn"
           onClick={close}
@@ -207,8 +272,8 @@ export default function Gallery({
           >
             <div className="relative max-h-[80vh] w-auto">
               <Image
-                src={images[openIndex].src}
-                alt={images[openIndex].alt}
+                src={filteredImages[openIndex].src}
+                alt={filteredImages[openIndex].alt}
                 width={1200}
                 height={1600}
                 sizes="95vw"
@@ -217,11 +282,11 @@ export default function Gallery({
             </div>
             <div className="mt-4 flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2 backdrop-blur-md">
               <span className="text-xs font-condensed font-bold text-accent-text uppercase tracking-wider">
-                {openIndex + 1} / {images.length}
+                {openIndex + 1} / {filteredImages.length}
               </span>
               <span className="text-white/40">·</span>
               <p className="text-xs font-medium text-white/90">
-                {images[openIndex].alt}
+                {filteredImages[openIndex].alt}
               </p>
             </div>
           </div>

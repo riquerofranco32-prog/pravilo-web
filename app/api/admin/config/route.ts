@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getServerScheduleConfig,
-  saveServerScheduleConfig,
-  getServerBankConfig,
-  saveServerBankConfig,
-  getServerPlanPrices,
-  saveServerPlanPrices,
-  getServerClinicalProfiles,
-  saveServerClinicalProfiles,
-  getServerGiftCards,
-  saveServerGiftCards,
-} from "@/lib/serverStorage";
+  getDBScheduleConfig,
+  saveDBScheduleConfig,
+  getDBBankConfig,
+  saveDBBankConfig,
+  getDBPlanPrices,
+  saveDBPlanPrices,
+  getDBClinicalProfiles,
+  saveDBClinicalProfiles,
+  getDBGiftCards,
+  saveDBGiftCards,
+} from "@/lib/cloudStorage";
 
 export async function GET() {
-  const config = getServerScheduleConfig();
-  const bankConfig = getServerBankConfig();
-  const planPrices = getServerPlanPrices();
-  const clinicalProfiles = getServerClinicalProfiles();
-  const giftCards = getServerGiftCards();
+  const [config, bankConfig, planPrices, clinicalProfiles, giftCards] =
+    await Promise.all([
+      getDBScheduleConfig(),
+      getDBBankConfig(),
+      getDBPlanPrices(),
+      getDBClinicalProfiles(),
+      getDBGiftCards(),
+    ]);
 
   return NextResponse.json({
     ok: true,
@@ -32,44 +35,78 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { config, bankConfig, planPrices, clinicalProfiles, giftCards, pin } = body;
+    const { config, bankConfig, planPrices, clinicalProfiles, giftCards, pin } =
+      body;
 
     // Validación básica de PIN si se requiere
     const ADMIN_PIN = process.env.ADMIN_PIN || "pravilo2026";
-    if (pin && pin !== ADMIN_PIN && pin !== "pravilo" && pin !== "1234" && pin !== "2026") {
+    if (
+      pin &&
+      pin !== ADMIN_PIN &&
+      pin !== "pravilo" &&
+      pin !== "1234" &&
+      pin !== "2026"
+    ) {
       return NextResponse.json(
         { ok: false, error: "PIN de administrador incorrecto." },
         { status: 401 },
       );
     }
 
+    const promises: Promise<boolean>[] = [];
+
     if (config && Array.isArray(config.days)) {
-      saveServerScheduleConfig(config);
+      promises.push(saveDBScheduleConfig(config));
     }
     if (bankConfig && typeof bankConfig === "object") {
-      saveServerBankConfig(bankConfig);
+      promises.push(saveDBBankConfig(bankConfig));
     }
     if (planPrices && typeof planPrices === "object") {
-      saveServerPlanPrices(planPrices);
+      promises.push(saveDBPlanPrices(planPrices));
     }
     if (clinicalProfiles && typeof clinicalProfiles === "object") {
-      saveServerClinicalProfiles(clinicalProfiles);
+      promises.push(saveDBClinicalProfiles(clinicalProfiles));
     }
     if (giftCards && Array.isArray(giftCards)) {
-      saveServerGiftCards(giftCards);
+      promises.push(saveDBGiftCards(giftCards));
     }
+
+    const results = await Promise.all(promises);
+    if (results.some((ok) => !ok)) {
+      return NextResponse.json(
+        { ok: false, error: "No se pudo guardar la configuración" },
+        { status: 500 },
+      );
+    }
+
+    const [
+      updatedConfig,
+      updatedBank,
+      updatedPrices,
+      updatedClinical,
+      updatedGiftCards,
+    ] = await Promise.all([
+      getDBScheduleConfig(),
+      getDBBankConfig(),
+      getDBPlanPrices(),
+      getDBClinicalProfiles(),
+      getDBGiftCards(),
+    ]);
 
     return NextResponse.json({
       ok: true,
-      config: getServerScheduleConfig(),
-      bankConfig: getServerBankConfig(),
-      planPrices: getServerPlanPrices(),
-      clinicalProfiles: getServerClinicalProfiles(),
-      giftCards: getServerGiftCards(),
+      config: updatedConfig,
+      bankConfig: updatedBank,
+      planPrices: updatedPrices,
+      clinicalProfiles: updatedClinical,
+      giftCards: updatedGiftCards,
     });
   } catch (err: unknown) {
     return NextResponse.json(
-      { ok: false, error: err instanceof Error ? err.message : "Error al guardar" },
+      {
+        ok: false,
+        error: err instanceof Error ? err.message : "Error al guardar",
+      },
       { status: 500 },
     );
   }
