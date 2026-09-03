@@ -567,17 +567,12 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      pin === "pravilo2026" ||
-      pin === "pravilo" ||
-      pin === "1234" ||
-      pin === "2026"
-    ) {
+    if (pin === "02942564386") {
       setIsAuthenticated(true);
       setPinError("");
       localStorage.setItem("pravilo_admin_auth", pin);
     } else {
-      setPinError("PIN incorrecto. Probá con 'pravilo2026' o '1234'.");
+      setPinError("PIN incorrecto.");
     }
   };
 
@@ -894,7 +889,7 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...body, pin: pin || "pravilo2026" }),
+        body: JSON.stringify({ ...body, pin: pin || "02942564386" }),
       });
       const data = await res.json().catch(() => null);
       if (data?.ok) return true;
@@ -1031,7 +1026,7 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           galleryImages: updatedImages,
-          pin: pin || "pravilo2026",
+          pin: pin || "02942564386",
         }),
       });
       const data = await res.json();
@@ -1124,7 +1119,7 @@ export default function AdminPage() {
             planPrices: parsed.planPrices,
             clinicalProfiles: parsed.clinicalProfiles,
             giftCards: parsed.giftCards,
-            pin: pin || "pravilo2026",
+            pin: pin || "02942564386",
           }),
         }).catch(() => null);
         const configData = await configRes?.json().catch(() => null);

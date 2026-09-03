@@ -22,6 +22,7 @@ import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
 import { PraviloMoscowBenefitsSection } from "@/components/PraviloMoscowBenefitsSection";
 import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
+  GOOGLE_MAPS_URL,
   GOOGLE_REVIEWS_URL,
   INSTAGRAM_URL,
   LOCATION,
@@ -871,7 +872,7 @@ export default function Home() {
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <a
-                  href={GOOGLE_REVIEWS_URL}
+                  href={GOOGLE_MAPS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-shiny rounded-full bg-accent px-6 py-3 font-condensed text-sm font-bold uppercase tracking-wider text-accent-foreground shadow-md transition-all hover:opacity-95"
