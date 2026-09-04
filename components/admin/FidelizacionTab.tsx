@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Booking, buildGoogleReviewWhatsAppMessage } from "@/lib/bookings";
+import { GOOGLE_WRITE_REVIEW_URL } from "@/lib/constants";
 import { CopyIcon } from "./Icons";
 
 interface FidelizacionTabProps {
@@ -12,7 +13,7 @@ export function FidelizacionTab({ bookings }: FidelizacionTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const googleMapsReviewUrl = "https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6";
+  const googleMapsReviewUrl = GOOGLE_WRITE_REVIEW_URL;
 
   // Group unique students who completed at least 1 session
   const completedStudents = useMemo(() => {

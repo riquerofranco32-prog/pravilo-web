@@ -14,7 +14,12 @@ export const GOOGLE_REVIEWS_URL =
 export const GOOGLE_WRITE_REVIEW_URL =
   "https://www.google.com/maps/place/PRAVILO+ARGENTINA/@-38.944887,-68.2206435,17z/data=!4m8!3m7!1s0x960bcb7e8c328b6f:0x5f4f8d8bde3cb669!8m2!3d-38.944887!4d-68.2206435!9m1!1b1!16s%2Fg%2F11zhfxc50s?hl=es-AR";
 
-export const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6";
+// Short link (maps.app.goo.gl) used to run on Firebase Dynamic Links, which
+// Google shut down in 2025 — every "maps.app.goo.gl/..." link now 404s
+// ("Dynamic Link Not Found"). Use Google's documented, stable Maps URL API
+// instead: https://developers.google.com/maps/documentation/urls/get-started
+export const GOOGLE_MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=-38.944887,-68.2206435";
 
 export const LOCATION_SHORT = "Plottier, Neuquén";
 export const LOCATION = "Código 600 N°853, Plottier, Neuquén";

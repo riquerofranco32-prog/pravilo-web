@@ -1,3 +1,5 @@
+import { GOOGLE_MAPS_URL, GOOGLE_WRITE_REVIEW_URL } from "@/lib/constants";
+
 export type PaymentStatus =
   | "pendiente"
   | "seña"
@@ -466,7 +468,7 @@ export function buildQuickWhatsAppMessage(
   } else if (type === "ubicacion") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te comparto la ubicación y referencias para llegar al estudio de *PRAVILO ARG* en Plottier:\n\n`;
     text += `📍 *Dirección:* Plottier, Neuquén\n`;
-    text += `🗺️ *Google Maps:* https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6\n\n`;
+    text += `🗺️ *Google Maps:* ${GOOGLE_MAPS_URL}\n\n`;
     text += `Cualquier duda al llegar, avisanos por este medio. ¡Buen viaje! 🚗`;
   } else if (type === "renovacion") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 ¡Felicitaciones por el avance logrado en tus sesiones de PRAVILO! 🌟\n\n`;
@@ -670,7 +672,7 @@ export function buildGoogleReviewWhatsAppMessage(
   let text = `¡Hola ${customerName.trim()}! 👋 Te escribo de *PRAVILO ARG*.\n\n`;
   text += `Queríamos agradecerte por confiar en nosotros para tu entrenamiento y descompresión corporal. 🧘‍♂️✨\n\n`;
   text += `¿Nos ayudarías dejando una breve reseña en Google sobre tu experiencia? Nos ayuda muchísimo a que más personas descubran los beneficios del método Pravilo en Neuquén:\n\n`;
-  text += `⭐ *Dejar Reseña en Google:* https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6\n\n`;
+  text += `⭐ *Dejar Reseña en Google:* ${GOOGLE_WRITE_REVIEW_URL}\n\n`;
   text += `¡Muchas gracias por tu apoyo y nos vemos en la próxima sesión! 🙌`;
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
