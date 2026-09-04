@@ -15,6 +15,7 @@ import {
   isDateFullyBooked,
 } from "@/lib/availability";
 import { Booking, LOCAL_STORAGE_BOOKINGS_KEY } from "@/lib/bookings";
+import { fetchPublicConfig } from "@/lib/publicConfig";
 
 export default function BookingWizard({
   className = "",
@@ -86,24 +87,21 @@ export default function BookingWizard({
       }
     }
 
-    fetch("/api/admin/config")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.ok) {
-          if (data.config) {
-            setConfig(data.config);
-            localStorage.setItem(
-              LOCAL_STORAGE_SCHEDULE_KEY,
-              JSON.stringify(data.config),
-            );
-          }
-          if (data.planPrices) {
-            setPlanPrices(data.planPrices);
-            localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
-          }
+    fetchPublicConfig().then((data) => {
+      if (data?.ok) {
+        if (data.config) {
+          setConfig(data.config);
+          localStorage.setItem(
+            LOCAL_STORAGE_SCHEDULE_KEY,
+            JSON.stringify(data.config),
+          );
         }
-      })
-      .catch(() => {});
+        if (data.planPrices) {
+          setPlanPrices(data.planPrices as { [key: string]: string });
+          localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
+        }
+      }
+    });
   }, []);
 
   // Bloquear scroll de la página cuando el modal está abierto

@@ -7,6 +7,7 @@ import BookingWizard from "./BookingWizard";
 import GiftCardModal from "./GiftCardModal";
 import { PLANES_EXPERIENCIA, Plan } from "@/lib/plans";
 import { LOCAL_STORAGE_PRICES_KEY } from "@/lib/bookings";
+import { fetchPublicConfig } from "@/lib/publicConfig";
 
 export function PricingSection() {
   const [plans, setPlans] = useState<Plan[]>(PLANES_EXPERIENCIA);
@@ -41,15 +42,12 @@ export function PricingSection() {
     } catch {}
 
     // 2. Fetch from server API
-    fetch("/api/admin/config")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.ok && data.planPrices) {
-          applyPrices(data.planPrices);
-          localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
-        }
-      })
-      .catch(() => {});
+    fetchPublicConfig().then((data) => {
+      if (data?.ok && data.planPrices) {
+        applyPrices(data.planPrices);
+        localStorage.setItem("pravilo_plan_prices", JSON.stringify(data.planPrices));
+      }
+    });
   }, []);
 
   const plan = plans[0] || PLANES_EXPERIENCIA[0];

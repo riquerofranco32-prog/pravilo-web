@@ -1,4 +1,8 @@
-import { GOOGLE_MAPS_URL, GOOGLE_WRITE_REVIEW_URL } from "@/lib/constants";
+import {
+  GOOGLE_MAPS_URL,
+  GOOGLE_WRITE_REVIEW_URL,
+  LOCATION,
+} from "@/lib/constants";
 
 export type PaymentStatus =
   | "pendiente"
@@ -82,14 +86,20 @@ export interface BankConfig {
   cuit?: string;
 }
 
+// cbu/banco/cuit quedan vacíos a propósito: son datos financieros reales que
+// tiene que cargar el admin desde la pestaña "Banco". Los mensajes de
+// WhatsApp que arman estos datos (buildQuickWhatsAppMessage,
+// buildReceiptWhatsAppMessage) ya omiten cada línea si el campo viene
+// vacío — antes tenían un CBU/CUIT de relleno que se le podía mostrar a un
+// cliente real como si fuera la cuenta para transferir.
 export const DEFAULT_BANK_CONFIG: BankConfig = {
   alias: "PRAVILO.ARG",
-  cbu: "0000003100010000000000",
+  cbu: "",
   titular: "Juan Ignacio Garrafa",
-  banco: "Mercado Pago / Banco",
+  banco: "",
   accountHolder: "Juan Ignacio Garrafa",
-  bankName: "Mercado Pago / Banco",
-  cuit: "20-xxxxxxxx-x",
+  bankName: "",
+  cuit: "",
 };
 
 export const LOCAL_STORAGE_BOOKINGS_KEY = "pravilo_bookings_data_v1";
@@ -467,7 +477,7 @@ export function buildQuickWhatsAppMessage(
     text += `Una vez realizada la transferencia, envianos el comprobante por acá para registrarlo. ¡Muchas gracias! 🙌`;
   } else if (type === "ubicacion") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te comparto la ubicación y referencias para llegar al estudio de *PRAVILO ARG* en Plottier:\n\n`;
-    text += `📍 *Dirección:* Plottier, Neuquén\n`;
+    text += `📍 *Dirección:* ${LOCATION}\n`;
     text += `🗺️ *Google Maps:* ${GOOGLE_MAPS_URL}\n\n`;
     text += `Cualquier duda al llegar, avisanos por este medio. ¡Buen viaje! 🚗`;
   } else if (type === "renovacion") {

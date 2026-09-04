@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import { fetchPublicConfig } from "@/lib/publicConfig";
 
 type GalleryImg = { src: string; alt: string };
 
@@ -37,17 +38,14 @@ export default function Gallery({
       } catch {}
     }
 
-    fetch("/api/admin/config")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.galleryImages && Array.isArray(data.galleryImages) && data.galleryImages.length > 0) {
-          const visible = data.galleryImages.filter((img: any) => img.visible !== false);
-          if (visible.length > 0) {
-            setImages(visible);
-          }
+    fetchPublicConfig().then((data) => {
+      if (data?.galleryImages && Array.isArray(data.galleryImages) && data.galleryImages.length > 0) {
+        const visible = data.galleryImages.filter((img: any) => img.visible !== false);
+        if (visible.length > 0) {
+          setImages(visible);
         }
-      })
-      .catch(() => {});
+      }
+    });
   }, []);
 
   const close = useCallback(() => setOpenIndex(null), []);

@@ -6,6 +6,16 @@ export const WHATSAPP_DEFAULT_MESSAGE =
 export const whatsappLink = (message: string = WHATSAPP_DEFAULT_MESSAGE) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
+// "5492994567662" -> "+54 9 299 456-7662", solo para mostrarlo en pantalla
+// (los links de wa.me siguen usando WHATSAPP_NUMBER tal cual).
+export const WHATSAPP_DISPLAY_NUMBER = (() => {
+  const digits = WHATSAPP_NUMBER.replace(/\D/g, "");
+  const match = digits.match(/^54(9)?(\d{3})(\d{3})(\d{4})$/);
+  if (!match) return `+${digits}`;
+  const [, mobile, area, part1, part2] = match;
+  return `+54${mobile ? " 9" : ""} ${area} ${part1}-${part2}`;
+})();
+
 export const INSTAGRAM_URL = "https://www.instagram.com/praviloarg/";
 
 export const GOOGLE_REVIEWS_URL =
@@ -25,10 +35,5 @@ export const LOCATION_SHORT = "Plottier, Neuquén";
 export const LOCATION = "Código 600 N°853, Plottier, Neuquén";
 export const MAPS_EMBED_SRC =
   "https://www.google.com/maps?q=-38.944887,-68.2206435&hl=es&z=17&output=embed";
-
-// ponytail: sin link de Calendly todavía. Cuando lo tengan, setear
-// NEXT_PUBLIC_CALENDLY_URL en .env.local (ej: https://calendly.com/praviloarg/sesion)
-// y el botón "Reservar turno" pasa a abrir el widget de Calendly automáticamente.
-export const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? "";
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID ?? "";
