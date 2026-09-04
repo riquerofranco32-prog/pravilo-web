@@ -243,7 +243,16 @@ export function PraviloMoscowBenefitsSection() {
               >
                 <div
                   onClick={() => setSelectedBenefit(b)}
-                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${b.glowColor} ${
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Ver detalle: ${b.title}`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedBenefit(b);
+                    }
+                  }}
+                  className={`group cursor-pointer h-full rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${b.glowColor} ${
                     isSelected
                       ? "bg-surface-raised border-accent shadow-xl shadow-accent/20 ring-1 ring-accent scale-[1.02]"
                       : "bg-surface-raised/60 border-border hover:bg-surface-raised hover:scale-[1.02]"
@@ -312,6 +321,7 @@ export function PraviloMoscowBenefitsSection() {
             {/* Close button */}
             <button
               onClick={() => setSelectedBenefit(null)}
+              aria-label="Cerrar"
               className="absolute top-5 right-5 p-2 rounded-full bg-surface-raised border border-border text-muted hover:text-foreground transition-colors"
             >
               ✕

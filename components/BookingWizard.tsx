@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { PLANES, type Plan } from "@/lib/plans";
 import {
@@ -9,7 +10,6 @@ import {
   ScheduleConfig,
   buildWhatsAppBookingUrl,
   formatDateSpanish,
-  getAvailableSlots,
   getAllSlotsWithStatus,
   isDateAvailable,
   isDateFullyBooked,
@@ -24,6 +24,7 @@ export default function BookingWizard({
   className?: string;
   buttonText?: string;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(PLANES[0]);
@@ -211,7 +212,7 @@ export default function BookingWizard({
 
     // Redirigir a la página de confirmación enriquecida
     const confirmUrl = `/reserva-confirmada?plan=${encodeURIComponent(selectedPlan.title)}&price=${encodeURIComponent(selectedPlan.price)}&date=${dateStr}&time=${encodeURIComponent(selectedTime)}&name=${encodeURIComponent(customerName)}`;
-    window.location.href = confirmUrl;
+    router.push(confirmUrl);
   };
 
   // Generar días del mes actual para el calendario
