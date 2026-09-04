@@ -264,8 +264,10 @@ export default function AdminPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchBookings = (isSilent = false) => {
-    fetch("/api/admin/bookings")
+  const fetchBookings = (isSilent = false, pinOverride?: string) => {
+    fetch("/api/admin/bookings", {
+      headers: { "x-admin-pin": pinOverride ?? pin },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data?.ok && Array.isArray(data.bookings)) {
@@ -444,66 +446,18 @@ export default function AdminPage() {
       } catch {}
     }
 
-    fetch("/api/admin/config")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.ok) {
-          if (data.config) {
-            setConfig(data.config);
-            localStorage.setItem(
-              LOCAL_STORAGE_SCHEDULE_KEY,
-              JSON.stringify(data.config),
-            );
-          }
-          if (data.bankConfig) {
-            setBankConfig(data.bankConfig);
-            localStorage.setItem(
-              LOCAL_STORAGE_BANK_KEY,
-              JSON.stringify(data.bankConfig),
-            );
-          }
-          if (data.planPrices) {
-            setPlanPrices(data.planPrices);
-            localStorage.setItem(
-              "pravilo_plan_prices",
-              JSON.stringify(data.planPrices),
-            );
-            localStorage.setItem(
-              LOCAL_STORAGE_PRICES_KEY,
-              JSON.stringify(data.planPrices),
-            );
-          }
-          if (
-            data.clinicalProfiles &&
-            typeof data.clinicalProfiles === "object"
-          ) {
-            setClinicalProfiles(data.clinicalProfiles);
-            localStorage.setItem(
-              LOCAL_STORAGE_CLINICAL_KEY,
-              JSON.stringify(data.clinicalProfiles),
-            );
-          }
-          if (data.giftCards && Array.isArray(data.giftCards)) {
-            setGiftCards(data.giftCards);
-            localStorage.setItem(
-              LOCAL_STORAGE_GIFTCARDS_KEY,
-              JSON.stringify(data.giftCards),
-            );
-          }
-          if (
-            data.galleryImages &&
-            Array.isArray(data.galleryImages) &&
-            data.galleryImages.length > 0
-          ) {
-            setGalleryImages(data.galleryImages);
-            localStorage.setItem(
-              "pravilo_gallery_images",
-              JSON.stringify(data.galleryImages),
-            );
-          }
+    // Datos sensibles (bancarios, clínicos, gift cards) solo se piden al
+    // servidor si ya hay un PIN guardado — un visitante sin sesión nunca
+    // dispara esa carga, y el servidor igual los omite si el PIN no es válido.
+    if (savedPin) {
+      fetchFullConfig(savedPin).then((valid) => {
+        if (!valid) {
+          setIsAuthenticated(false);
+          setPin("");
+          localStorage.removeItem("pravilo_admin_auth");
         }
-      })
-      .catch(() => {});
+      });
+    }
 
     // Initial load from localStorage
     const storedBookings = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
@@ -519,8 +473,12 @@ export default function AdminPage() {
       } catch {}
     }
 
-    // Canonical server fetch
-    fetchBookings(false);
+    // Canonical server fetch. Pasamos savedPin explícito porque el estado
+    // `pin` recién seteado más arriba todavía no se actualizó en este mismo
+    // render (setState es asíncrono).
+    if (savedPin) {
+      fetchBookings(false, savedPin);
+    }
   }, []);
 
   const handleReloadSamples = async () => {
@@ -534,7 +492,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({ resetWithSamples: true }),
       });
       const data = await res.json();
@@ -565,9 +523,91 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Vuelca en el estado (y en localStorage) la config completa que devuelve
+  // el servidor una vez validado el PIN.
+  const applyFullConfigResponse = (data: {
+    config?: ScheduleConfig;
+    bankConfig?: BankConfig;
+    planPrices?: PlanPricingConfig;
+    clinicalProfiles?: Record<string, StudentClinicalProfile>;
+    giftCards?: GiftCard[];
+    galleryImages?: GalleryImageItem[];
+  }) => {
+    if (data.config) {
+      setConfig(data.config);
+      localStorage.setItem(
+        LOCAL_STORAGE_SCHEDULE_KEY,
+        JSON.stringify(data.config),
+      );
+    }
+    if (data.bankConfig) {
+      setBankConfig(data.bankConfig);
+      localStorage.setItem(
+        LOCAL_STORAGE_BANK_KEY,
+        JSON.stringify(data.bankConfig),
+      );
+    }
+    if (data.planPrices) {
+      setPlanPrices(data.planPrices);
+      localStorage.setItem(
+        "pravilo_plan_prices",
+        JSON.stringify(data.planPrices),
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_PRICES_KEY,
+        JSON.stringify(data.planPrices),
+      );
+    }
+    if (data.clinicalProfiles && typeof data.clinicalProfiles === "object") {
+      setClinicalProfiles(data.clinicalProfiles);
+      localStorage.setItem(
+        LOCAL_STORAGE_CLINICAL_KEY,
+        JSON.stringify(data.clinicalProfiles),
+      );
+    }
+    if (data.giftCards && Array.isArray(data.giftCards)) {
+      setGiftCards(data.giftCards);
+      localStorage.setItem(
+        LOCAL_STORAGE_GIFTCARDS_KEY,
+        JSON.stringify(data.giftCards),
+      );
+    }
+    if (
+      data.galleryImages &&
+      Array.isArray(data.galleryImages) &&
+      data.galleryImages.length > 0
+    ) {
+      setGalleryImages(data.galleryImages);
+      localStorage.setItem(
+        "pravilo_gallery_images",
+        JSON.stringify(data.galleryImages),
+      );
+    }
+  };
+
+  // Pide la config completa al servidor mandando el PIN en un header (nunca
+  // en el bundle del cliente). El servidor sólo devuelve los datos
+  // bancarios/clínicos/gift cards si el PIN es correcto (pinValid: true).
+  const fetchFullConfig = async (pinValue: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/admin/config", {
+        headers: { "x-admin-pin": pinValue },
+      });
+      const data = await res.json().catch(() => null);
+      if (data?.ok && data?.pinValid) {
+        applyFullConfigResponse(data);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === "02942564386") {
+    const valid = await fetchFullConfig(pin);
+    if (valid) {
       setIsAuthenticated(true);
       setPinError("");
       localStorage.setItem("pravilo_admin_auth", pin);
@@ -606,7 +646,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({ id, status: newStatus }),
       });
       const data = await res.json();
@@ -642,7 +682,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({ id, paymentStatus }),
       });
       const data = await res.json();
@@ -682,7 +722,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({ id, ...updates }),
       });
       const data = await res.json();
@@ -712,7 +752,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({ id, internalNotes: note }),
       });
       const data = await res.json();
@@ -752,7 +792,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin/bookings", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-pin": pin },
         body: JSON.stringify({
           id,
           sessionsCompleted: nextVal,
@@ -799,6 +839,7 @@ export default function AdminPage() {
         `/api/admin/bookings?id=${encodeURIComponent(id)}`,
         {
           method: "DELETE",
+          headers: { "x-admin-pin": pin },
         },
       );
       const data = await res.json();
@@ -838,7 +879,7 @@ export default function AdminPage() {
       try {
         const res = await fetch("/api/admin/bookings", {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-pin": pin },
           body: JSON.stringify(payload),
         });
         const data = await res.json();
@@ -862,7 +903,7 @@ export default function AdminPage() {
       try {
         const res = await fetch("/api/admin/bookings", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-admin-pin": pin },
           body: JSON.stringify(payload),
         });
         const data = await res.json();
@@ -889,7 +930,7 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...body, pin: pin || "02942564386" }),
+        body: JSON.stringify({ ...body, pin }),
       });
       const data = await res.json().catch(() => null);
       if (data?.ok) return true;
@@ -1026,7 +1067,7 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           galleryImages: updatedImages,
-          pin: pin || "02942564386",
+          pin,
         }),
       });
       const data = await res.json();
@@ -1057,7 +1098,7 @@ export default function AdminPage() {
           );
           const bookingsRes = await fetch("/api/admin/bookings", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "x-admin-pin": pin },
             body: JSON.stringify({ importAllBookings: parsed.bookings }),
           }).catch(() => null);
           const bookingsData = await bookingsRes?.json().catch(() => null);
@@ -1119,7 +1160,7 @@ export default function AdminPage() {
             planPrices: parsed.planPrices,
             clinicalProfiles: parsed.clinicalProfiles,
             giftCards: parsed.giftCards,
-            pin: pin || "02942564386",
+            pin,
           }),
         }).catch(() => null);
         const configData = await configRes?.json().catch(() => null);

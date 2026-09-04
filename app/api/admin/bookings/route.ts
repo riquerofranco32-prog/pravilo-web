@@ -6,13 +6,23 @@ import {
   upsertDBBooking,
   deleteDBBooking,
 } from "@/lib/cloudStorage";
+import { isValidPin, getRequestPin } from "@/lib/adminAuth";
 
-export async function GET() {
+// Un turno trae nombre, teléfono, notas clínicas y datos de pago del
+// cliente — no es información pública. El wizard de reserva (público) solo
+// necesita fecha/horario/estado para saber qué turnos están ocupados, así
+// que sin PIN válido se devuelve solo eso.
+function sanitizeBooking(b: Booking) {
+  return { id: b.id, date: b.date, time: b.time, status: b.status };
+}
+
+export async function GET(req: NextRequest) {
   try {
     const bookings = await getDBBookings();
+    const pinValid = isValidPin(getRequestPin(req));
     return NextResponse.json({
       ok: true,
-      bookings,
+      bookings: pinValid ? bookings : bookings.map(sanitizeBooking),
     });
   } catch (err: unknown) {
     return NextResponse.json(
@@ -30,6 +40,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (body.resetWithSamples) {
+      if (!isValidPin(getRequestPin(req))) {
+        return NextResponse.json(
+          { ok: false, error: "PIN de administrador incorrecto." },
+          { status: 401 },
+        );
+      }
       const samples = generateSampleBookings();
       const saved = await saveDBBookings(samples);
       if (!saved) {
@@ -45,6 +61,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.importAllBookings && Array.isArray(body.importAllBookings)) {
+      if (!isValidPin(getRequestPin(req))) {
+        return NextResponse.json(
+          { ok: false, error: "PIN de administrador incorrecto." },
+          { status: 401 },
+        );
+      }
       const saved = await saveDBBookings(body.importAllBookings);
       if (!saved) {
         return NextResponse.json(
@@ -58,6 +80,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Alta de un turno nuevo: la usa el wizard público (BookingWizard) para
+    // registrar la reserva del cliente, así que a propósito no exige PIN.
     const {
       planTitle,
       planPrice,
@@ -137,6 +161,12 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    if (!isValidPin(getRequestPin(req))) {
+      return NextResponse.json(
+        { ok: false, error: "PIN de administrador incorrecto." },
+        { status: 401 },
+      );
+    }
     const body = await req.json();
     const {
       id,
@@ -220,6 +250,12 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    if (!isValidPin(getRequestPin(req))) {
+      return NextResponse.json(
+        { ok: false, error: "PIN de administrador incorrecto." },
+        { status: 401 },
+      );
+    }
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 

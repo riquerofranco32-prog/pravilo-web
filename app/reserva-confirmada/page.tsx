@@ -3,7 +3,7 @@ import {
   whatsappLink,
   GOOGLE_MAPS_URL,
   LOCATION,
-  WHATSAPP_NUMBER,
+  WHATSAPP_DISPLAY_NUMBER,
 } from "@/lib/constants";
 import { getDBBankConfig } from "@/lib/cloudStorage";
 
@@ -162,7 +162,7 @@ export default async function ReservaConfirmada({
           </div>
 
           <p className="text-[11px] text-muted leading-relaxed">
-            Podés abonar la seña para asegurar tu slot y enviar el comprobante directamente al WhatsApp de Juan ({WHATSAPP_NUMBER}).
+            Podés abonar la seña para asegurar tu slot y enviar el comprobante directamente al WhatsApp de Juan ({WHATSAPP_DISPLAY_NUMBER}).
           </p>
         </div>
 
