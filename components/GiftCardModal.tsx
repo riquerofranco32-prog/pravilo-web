@@ -52,6 +52,7 @@ export default function GiftCardModal() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
+                aria-label="Cerrar"
                 className="absolute top-5 right-5 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface-raised text-muted hover:border-accent hover:text-foreground transition-colors"
               >
                 &times;

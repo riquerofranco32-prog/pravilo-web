@@ -97,22 +97,12 @@ export function PosturalDiagnosticQuiz() {
   };
 
   const getRecommendation = () => {
-    if (selectedZone === "deporte") {
-      return {
-        plan: "Pack 8 Sesiones",
-        planPrice: "$240.000 ($30.000/sesión)",
-        badge: "Enfoque Deportivo & Alto Rendimiento",
-        title: "Protocolo de Movilidad, Fuerza & Recuperación Activa",
-        summary:
-          "Diseñado para deportistas y personas activas que buscan aumentar su rango articular, liberar fascias sobrecargadas por el entrenamiento y potenciar la transferencia de fuerza sin impacto.",
-        benefits: [
-          "Expansión del rango de movimiento y flexibilidad activa",
-          "Aceleración de la recuperación muscular pos-esfuerzo",
-          "Prevención de lesiones y optimización biomecánica",
-        ],
-      };
-    }
-
+    // ponytail: acá recomendábamos un "Pack 8 Sesiones" ($240.000) con botón
+    // de reserva propio, pero lib/plans.ts (lo único que usa el wizard real)
+    // solo tiene la sesión individual — el botón terminaba abriendo el
+    // wizard con un plan y precio distintos a lo prometido. Hasta que se
+    // sume un plan de pack real y reservable, todas las zonas recomiendan la
+    // sesión individual (ya tiene copy propio para "deporte" más abajo).
     return {
       plan: "1 Sesión Individual",
       planPrice: "$35.000 · 60 minutos guiados",

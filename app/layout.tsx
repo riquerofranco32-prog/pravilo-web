@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Barlow } from "next/font/google";
 import "./globals.css";
-import { SITE_URL } from "@/lib/constants";
+import {
+  GOOGLE_REVIEWS_URL,
+  INSTAGRAM_URL,
+  SITE_URL,
+  WHATSAPP_DISPLAY_NUMBER,
+} from "@/lib/constants";
+import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
@@ -51,14 +57,25 @@ export const metadata: Metadata = {
   },
 };
 
+// Único bloque JSON-LD de negocio del sitio (antes había uno acá y otro
+// distinto en app/page.tsx, con @type, teléfono, coordenadas y reviewCount
+// contradictorios entre sí — Google podía interpretarlos como dos negocios
+// distintos). Rating y reseñas se calculan desde lib/reviews.ts para que
+// nunca queden desactualizados a mano.
+const avgRating = (
+  GOOGLE_REVIEWS.reduce((sum, r) => sum + r.rating, 0) / GOOGLE_REVIEWS.length
+).toFixed(1);
+
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "HealthAndBeautyBusiness",
+  "@type": "HealthClub",
   name: "PRAVILO ARG",
   description:
     "Primer centro de descompresión vertebral, tracción y reeducación miofascial con el método Pravilo en Argentina.",
   url: SITE_URL,
-  telephone: "+54 9 299 577-5085",
+  // TODO(negocio): confirmar el teléfono oficial a publicar en Google — se
+  // usa el mismo número del botón de WhatsApp por ser el único confirmado.
+  telephone: WHATSAPP_DISPLAY_NUMBER,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Plottier",
@@ -67,15 +84,31 @@ const jsonLd = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: -38.9667,
-    longitude: -68.2333,
+    latitude: -38.944887,
+    longitude: -68.2206435,
   },
   priceRange: "$$$",
+  sameAs: [INSTAGRAM_URL, GOOGLE_REVIEWS_URL],
   aggregateRating: {
     "@type": "AggregateRating",
-    ratingValue: "5.0",
-    reviewCount: "28",
+    ratingValue: avgRating,
+    reviewCount: String(GOOGLE_REVIEWS.length),
+    bestRating: "5",
+    worstRating: "1",
   },
+  review: GOOGLE_REVIEWS.map((r) => ({
+    "@type": "Review",
+    author: {
+      "@type": "Person",
+      name: r.author,
+    },
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: String(r.rating),
+      bestRating: "5",
+    },
+    reviewBody: r.content,
+  })),
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -87,7 +120,7 @@ const jsonLd = {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Saturday"],
       opens: "09:30",
-      closes: "17:00",
+      closes: "17:30",
     },
   ],
 };

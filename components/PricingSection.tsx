@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import RevealOnScroll from "./RevealOnScroll";
 import SpotlightCard from "./SpotlightCard";
 import BookingWizard from "./BookingWizard";
-import GiftCardModal from "./GiftCardModal";
 import { PLANES_EXPERIENCIA, Plan } from "@/lib/plans";
 import { LOCAL_STORAGE_PRICES_KEY } from "@/lib/bookings";
 import { fetchPublicConfig } from "@/lib/publicConfig";

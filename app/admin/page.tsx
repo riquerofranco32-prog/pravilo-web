@@ -389,6 +389,87 @@ export default function AdminPage() {
     };
   }, [isAuthenticated]);
 
+  // Vuelca en el estado (y en localStorage) la config completa que devuelve
+  // el servidor una vez validado el PIN.
+  const applyFullConfigResponse = (data: {
+    config?: ScheduleConfig;
+    bankConfig?: BankConfig;
+    planPrices?: PlanPricingConfig;
+    clinicalProfiles?: Record<string, StudentClinicalProfile>;
+    giftCards?: GiftCard[];
+    galleryImages?: GalleryImageItem[];
+  }) => {
+    if (data.config) {
+      setConfig(data.config);
+      localStorage.setItem(
+        LOCAL_STORAGE_SCHEDULE_KEY,
+        JSON.stringify(data.config),
+      );
+    }
+    if (data.bankConfig) {
+      setBankConfig(data.bankConfig);
+      localStorage.setItem(
+        LOCAL_STORAGE_BANK_KEY,
+        JSON.stringify(data.bankConfig),
+      );
+    }
+    if (data.planPrices) {
+      setPlanPrices(data.planPrices);
+      localStorage.setItem(
+        "pravilo_plan_prices",
+        JSON.stringify(data.planPrices),
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_PRICES_KEY,
+        JSON.stringify(data.planPrices),
+      );
+    }
+    if (data.clinicalProfiles && typeof data.clinicalProfiles === "object") {
+      setClinicalProfiles(data.clinicalProfiles);
+      localStorage.setItem(
+        LOCAL_STORAGE_CLINICAL_KEY,
+        JSON.stringify(data.clinicalProfiles),
+      );
+    }
+    if (data.giftCards && Array.isArray(data.giftCards)) {
+      setGiftCards(data.giftCards);
+      localStorage.setItem(
+        LOCAL_STORAGE_GIFTCARDS_KEY,
+        JSON.stringify(data.giftCards),
+      );
+    }
+    if (
+      data.galleryImages &&
+      Array.isArray(data.galleryImages) &&
+      data.galleryImages.length > 0
+    ) {
+      setGalleryImages(data.galleryImages);
+      localStorage.setItem(
+        "pravilo_gallery_images",
+        JSON.stringify(data.galleryImages),
+      );
+    }
+  };
+
+  // Pide la config completa al servidor mandando el PIN en un header (nunca
+  // en el bundle del cliente). El servidor sólo devuelve los datos
+  // bancarios/clínicos/gift cards si el PIN es correcto (pinValid: true).
+  const fetchFullConfig = async (pinValue: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/admin/config", {
+        headers: { "x-admin-pin": pinValue },
+      });
+      const data = await res.json().catch(() => null);
+      if (data?.ok && data?.pinValid) {
+        applyFullConfigResponse(data);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
   // Load config, bank & bookings on mount
   useEffect(() => {
     const savedPin = localStorage.getItem("pravilo_admin_auth");
@@ -520,87 +601,6 @@ export default function AdminPage() {
       setTimeout(() => setSaveStatus(null), 3000);
     } catch {
       alert("Error de conexión al cargar los turnos de prueba.");
-    }
-  };
-
-  // Vuelca en el estado (y en localStorage) la config completa que devuelve
-  // el servidor una vez validado el PIN.
-  const applyFullConfigResponse = (data: {
-    config?: ScheduleConfig;
-    bankConfig?: BankConfig;
-    planPrices?: PlanPricingConfig;
-    clinicalProfiles?: Record<string, StudentClinicalProfile>;
-    giftCards?: GiftCard[];
-    galleryImages?: GalleryImageItem[];
-  }) => {
-    if (data.config) {
-      setConfig(data.config);
-      localStorage.setItem(
-        LOCAL_STORAGE_SCHEDULE_KEY,
-        JSON.stringify(data.config),
-      );
-    }
-    if (data.bankConfig) {
-      setBankConfig(data.bankConfig);
-      localStorage.setItem(
-        LOCAL_STORAGE_BANK_KEY,
-        JSON.stringify(data.bankConfig),
-      );
-    }
-    if (data.planPrices) {
-      setPlanPrices(data.planPrices);
-      localStorage.setItem(
-        "pravilo_plan_prices",
-        JSON.stringify(data.planPrices),
-      );
-      localStorage.setItem(
-        LOCAL_STORAGE_PRICES_KEY,
-        JSON.stringify(data.planPrices),
-      );
-    }
-    if (data.clinicalProfiles && typeof data.clinicalProfiles === "object") {
-      setClinicalProfiles(data.clinicalProfiles);
-      localStorage.setItem(
-        LOCAL_STORAGE_CLINICAL_KEY,
-        JSON.stringify(data.clinicalProfiles),
-      );
-    }
-    if (data.giftCards && Array.isArray(data.giftCards)) {
-      setGiftCards(data.giftCards);
-      localStorage.setItem(
-        LOCAL_STORAGE_GIFTCARDS_KEY,
-        JSON.stringify(data.giftCards),
-      );
-    }
-    if (
-      data.galleryImages &&
-      Array.isArray(data.galleryImages) &&
-      data.galleryImages.length > 0
-    ) {
-      setGalleryImages(data.galleryImages);
-      localStorage.setItem(
-        "pravilo_gallery_images",
-        JSON.stringify(data.galleryImages),
-      );
-    }
-  };
-
-  // Pide la config completa al servidor mandando el PIN en un header (nunca
-  // en el bundle del cliente). El servidor sólo devuelve los datos
-  // bancarios/clínicos/gift cards si el PIN es correcto (pinValid: true).
-  const fetchFullConfig = async (pinValue: string): Promise<boolean> => {
-    try {
-      const res = await fetch("/api/admin/config", {
-        headers: { "x-admin-pin": pinValue },
-      });
-      const data = await res.json().catch(() => null);
-      if (data?.ok && data?.pinValid) {
-        applyFullConfigResponse(data);
-        return true;
-      }
-      return false;
-    } catch {
-      return false;
     }
   };
 

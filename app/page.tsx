@@ -7,9 +7,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import SectionDots from "@/components/SectionDots";
 import Marquee from "@/components/Marquee";
 import Gallery from "@/components/Gallery";
-import BenefitIcon from "@/components/BenefitIcon";
 import PlanPerkIcon from "@/components/BenefitIcon";
-import SpotlightCard from "@/components/SpotlightCard";
 import MagneticButton from "@/components/MagneticButton";
 import ParallaxHero from "@/components/ParallaxHero";
 import GoogleReviews from "@/components/GoogleReviews";
@@ -20,15 +18,12 @@ import { PraviloModalitiesSlider } from "@/components/PraviloModalitiesSlider";
 import { PricingSection } from "@/components/PricingSection";
 import { PosturalDiagnosticQuiz } from "@/components/PosturalDiagnosticQuiz";
 import { PraviloMoscowBenefitsSection } from "@/components/PraviloMoscowBenefitsSection";
-import { GOOGLE_REVIEWS } from "@/lib/reviews";
 import {
   GOOGLE_MAPS_URL,
-  GOOGLE_REVIEWS_URL,
   INSTAGRAM_URL,
   LOCATION,
   LOCATION_SHORT,
   MAPS_EMBED_SRC,
-  SITE_URL,
   whatsappLink,
 } from "@/lib/constants";
 import { DEFAULT_GALLERY_IMAGES } from "@/lib/gallery";
@@ -43,82 +38,6 @@ const NAV = [
   { href: "#testimonios", label: "Reseñas" },
   { href: "#faq", label: "FAQ" },
   { href: "#ubicacion", label: "Ubicación" },
-];
-
-const GALERIA_ACCION = [
-  {
-    src: "/images/pravilo-practica-alumna-suspension.jpg",
-    alt: "Alumna en suspensión total y extensión miofascial en PRAVILO",
-  },
-  {
-    src: "/images/pravilo-practica-traccion-horizontal.jpg",
-    alt: "Descompresión y tracción prona frente al cartel oficial",
-  },
-  {
-    src: "/images/pravilo-practica-plancha-lateral.jpg",
-    alt: "Trabajo de estabilidad, fuerza y control articular en suspensión",
-  },
-  {
-    src: "/images/pravilo-practica-traccion-vertical.jpg",
-    alt: "Elongación axial y apertura de hombros en el sistema de poleas",
-  },
-  {
-    src: "/images/pravilo-practica-descompresion-zenital.jpg",
-    alt: "Alineación y tracción progresiva en 4 puntos desde ángulo cenital",
-  },
-  {
-    src: "/images/espacio-completo.jpg",
-    alt: "Vista panorámica del estudio PRAVILO ARG y estructura central",
-  },
-  {
-    src: "/images/pravilo-sign-suspension.jpg",
-    alt: "Sesión de descompresión en suspensión frente al cartel PRAVILO",
-  },
-  {
-    src: "/images/foto-img-3399.jpg",
-    alt: "El aparato PRAVILO — estructura de cuerdas y poleas",
-  },
-  {
-    src: "/images/pravilo-neon-suspension.jpg",
-    alt: "Sesión de suspensión con iluminación neón en el estudio",
-  },
-  {
-    src: "/images/pravilo-mirror-suspension.jpg",
-    alt: "Ejercicio de suspensión reflejado en el espejo del estudio",
-  },
-];
-
-const BENEFICIOS = [
-  {
-    icon: "movilidad" as const,
-    title: "Más movilidad y amplitud",
-    desc: "Ganá rango de movimiento articular real en hombros, columna y caderas.",
-  },
-  {
-    icon: "tension" as const,
-    title: "Alivio de dolor y compresión",
-    desc: "Descompresión intervertebral suave que libera contracturas y presión nerviosa.",
-  },
-  {
-    icon: "postura" as const,
-    title: "Alineación y reeducación",
-    desc: "Trabajo consciente sobre la postura natural y simetría del cuerpo en tu día a día.",
-  },
-  {
-    icon: "recuperacion" as const,
-    title: "Recuperación activa profunda",
-    desc: "Elongación fascial tridimensional sin impacto, ideal para complementar deportes.",
-  },
-  {
-    icon: "rendimiento" as const,
-    title: "Potencia y control corporal",
-    desc: "Mayor transferencia de fuerza y libertad motriz para cualquier disciplina física.",
-  },
-  {
-    icon: "bienestar" as const,
-    title: "Ligereza y claridad mental",
-    desc: "Reseteo del sistema nervioso y sensación de bienestar inmediato al terminar la sesión.",
-  },
 ];
 
 const CREDENCIALES = [
@@ -212,44 +131,10 @@ function TrustCard({ title, subtitle }: { title: string; subtitle: string }) {
 }
 
 export default function Home() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "HealthClub",
-    name: "PRAVILO ARG",
-    description:
-      "Primer centro Pravilo de Argentina. Entrenamiento y terapia de movilidad, individual y personalizado.",
-    url: SITE_URL,
-    telephone: "+5492942564386",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Plottier",
-      addressRegion: "Neuquén",
-      addressCountry: "AR",
-    },
-    sameAs: [INSTAGRAM_URL, GOOGLE_REVIEWS_URL],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: String(GOOGLE_REVIEWS.length),
-      bestRating: "5",
-      worstRating: "1",
-    },
-    review: GOOGLE_REVIEWS.map((r) => ({
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: r.author,
-      },
-      datePublished: "2026-08-20",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: String(r.rating),
-        bestRating: "5",
-      },
-      reviewBody: r.content,
-    })),
-  };
-
+  // El JSON-LD de datos del negocio (nombre, teléfono, geo, reseñas) vive
+  // una sola vez en app/layout.tsx — tener uno acá también hacía que Google
+  // viera dos negocios distintos con teléfono y cantidad de reseñas
+  // contradictorios entre sí.
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -262,10 +147,6 @@ export default function Home() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
