@@ -67,14 +67,8 @@ export async function POST(req: NextRequest) {
     } = body;
 
     // Validación básica de PIN si se requiere
-    const ADMIN_PIN = process.env.ADMIN_PIN || "pravilo2026";
-    if (
-      pin &&
-      pin !== ADMIN_PIN &&
-      pin !== "pravilo" &&
-      pin !== "1234" &&
-      pin !== "2026"
-    ) {
+    const ADMIN_PIN = process.env.ADMIN_PIN || "02942564386";
+    if (pin && pin !== ADMIN_PIN) {
       return NextResponse.json(
         { ok: false, error: "PIN de administrador incorrecto." },
         { status: 401 },
