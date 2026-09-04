@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { whatsappLink, LOCATION, WHATSAPP_NUMBER } from "@/lib/constants";
+import {
+  whatsappLink,
+  GOOGLE_MAPS_URL,
+  LOCATION,
+  WHATSAPP_NUMBER,
+} from "@/lib/constants";
 import { getDBBankConfig } from "@/lib/cloudStorage";
 
 export default async function ReservaConfirmada({
@@ -52,7 +57,7 @@ export default async function ReservaConfirmada({
   if (time) message += `⏰ *Horario:* ${time} hs\n`;
   message += `\n¿Me confirmás la recepción del turno? ¡Muchas gracias!`;
 
-  const mapLink = "https://maps.app.goo.gl/uL3Uqg6G1vYmQoVn6";
+  const mapLink = GOOGLE_MAPS_URL;
 
   return (
     <main className="grain relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24 text-center overflow-hidden bg-background text-foreground">
