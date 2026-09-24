@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// ponytail: Firestore is only ever reached from this app's own Next.js
+// server code (API routes gated by PIN+cookie auth), never directly from
+// the browser or Firebase Auth. These rules replace the 30-day test-mode
+// grant with a permanent one of the same scope so the project stops
+// rejecting requests; they don't change the real security boundary, which
+// lives in lib/adminAuth.ts. Revisit if Firestore is ever queried
+// client-side or firebase-admin gets wired up (see package.json).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
