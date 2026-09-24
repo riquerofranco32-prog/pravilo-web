@@ -6,10 +6,11 @@ import {
   Booking,
   PaymentMethod,
   PaymentStatus,
-  buildReceiptWhatsAppMessage,
+  buildReceiptWhatsAppText,
   parsePriceToNumber,
 } from "@/lib/bookings";
 import { CopyIcon } from "./Icons";
+import { WhatsAppDraft, WhatsAppSendModal } from "./WhatsAppSendModal";
 
 interface PaymentReceiptModalProps {
   isOpen: boolean;
@@ -26,17 +27,26 @@ interface PaymentReceiptModalProps {
   ) => void;
 }
 
-// ponytail: the early return lives in this wrapper so the inner component's
-// hooks always run in the same order. `key` remounts it per booking so the
-// initial amounts reflect the booking actually being opened.
+// ponytail: waDraft lives up here (not in the Body below) so the WhatsApp
+// edit modal survives Body unmounting when handleSave() closes the payment
+// modal underneath it. The early return lives in this wrapper so the inner
+// component's hooks always run in the same order; `key` remounts it per
+// booking so the initial amounts reflect the booking actually being opened.
 export function PaymentReceiptModal(props: PaymentReceiptModalProps) {
-  if (!props.isOpen || !props.booking) return null;
+  const [waDraft, setWaDraft] = useState<WhatsAppDraft | null>(null);
+
   return (
-    <PaymentReceiptModalBody
-      key={props.booking.id}
-      {...props}
-      booking={props.booking}
-    />
+    <>
+      {props.isOpen && props.booking && (
+        <PaymentReceiptModalBody
+          key={props.booking.id}
+          {...props}
+          booking={props.booking}
+          onSendWhatsApp={setWaDraft}
+        />
+      )}
+      <WhatsAppSendModal draft={waDraft} onClose={() => setWaDraft(null)} />
+    </>
   );
 }
 
@@ -45,8 +55,10 @@ function PaymentReceiptModalBody({
   booking,
   bankConfig,
   onSavePayment,
+  onSendWhatsApp,
 }: Omit<PaymentReceiptModalProps, "booking" | "isOpen"> & {
   booking: Booking;
+  onSendWhatsApp: (draft: WhatsAppDraft) => void;
 }) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -94,7 +106,7 @@ function PaymentReceiptModalBody({
     onClose();
   };
 
-  const receiptUrl = buildReceiptWhatsAppMessage(
+  const receiptText = buildReceiptWhatsAppText(
     {
       ...booking,
       totalAmount: total,
@@ -313,11 +325,16 @@ function PaymentReceiptModalBody({
           {/* Actions: Save & Send WhatsApp */}
           <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
             {booking.customerPhone ? (
-              <a
-                href={receiptUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleSave}
+              <button
+                type="button"
+                onClick={() => {
+                  onSendWhatsApp({
+                    phone: booking.customerPhone,
+                    title: "Comprobante de Pago",
+                    text: receiptText,
+                  });
+                  handleSave();
+                }}
                 className="btn-shiny w-full sm:w-auto flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-condensed font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
               >
                 <svg
@@ -328,7 +345,7 @@ function PaymentReceiptModalBody({
                   <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                 </svg>
                 Guardar & Enviar Recibo WhatsApp
-              </a>
+              </button>
             ) : (
               <span className="text-xs text-muted font-sans">
                 Sin teléfono para WhatsApp

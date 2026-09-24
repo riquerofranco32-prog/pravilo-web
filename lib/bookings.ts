@@ -11,13 +11,14 @@ export type PaymentStatus =
   | "pagado_transferencia"
   | "pagado_mp";
 
-export type PaymentMethod = "efectivo" | "transferencia" | "mercadopago" | "otro";
+export type PaymentMethod =
+  "efectivo" | "transferencia" | "mercadopago" | "otro";
 
 export interface ClinicalEvolutionLog {
   date: string;
   sessionNumber?: number;
   painBefore: number; // 0 a 10 (EVA)
-  painAfter: number;  // 0 a 10 (EVA)
+  painAfter: number; // 0 a 10 (EVA)
   tensionLevel?: "Leve" | "Moderada" | "Alta" | "Muy Alta";
   notes: string;
   instructor?: string;
@@ -44,7 +45,7 @@ export interface Booking {
   planTitle: string;
   planPrice: string;
   totalAmount?: number; // Valor numérico total
-  amountPaid?: number;  // Monto abonado o seña
+  amountPaid?: number; // Monto abonado o seña
   paymentMethod?: PaymentMethod;
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
@@ -138,8 +139,10 @@ export function generateSampleBookings(): Booking[] {
       paymentStatus: "pagado_transferencia",
       date: yesterdayStr,
       time: "16:30",
-      customerNotes: "Molestia lumbar L5-S1 al estar sentado mucho tiempo en oficina.",
-      internalNotes: "Comenzar con tracción suave y arnés acolchado de tobillos.",
+      customerNotes:
+        "Molestia lumbar L5-S1 al estar sentado mucho tiempo en oficina.",
+      internalNotes:
+        "Comenzar con tracción suave y arnés acolchado de tobillos.",
       tags: ["Lumbalgia", "Oficina", "Individual"],
       status: "realizado",
       totalSessions: 1,
@@ -158,7 +161,8 @@ export function generateSampleBookings(): Booking[] {
       paymentStatus: "pagado_transferencia",
       date: todayStr,
       time: "18:00",
-      customerNotes: "Cervicalgia y tensión en hombros por entrenamiento de crossfit.",
+      customerNotes:
+        "Cervicalgia y tensión en hombros por entrenamiento de crossfit.",
       internalNotes: "Excelente respuesta en descompresión dorsal.",
       tags: ["Cervicalgia", "Deportista", "Primera Vez"],
       status: "confirmado",
@@ -198,7 +202,8 @@ export function generateSampleBookings(): Booking[] {
       paymentStatus: "pagado_transferencia",
       date: tomorrowStr,
       time: "10:30",
-      customerNotes: "Plan integral de corrección postural y fortalecimiento miofascial.",
+      customerNotes:
+        "Plan integral de corrección postural y fortalecimiento miofascial.",
       internalNotes: "Gran avance en rotación de cadera y movilidad torácica.",
       tags: ["Postura", "Fascial"],
       status: "confirmado",
@@ -239,7 +244,8 @@ export function generateSampleBookings(): Booking[] {
       date: in2DaysStr,
       time: "17:30",
       customerNotes: "Busca alivio para compresión discal y estrés.",
-      internalNotes: "Enviar mensaje de recordatorio y datos de alias bancario.",
+      internalNotes:
+        "Enviar mensaje de recordatorio y datos de alias bancario.",
       tags: ["Primera Vez", "Descompresión"],
       status: "pendiente",
       totalSessions: 1,
@@ -258,8 +264,10 @@ export function generateSampleBookings(): Booking[] {
       paymentStatus: "pagado_transferencia",
       date: yesterdayStr,
       time: "18:00",
-      customerNotes: "Sesión realizada exitosamente. Reducción notable del dolor.",
-      internalNotes: "Dolor bajó de 8/10 a 2/10. Muy satisfecho con la tracción.",
+      customerNotes:
+        "Sesión realizada exitosamente. Reducción notable del dolor.",
+      internalNotes:
+        "Dolor bajó de 8/10 a 2/10. Muy satisfecho con la tracción.",
       tags: ["Realizado"],
       status: "realizado",
       totalSessions: 1,
@@ -288,10 +296,17 @@ export function generateSampleBookings(): Booking[] {
   ];
 }
 
-export function generateSampleClinicalProfiles(): Record<string, StudentClinicalProfile> {
+export function generateSampleClinicalProfiles(): Record<
+  string,
+  StudentClinicalProfile
+> {
   const todayStr = new Date().toISOString().split("T")[0];
-  const lastWeekStr = new Date(Date.now() - 86400000 * 7).toISOString().split("T")[0];
-  const twoWeeksAgoStr = new Date(Date.now() - 86400000 * 14).toISOString().split("T")[0];
+  const lastWeekStr = new Date(Date.now() - 86400000 * 7)
+    .toISOString()
+    .split("T")[0];
+  const twoWeeksAgoStr = new Date(Date.now() - 86400000 * 14)
+    .toISOString()
+    .split("T")[0];
 
   return {
     "+54 9 299 458-1290": {
@@ -324,7 +339,8 @@ export function generateSampleClinicalProfiles(): Record<string, StudentClinical
           painBefore: 8,
           painAfter: 3,
           tensionLevel: "Alta",
-          notes: "Liberación de cadenas escapulares y estiramiento de pectorales.",
+          notes:
+            "Liberación de cadenas escapulares y estiramiento de pectorales.",
         },
       ],
     },
@@ -427,27 +443,52 @@ export function formatRelativeTime(isoString: string): string {
   }
 }
 
+// booking.date is a local YYYY-MM-DD wall-clock date (see formatDateISO in
+// availability.ts), so this compares it against local today/tomorrow the
+// same way instead of going through toISOString (which is UTC and used to
+// say "mañana" for a booking that was actually today, in the evening in
+// ART/UTC-3).
+function relativeDayLabel(bookingDate: string): string {
+  const localISO = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  if (bookingDate === localISO(now)) return "hoy";
+  if (bookingDate === localISO(tomorrow)) return "mañana";
+
+  const [y, m, d] = bookingDate.split("-").map(Number);
+  if (y && m && d) {
+    return `el ${new Date(y, m - 1, d).toLocaleDateString("es-AR", { day: "numeric", month: "long" })}`;
+  }
+  return `el ${bookingDate}`;
+}
+
 export function parsePriceToNumber(priceStr: string): number {
   if (!priceStr) return 0;
   const digits = priceStr.replace(/\D/g, "");
   return digits ? parseInt(digits, 10) : 0;
 }
 
-export function buildQuickWhatsAppMessage(
-  type:
-    | "confirmar"
-    | "recordatorio"
-    | "reagendar"
-    | "seguimiento_post"
-    | "pago"
-    | "ubicacion"
-    | "renovacion",
+export type QuickWhatsAppMessageType =
+  | "confirmar"
+  | "recordatorio"
+  | "reagendar"
+  | "seguimiento_post"
+  | "pago"
+  | "ubicacion"
+  | "renovacion";
+
+// Raw message text, so the admin UI can show it in an editable textarea
+// before opening WhatsApp — see buildQuickWhatsAppMessage below for the
+// wa.me link built from the (possibly edited) text.
+export function buildQuickWhatsAppText(
+  type: QuickWhatsAppMessageType,
   booking: Booking,
   bankConfig?: BankConfig,
 ): string {
-  const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
-  if (!cleanPhone) return "";
-
   const bank = bankConfig || DEFAULT_BANK_CONFIG;
   let text = "";
 
@@ -459,7 +500,7 @@ export function buildQuickWhatsAppMessage(
     text += `📍 *Ubicación:* Plottier, Neuquén\n\n`;
     text += `¡Tu sesión quedó confirmada! Te recomendamos venir con ropa cómoda deportiva. ¡Te esperamos! 🙌`;
   } else if (type === "recordatorio") {
-    text = `¡Hola ${booking.customerName.trim()}! 👋 Te recordamos tu sesión de *PRAVILO ARG* programada para mañana a las *${booking.time} hs*.\n\n`;
+    text = `¡Hola ${booking.customerName.trim()}! 👋 Te recordamos tu sesión de *PRAVILO ARG* programada para ${relativeDayLabel(booking.date)} a las *${booking.time} hs*.\n\n`;
     text += `Recordá asistir con ropa deportiva cómoda e hidratarte bien. ¡Nos vemos en el estudio! 🧘‍♂️`;
   } else if (type === "reagendar") {
     text = `¡Hola ${booking.customerName.trim()}! 👋 Te escribo de *PRAVILO ARG* con respecto a tu turno del ${booking.date} a las ${booking.time} hs.\n\n`;
@@ -485,19 +526,36 @@ export function buildQuickWhatsAppMessage(
     text += `Estás completando tu pack actual. Si querés renovar para el próximo mes y asegurar tu cupo y horarios habituales, avisame y te reservo tu lugar con la tarifa del pack. ¡Seguimos trabajando en tu movilidad! 🙌`;
   }
 
-  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+  return text;
 }
 
-export function buildReceiptWhatsAppMessage(
+export function buildQuickWhatsAppMessage(
+  type: QuickWhatsAppMessageType,
   booking: Booking,
   bankConfig?: BankConfig,
 ): string {
   const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
   if (!cleanPhone) return "";
+  return buildWhatsAppUrl(
+    cleanPhone,
+    buildQuickWhatsAppText(type, booking, bankConfig),
+  );
+}
 
+export function buildWhatsAppUrl(phone: string, text: string): string {
+  const cleanPhone = phone.replace(/\D/g, "");
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+}
+
+export function buildReceiptWhatsAppText(
+  booking: Booking,
+  bankConfig?: BankConfig,
+): string {
   const bank = bankConfig || DEFAULT_BANK_CONFIG;
   const total = booking.totalAmount || parsePriceToNumber(booking.planPrice);
-  const paid = booking.amountPaid || (booking.paymentStatus?.startsWith("pagado") ? total : 0);
+  const paid =
+    booking.amountPaid ||
+    (booking.paymentStatus?.startsWith("pagado") ? total : 0);
   const pending = Math.max(0, total - paid);
 
   let text = `🧾 *COMPROBANTE / DETALLE DE PAGO - PRAVILO ARG*\n\n`;
@@ -522,7 +580,19 @@ export function buildReceiptWhatsAppMessage(
   }
 
   text += `📍 Estudio PRAVILO: Plottier, Neuquén.`;
-  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+  return text;
+}
+
+export function buildReceiptWhatsAppMessage(
+  booking: Booking,
+  bankConfig?: BankConfig,
+): string {
+  const cleanPhone = (booking.customerPhone || "").replace(/\D/g, "");
+  if (!cleanPhone) return "";
+  return buildWhatsAppUrl(
+    cleanPhone,
+    buildReceiptWhatsAppText(booking, bankConfig),
+  );
 }
 
 export function buildReactivationWhatsAppMessage(
@@ -692,7 +762,12 @@ export function buildGiftCardShareWhatsAppMessage(
   giftCard: GiftCard,
   phone?: string,
 ): string {
-  const cleanPhone = (phone || giftCard.recipientPhone || giftCard.senderPhone || "").replace(/\D/g, "");
+  const cleanPhone = (
+    phone ||
+    giftCard.recipientPhone ||
+    giftCard.senderPhone ||
+    ""
+  ).replace(/\D/g, "");
 
   let text = `🎁 *¡VOUCHER / GIFT CARD DIGITAL PRAVILO ARG!* 🌟\n\n`;
   text += `👤 *Para:* ${giftCard.recipientName}\n`;
@@ -707,7 +782,9 @@ export function buildGiftCardShareWhatsAppMessage(
   text += `📲 Para coordinar día y horario, respondé a este mensaje mencionando tu código de canje.\n`;
   text += `¡Que disfrutes tu sesión de descompresión y bienestar! 🙌`;
 
-  return cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}` : "";
+  return cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
+    : "";
 }
 
 export function downloadFullJSONBackup(data: {

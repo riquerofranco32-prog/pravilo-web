@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   BankConfig,
   Booking,
-  buildQuickWhatsAppMessage,
-  buildReceiptWhatsAppMessage,
+  buildQuickWhatsAppText,
+  buildReceiptWhatsAppText,
 } from "@/lib/bookings";
+import { WhatsAppDraft, WhatsAppSendModal } from "./WhatsAppSendModal";
 
 interface SmartAlertsDrawerProps {
   isOpen: boolean;
@@ -25,6 +26,8 @@ export function SmartAlertsDrawer({
   onSelectBooking,
   onUpdateStatus,
 }: SmartAlertsDrawerProps) {
+  const [waDraft, setWaDraft] = useState<WhatsAppDraft | null>(null);
+
   if (!isOpen) return null;
 
   const now = new Date();
@@ -187,14 +190,19 @@ export function SmartAlertsDrawer({
                       </div>
                       <div className="mt-3 flex items-center gap-2">
                         {b.customerPhone && (
-                          <a
-                            href={buildQuickWhatsAppMessage(
-                              "confirmar",
-                              b,
-                              bankConfig,
-                            )}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setWaDraft({
+                                phone: b.customerPhone,
+                                title: "Confirmar Turno",
+                                text: buildQuickWhatsAppText(
+                                  "confirmar",
+                                  b,
+                                  bankConfig,
+                                ),
+                              })
+                            }
                             className="flex-1 text-center py-2 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-condensed font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow"
                           >
                             <svg
@@ -205,7 +213,7 @@ export function SmartAlertsDrawer({
                               <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                             </svg>
                             Confirmar por WhatsApp
-                          </a>
+                          </button>
                         )}
                         <button
                           onClick={() => onUpdateStatus(b.id, "confirmado")}
@@ -242,15 +250,20 @@ export function SmartAlertsDrawer({
                         </p>
                       </div>
                       {b.customerPhone && (
-                        <a
-                          href={buildReceiptWhatsAppMessage(b, bankConfig)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setWaDraft({
+                              phone: b.customerPhone,
+                              title: "Datos de Pago",
+                              text: buildReceiptWhatsAppText(b, bankConfig),
+                            })
+                          }
                           className="px-3 py-1.5 rounded-lg bg-accent/20 hover:bg-accent/30 text-accent-text text-xs font-condensed font-bold uppercase border border-accent/40 transition-all shrink-0"
                           title="Enviar datos de pago"
                         >
                           Cobrar WA
-                        </a>
+                        </button>
                       )}
                     </div>
                   ))}
@@ -281,18 +294,23 @@ export function SmartAlertsDrawer({
                         </p>
                       </div>
                       {b.customerPhone && (
-                        <a
-                          href={buildQuickWhatsAppMessage(
-                            "renovacion",
-                            b,
-                            bankConfig,
-                          )}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setWaDraft({
+                              phone: b.customerPhone,
+                              title: "Ofrecer Renovación Pack",
+                              text: buildQuickWhatsAppText(
+                                "renovacion",
+                                b,
+                                bankConfig,
+                              ),
+                            })
+                          }
                           className="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-condensed font-bold uppercase border border-purple-500/30 transition-all shrink-0"
                         >
                           Ofrecer Pack
-                        </a>
+                        </button>
                       )}
                     </div>
                   ))}
@@ -321,18 +339,23 @@ export function SmartAlertsDrawer({
                           Sesión realizada ({b.date})
                         </p>
                       </div>
-                      <a
-                        href={buildQuickWhatsAppMessage(
-                          "seguimiento_post",
-                          b,
-                          bankConfig,
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setWaDraft({
+                            phone: b.customerPhone,
+                            title: "Seguimiento Post-Sesión",
+                            text: buildQuickWhatsAppText(
+                              "seguimiento_post",
+                              b,
+                              bankConfig,
+                            ),
+                          })
+                        }
                         className="px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-xs font-condensed font-bold uppercase border border-sky-500/30 transition-all shrink-0"
                       >
                         ¿Cómo amaneció?
-                      </a>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -341,6 +364,8 @@ export function SmartAlertsDrawer({
           </div>
         </div>
       </div>
+
+      <WhatsAppSendModal draft={waDraft} onClose={() => setWaDraft(null)} />
     </div>
   );
 }

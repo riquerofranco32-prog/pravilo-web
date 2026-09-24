@@ -2,7 +2,8 @@
 
 import React, { useState, useMemo } from "react";
 import { ScheduleConfig, getAvailableSlots } from "@/lib/availability";
-import { Booking, buildQuickWhatsAppMessage, BankConfig } from "@/lib/bookings";
+import { Booking, buildQuickWhatsAppText, BankConfig } from "@/lib/bookings";
+import { WhatsAppDraft, WhatsAppSendModal } from "./WhatsAppSendModal";
 
 interface AgendaCalendarTabProps {
   bookings: Booking[];
@@ -22,6 +23,7 @@ export function AgendaCalendarTab({
   onEditBooking,
 }: AgendaCalendarTabProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [waDraft, setWaDraft] = useState<WhatsAppDraft | null>(null);
   const [selectedDateStr, setSelectedDateStr] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -358,24 +360,24 @@ export function AgendaCalendarTab({
                               Recibo
                             </button>
                             {bookingInSlot.customerPhone && (
-                              <a
-                                href={buildQuickWhatsAppMessage(
-                                  "recordatorio",
-                                  bookingInSlot,
-                                  bankConfig || {
-                                    alias: "PRAVILO.ARG",
-                                    cbu: "0000003100010000000000",
-                                    titular: "Juan Ignacio Garrafa",
-                                    banco: "Mercado Pago / Banco",
-                                  },
-                                )}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setWaDraft({
+                                    phone: bookingInSlot.customerPhone,
+                                    title: "Recordatorio de Sesión",
+                                    text: buildQuickWhatsAppText(
+                                      "recordatorio",
+                                      bookingInSlot,
+                                      bankConfig,
+                                    ),
+                                  })
+                                }
                                 className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-condensed font-bold uppercase text-[10px] transition-colors"
                                 title="Enviar recordatorio por WhatsApp"
                               >
                                 WA
-                              </a>
+                              </button>
                             )}
                           </div>
                         </div>
@@ -387,6 +389,8 @@ export function AgendaCalendarTab({
           </div>
         </div>
       </div>
+
+      <WhatsAppSendModal draft={waDraft} onClose={() => setWaDraft(null)} />
     </div>
   );
 }

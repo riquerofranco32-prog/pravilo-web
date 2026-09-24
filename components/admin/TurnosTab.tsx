@@ -6,9 +6,10 @@ import {
   Booking,
   PaymentStatus,
   buildGoogleCalendarUrl,
-  buildQuickWhatsAppMessage,
+  buildQuickWhatsAppText,
 } from "@/lib/bookings";
 import { CalendarIcon, ReceiptIcon, TrashIcon } from "./Icons";
+import { WhatsAppDraft, WhatsAppSendModal } from "./WhatsAppSendModal";
 
 interface TurnosTabProps {
   bookings: Booking[];
@@ -51,6 +52,7 @@ export function TurnosTab({
 
   // WhatsApp dropdown per item
   const [activeWaMenuId, setActiveWaMenuId] = useState<string | null>(null);
+  const [waDraft, setWaDraft] = useState<WhatsAppDraft | null>(null);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const tomorrowDate = new Date();
@@ -655,20 +657,25 @@ export function TurnosTab({
                               label: "Ofrecer Renovación Pack",
                             },
                           ].map((item) => (
-                            <a
+                            <button
                               key={item.type}
-                              href={buildQuickWhatsAppMessage(
-                                item.type as any,
-                                b,
-                                bankConfig,
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => setActiveWaMenuId(null)}
-                              className="block px-3 py-1.5 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
+                              type="button"
+                              onClick={() => {
+                                setActiveWaMenuId(null);
+                                setWaDraft({
+                                  phone: b.customerPhone,
+                                  title: item.label,
+                                  text: buildQuickWhatsAppText(
+                                    item.type as any,
+                                    b,
+                                    bankConfig,
+                                  ),
+                                });
+                              }}
+                              className="block w-full text-left px-3 py-1.5 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
                             >
                               {item.label}
-                            </a>
+                            </button>
                           ))}
                         </div>
                       )}
@@ -815,14 +822,19 @@ export function TurnosTab({
                       Editar
                     </button>
                     {b.customerPhone && (
-                      <a
-                        href={buildQuickWhatsAppMessage(
-                          "confirmar",
-                          b,
-                          bankConfig,
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setWaDraft({
+                            phone: b.customerPhone,
+                            title: "Confirmar Turno",
+                            text: buildQuickWhatsAppText(
+                              "confirmar",
+                              b,
+                              bankConfig,
+                            ),
+                          })
+                        }
                         className="px-2.5 py-1 rounded-lg bg-[#25D366] text-white font-bold hover:bg-[#20ba59] text-[11px] font-condensed uppercase tracking-wider inline-flex items-center gap-1 shadow-sm"
                       >
                         <svg
@@ -832,7 +844,7 @@ export function TurnosTab({
                           <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
                         </svg>
                         <span>WA</span>
-                      </a>
+                      </button>
                     )}
                     <button
                       onClick={() => onDeleteBooking(b.id)}
@@ -847,6 +859,8 @@ export function TurnosTab({
           </table>
         </div>
       )}
+
+      <WhatsAppSendModal draft={waDraft} onClose={() => setWaDraft(null)} />
     </div>
   );
 }
